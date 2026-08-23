@@ -6,6 +6,7 @@ import StatusPill from '@/components/kit/StatusPill';
 import Loading from '@/components/kit/Loading';
 import EmptyState from '@/components/kit/EmptyState';
 import { base44 } from '@/api/base44Client';
+import RegistrantContactPanel from '@/components/domains/RegistrantContactPanel';
 
 export default function VercelDomains() {
   const [projects, setProjects] = useState([]);
@@ -69,9 +70,11 @@ export default function VercelDomains() {
   return (
     <div>
       <PageHeader eyebrow="Vercel" title="Domain manager"
-        description="Attach domains you own to a Vercel project, view the DNS / verification records to point them at your deployment, and remove them. Vercel doesn't sell domains — purchase yours from a registrar (Namecheap, Porkbun, GoDaddy, Squarespace), then attach it here to deploy." />
+        description="Search and buy domains directly through Vercel's registrar, attach them to a Vercel project, and view the DNS / verification records to point them at your deployment. Set your registrant contact once above and it's reused for every purchase." />
 
-      <Panel title="Vercel project" subtitle="From your Vercel account (API token)">
+      <RegistrantContactPanel />
+
+      <Panel title="Vercel project" subtitle="From your Vercel account (API token)" className="mt-6">
         {loadingProjects ? <Loading label="Loading projects" /> : projects.length === 0 ? <EmptyState icon={Server} title="No projects found" description="Set VERCEL_API_TOKEN in Settings → Secrets and ensure a project exists." /> : (
           <select value={project} onChange={(e) => setProject(e.target.value)} className="w-full rounded border border-input bg-background px-3 py-2 text-sm">
             {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}

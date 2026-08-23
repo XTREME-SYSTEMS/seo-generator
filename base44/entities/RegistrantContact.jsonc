@@ -1,0 +1,53 @@
+{
+  "name": "RegistrantContact",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string",
+      "default": "Default",
+      "description": "A name for this contact profile (e.g. Default, Agency LLC)"
+    },
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "companyName": {
+      "type": "string"
+    },
+    "address1": {
+      "type": "string"
+    },
+    "address2": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "zip": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string",
+      "default": "US"
+    }
+  },
+  "required": [
+    "label",
+    "firstName",
+    "lastName",
+    "email",
+    "country"
+  ]
+}
