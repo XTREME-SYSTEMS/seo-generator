@@ -91,7 +91,7 @@ export default function Dashboard() {
     <div className="space-y-6">
       <PageHeader
         eyebrow="Command Center"
-        title="Search Dominance OS"
+        title="SEO Generator"
         description="Your autonomous SEO engine — tracking rankings, discovering strategies, and planning sprints across all 50 states. Everything runs in the background; this dashboard shows you what's happening."
         actions={<StatusPill tone="warn"><ShieldAlert className="mr-1.5 h-3 w-3" /> Shadow mode</StatusPill>}
       />

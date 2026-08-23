@@ -8,7 +8,7 @@ export default function Sidebar({ onNavigate }) {
   return (
     <nav className="flex h-full w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
       <div className="border-b border-sidebar-border px-5 py-5">
-        <div className="font-heading text-sm font-semibold tracking-tight text-foreground">SEARCH DOMINANCE OS</div>
+        <div className="font-heading text-sm font-semibold tracking-tight text-foreground">SEO GENERATOR</div>
         <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Shadow Mode · V2</div>
       </div>
       <div className="border-b border-sidebar-border px-4 py-3">
