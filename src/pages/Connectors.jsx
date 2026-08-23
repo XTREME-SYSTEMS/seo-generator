@@ -14,7 +14,7 @@ export default function Connectors() {
   return (
     <div>
       <PageHeader eyebrow="Connectors" title="Data source authorization"
-        description="Google Search Console is connected. Google Ads, GA4 and the AI Visibility Provider are authorization-required until connected — their data stays UNKNOWN, never fabricated." />
+        description="Google Search Console, Google Analytics, and Vercel are connected. Google Ads and the AI Visibility Provider remain authorization-required — their data stays UNKNOWN, never fabricated." />
       <Panel title="Connectors" subtitle={`${rows.length} services`}>
         {loading ? <Loading /> : rows.length === 0 ? <EmptyState title="No connectors" /> : (
           <ul className="space-y-3">
