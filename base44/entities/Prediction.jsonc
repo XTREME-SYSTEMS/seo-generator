@@ -1,0 +1,51 @@
+{
+  "name": "Prediction",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "predicted_outcome": {
+      "type": "string"
+    },
+    "predicted_rank": {
+      "type": "number"
+    },
+    "confidence": {
+      "type": "number"
+    },
+    "model": {
+      "type": "string"
+    },
+    "locked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "immutable": {
+      "type": "boolean",
+      "default": true
+    },
+    "resolution": {
+      "type": "string",
+      "enum": [
+        "open",
+        "confirmed",
+        "missed",
+        "void"
+      ],
+      "default": "open"
+    },
+    "resolved_rank": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "query"
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "name": "Client",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "non_production_pilot",
+        "shadow",
+        "production"
+      ],
+      "default": "non_production_pilot"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "monthly_paid_spend": {
+      "type": "number"
+    },
+    "spend_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "OPERATOR_ESTIMATE",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "revenue_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "OPERATOR_ESTIMATE",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

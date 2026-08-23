@@ -1,0 +1,38 @@
+{
+  "name": "ReplacementOpportunity",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "cluster": {
+      "type": "string"
+    },
+    "paid_spend": {
+      "type": "number"
+    },
+    "replacement_probability": {
+      "type": "number"
+    },
+    "time_to_replacement_days": {
+      "type": "number"
+    },
+    "replacement_value": {
+      "type": "number"
+    },
+    "proof_level": {
+      "type": "number",
+      "default": 0
+    },
+    "confirmed_displaced": {
+      "type": "boolean",
+      "default": false
+    },
+    "recommended_action": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "cluster"
+  ]
+}

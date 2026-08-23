@@ -1,12 +1,39 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
-// Add page imports here
+import ProtectedRoute from '@/components/ProtectedRoute';
+import Layout from '@/components/shell/Layout';
+import Dashboard from '@/pages/Dashboard';
+import Clients from '@/pages/Clients';
+import SearchMoneyMap from '@/pages/SearchMoneyMap';
+import FastPaths from '@/pages/FastPaths';
+import ExperimentLab from '@/pages/ExperimentLab';
+import PaidOrganic from '@/pages/PaidOrganic';
+import Financial from '@/pages/Financial';
+import Replacement from '@/pages/Replacement';
+import ProofVault from '@/pages/ProofVault';
+import CompetitorIntelligence from '@/pages/CompetitorIntelligence';
+import AIVisibility from '@/pages/AIVisibility';
+import CompetitiveParity from '@/pages/CompetitiveParity';
+import TechnologyRadar from '@/pages/TechnologyRadar';
+import Research from '@/pages/Research';
+import ModelLab from '@/pages/ModelLab';
+import AgentControl from '@/pages/AgentControl';
+import Domains from '@/pages/Domains';
+import Infrastructure from '@/pages/Infrastructure';
+import Connectors from '@/pages/Connectors';
+import SystemHealth from '@/pages/SystemHealth';
+import Admin from '@/pages/Admin';
+import Settings from '@/pages/Settings';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -34,7 +61,36 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
-      {/* Add your page Route elements here */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/money-map" element={<SearchMoneyMap />} />
+          <Route path="/fastpaths" element={<FastPaths />} />
+          <Route path="/experiments" element={<ExperimentLab />} />
+          <Route path="/paid-organic" element={<PaidOrganic />} />
+          <Route path="/financial" element={<Financial />} />
+          <Route path="/replacement" element={<Replacement />} />
+          <Route path="/proof" element={<ProofVault />} />
+          <Route path="/competitors" element={<CompetitorIntelligence />} />
+          <Route path="/ai-visibility" element={<AIVisibility />} />
+          <Route path="/competitive-parity" element={<CompetitiveParity />} />
+          <Route path="/technology-radar" element={<TechnologyRadar />} />
+          <Route path="/research" element={<Research />} />
+          <Route path="/models" element={<ModelLab />} />
+          <Route path="/agents" element={<AgentControl />} />
+          <Route path="/domains" element={<Domains />} />
+          <Route path="/infrastructure" element={<Infrastructure />} />
+          <Route path="/connectors" element={<Connectors />} />
+          <Route path="/system-health" element={<SystemHealth />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
+      </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

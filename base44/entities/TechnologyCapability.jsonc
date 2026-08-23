@@ -1,0 +1,62 @@
+{
+  "name": "TechnologyCapability",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "measurement",
+        "ingestion",
+        "intelligence",
+        "automation",
+        "infrastructure",
+        "governance"
+      ],
+      "default": "measurement"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "missing",
+        "planned",
+        "in_progress",
+        "shipped",
+        "degraded"
+      ],
+      "default": "planned"
+    },
+    "ring": {
+      "type": "string",
+      "enum": [
+        "adopt",
+        "trial",
+        "assess",
+        "hold"
+      ],
+      "default": "assess"
+    },
+    "gap_severity": {
+      "type": "string",
+      "enum": [
+        "none",
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "work_packet": {
+      "type": "string"
+    },
+    "owner_agent": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

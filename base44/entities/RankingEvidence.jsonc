@@ -1,0 +1,50 @@
+{
+  "name": "RankingEvidence",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "opportunity_id": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "serp_measurement",
+        "gsc_aggregate",
+        "analytics",
+        "receipt",
+        "manual"
+      ],
+      "default": "serp_measurement"
+    },
+    "proof_level": {
+      "type": "number",
+      "default": 0
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MEASURED"
+    }
+  },
+  "required": [
+    "query"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "QueryFanoutNode",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "root_query": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "node_type": {
+      "type": "string",
+      "enum": [
+        "root",
+        "reformulation",
+        "subquestion",
+        "entity",
+        "comparison"
+      ],
+      "default": "subquestion"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MODELED",
+        "MEASURED",
+        "PROVIDER",
+        "FIRST_PARTY"
+      ],
+      "default": "MODELED"
+    },
+    "depth": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "required": [
+    "label"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "name": "DomainCandidate",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "relevance": {
+      "type": "string"
+    },
+    "estimated_price": {
+      "type": "number"
+    },
+    "price_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "quoted",
+        "approval_requested",
+        "approved",
+        "purchased",
+        "rejected"
+      ],
+      "default": "identified"
+    },
+    "purchase_gated": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "domain"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "ConnectorStatus",
+  "type": "object",
+  "properties": {
+    "service": {
+      "type": "string"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "authorization_required",
+        "authorized",
+        "degraded",
+        "disabled"
+      ],
+      "default": "authorization_required"
+    },
+    "write_allowed": {
+      "type": "boolean",
+      "default": false
+    },
+    "provides": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "last_sync_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "note": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "service"
+  ]
+}

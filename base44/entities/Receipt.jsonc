@@ -1,0 +1,52 @@
+{
+  "name": "Receipt",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "measurement",
+        "ingestion",
+        "model_routing",
+        "gate_decision",
+        "approval",
+        "validation",
+        "financial"
+      ],
+      "default": "measurement"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "MEASURED"
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hash": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "summary"
+  ]
+}

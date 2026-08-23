@@ -1,0 +1,66 @@
+{
+  "name": "Experiment",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "hypothesis": {
+      "type": "string"
+    },
+    "treatment": {
+      "type": "string"
+    },
+    "method": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "awaiting_approval",
+        "running",
+        "reprocessing",
+        "concluded",
+        "abandoned"
+      ],
+      "default": "draft"
+    },
+    "mode": {
+      "type": "string",
+      "enum": [
+        "simulation",
+        "reality"
+      ],
+      "default": "simulation"
+    },
+    "target_queries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result_summary": {
+      "type": "string"
+    },
+    "lift_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

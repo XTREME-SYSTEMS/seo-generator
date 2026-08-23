@@ -1,0 +1,39 @@
+{
+  "name": "QueryFanoutEdge",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "from_label": {
+      "type": "string"
+    },
+    "to_label": {
+      "type": "string"
+    },
+    "relation": {
+      "type": "string",
+      "enum": [
+        "reformulation",
+        "subquestion",
+        "entity",
+        "comparison"
+      ],
+      "default": "subquestion"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MODELED",
+        "MEASURED",
+        "PROVIDER",
+        "FIRST_PARTY"
+      ],
+      "default": "MODELED"
+    }
+  },
+  "required": [
+    "from_label",
+    "to_label"
+  ]
+}

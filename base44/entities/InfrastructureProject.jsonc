@@ -1,0 +1,45 @@
+{
+  "name": "InfrastructureProject",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "environment": {
+      "type": "string",
+      "enum": [
+        "preview",
+        "non_production",
+        "production"
+      ],
+      "default": "non_production"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "provisioning",
+        "live",
+        "degraded",
+        "decommissioned"
+      ],
+      "default": "planned"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "gated": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

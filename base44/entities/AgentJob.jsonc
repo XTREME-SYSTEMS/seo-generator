@@ -1,0 +1,44 @@
+{
+  "name": "AgentJob",
+  "type": "object",
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "blocked_awaiting_approval",
+        "completed",
+        "failed"
+      ],
+      "default": "queued"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": true
+    },
+    "result": {
+      "type": "string"
+    },
+    "queued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "kind"
+  ]
+}

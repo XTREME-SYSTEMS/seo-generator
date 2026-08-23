@@ -1,0 +1,60 @@
+{
+  "name": "Approval",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "action_type": {
+      "type": "string",
+      "enum": [
+        "paid_media_mutation",
+        "domain_action",
+        "production_publish",
+        "connector_write",
+        "model_promotion",
+        "experiment_start"
+      ],
+      "default": "production_publish"
+    },
+    "description": {
+      "type": "string"
+    },
+    "risk": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "protected"
+      ],
+      "default": "protected"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "expired"
+      ],
+      "default": "pending"
+    },
+    "requested_by": {
+      "type": "string"
+    },
+    "decided_by": {
+      "type": "string"
+    },
+    "decided_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "blocked_reason": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "description"
+  ]
+}

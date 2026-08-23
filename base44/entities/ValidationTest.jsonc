@@ -1,0 +1,44 @@
+{
+  "name": "ValidationTest",
+  "type": "object",
+  "properties": {
+    "suite": {
+      "type": "string",
+      "enum": [
+        "provenance",
+        "tenancy",
+        "approval_gates",
+        "simulation_labeling",
+        "data_integrity",
+        "module_coverage",
+        "v2_contracts"
+      ],
+      "default": "provenance"
+    },
+    "name": {
+      "type": "string"
+    },
+    "requirement": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "blocked"
+      ],
+      "default": "fail"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

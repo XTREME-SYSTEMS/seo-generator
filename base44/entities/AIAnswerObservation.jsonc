@@ -1,0 +1,76 @@
+{
+  "name": "AIAnswerObservation",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "engine": {
+      "type": "string",
+      "enum": [
+        "google_ai_overview",
+        "chatgpt",
+        "perplexity",
+        "copilot",
+        "gemini",
+        "claude",
+        "other"
+      ],
+      "default": "other"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "cited": {
+      "type": "boolean",
+      "default": false
+    },
+    "citation_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "source_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": [
+        "positive",
+        "neutral",
+        "negative",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "competitors_cited": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "UNAUTHORIZED_UNKNOWN"
+      ],
+      "default": "UNAUTHORIZED_UNKNOWN"
+    },
+    "evidence_uri": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "prompt"
+  ]
+}

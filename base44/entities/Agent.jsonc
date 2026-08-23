@@ -1,0 +1,53 @@
+{
+  "name": "Agent",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "specialty": {
+      "type": "string"
+    },
+    "discipline": {
+      "type": "string",
+      "enum": [
+        "measurement",
+        "content",
+        "technical",
+        "authority",
+        "paid",
+        "ai_search",
+        "finance",
+        "governance"
+      ],
+      "default": "measurement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "running",
+        "blocked_awaiting_approval",
+        "disabled"
+      ],
+      "default": "idle"
+    },
+    "methods": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": true
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

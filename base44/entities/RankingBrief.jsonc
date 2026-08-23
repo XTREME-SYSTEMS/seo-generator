@@ -1,0 +1,41 @@
+{
+  "name": "RankingBrief",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "period": {
+      "type": "string"
+    },
+    "compiled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "query_count": {
+      "type": "number"
+    },
+    "measured_count": {
+      "type": "number"
+    },
+    "opportunity_count": {
+      "type": "number"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MODELED"
+    }
+  },
+  "required": [
+    "period"
+  ]
+}

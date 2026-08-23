@@ -1,0 +1,58 @@
+{
+  "name": "RunTelemetry",
+  "type": "object",
+  "properties": {
+    "run_type": {
+      "type": "string",
+      "enum": [
+        "serp_measurement",
+        "gsc_ingest",
+        "ads_ingest",
+        "analytics_ingest",
+        "opportunity_generation",
+        "router",
+        "research",
+        "validation",
+        "agent"
+      ],
+      "default": "validation"
+    },
+    "subsystem": {
+      "type": "string",
+      "enum": [
+        "system",
+        "search",
+        "model",
+        "experiment",
+        "financial"
+      ],
+      "default": "system"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "degraded",
+        "failed",
+        "skipped_unauthorized"
+      ],
+      "default": "ok"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration_ms": {
+      "type": "number"
+    },
+    "records_written": {
+      "type": "number"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "run_type"
+  ]
+}

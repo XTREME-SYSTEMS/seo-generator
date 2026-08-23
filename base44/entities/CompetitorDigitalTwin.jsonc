@@ -1,0 +1,48 @@
+{
+  "name": "CompetitorDigitalTwin",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "competitor_name": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "resistance_score": {
+      "type": "number"
+    },
+    "weakness": {
+      "type": "string"
+    },
+    "displacement_score": {
+      "type": "number"
+    },
+    "measured_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED"
+      ],
+      "default": "INFERRED"
+    },
+    "inferred_provenance": {
+      "type": "string",
+      "enum": [
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "INFERRED"
+    },
+    "snapshot_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "competitor_name"
+  ]
+}

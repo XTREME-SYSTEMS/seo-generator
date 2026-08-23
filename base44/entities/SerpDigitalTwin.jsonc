@@ -1,0 +1,44 @@
+{
+  "name": "SerpDigitalTwin",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "snapshot_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "result_composition": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "churn_score": {
+      "type": "number"
+    },
+    "movement_score": {
+      "type": "number"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MEASURED"
+    },
+    "diff_from_previous": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "query"
+  ]
+}

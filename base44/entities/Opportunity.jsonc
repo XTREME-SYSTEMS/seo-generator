@@ -1,0 +1,121 @@
+{
+  "name": "Opportunity",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "intent": {
+      "type": "string",
+      "enum": [
+        "transactional",
+        "commercial",
+        "informational",
+        "navigational",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "measured_rank": {
+      "type": "number"
+    },
+    "rank_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "volume": {
+      "type": "number"
+    },
+    "volume_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "difficulty": {
+      "type": "number"
+    },
+    "difficulty_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "cpc": {
+      "type": "number"
+    },
+    "cpc_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN"
+    },
+    "paid_equivalent_value": {
+      "type": "number"
+    },
+    "gate_one_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "gate_two_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "router_decision": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "fastpath",
+        "experiment",
+        "hold",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "fastpath_stage": {
+      "type": "string",
+      "enum": [
+        "none",
+        "queued",
+        "treated",
+        "reprocessing",
+        "page_one",
+        "top_5",
+        "top_3"
+      ],
+      "default": "none"
+    },
+    "stability_days": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "query"
+  ]
+}
