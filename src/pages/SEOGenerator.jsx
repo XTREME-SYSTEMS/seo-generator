@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Zap, Loader2, Filter, ExternalLink, Flame, Clock, ShieldAlert } from 'lucide-react';
+import { Zap, Loader2, Filter, ExternalLink, Flame, Clock, ShieldAlert, Plus } from 'lucide-react';
 import PageHeader from '@/components/kit/PageHeader';
 import Panel from '@/components/kit/Panel';
 import StatusPill from '@/components/kit/StatusPill';
@@ -7,6 +7,8 @@ import Provenance from '@/components/kit/Provenance';
 import EmptyState from '@/components/kit/EmptyState';
 import Loading from '@/components/kit/Loading';
 import { useGlobalData } from '@/lib/useTenantData';
+import { useTenant } from '@/lib/TenantContext';
+import OnboardingWizard from '@/components/seo/OnboardingWizard';
 import { base44 } from '@/api/base44Client';
 
 const SPEED_TONE = { instant: 'good', fast: 'good', medium: 'info', slow: 'idle' };
@@ -15,8 +17,10 @@ const CATEGORIES = ['technical', 'content', 'authority', 'ai_search', 'local', '
 
 export default function SEOGenerator() {
   const { rows, loading, reload } = useGlobalData('RankingMethod', '-discovered_at');
+  const { clients, setClientId, loading: tenantLoading } = useTenant();
   const [running, setRunning] = useState(false);
   const [runResult, setRunResult] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [filterCat, setFilterCat] = useState('all');
   const [filterSpeed, setFilterSpeed] = useState('all');
 
@@ -24,6 +28,22 @@ export default function SEOGenerator() {
     (filterCat === 'all' || m.category === filterCat) &&
     (filterSpeed === 'all' || m.speed_tier === filterSpeed)
   ), [rows, filterCat, filterSpeed]);
+
+  if (tenantLoading) return <Loading label="Loading" />;
+  if (clients.length === 0 || showOnboarding) {
+    return (
+      <OnboardingWizard
+        onDone={(res) => {
+          setClientId(res.client_id);
+          setShowOnboarding(false);
+          reload();
+          // Kick off the background generator + sprint for this new project (fire-and-forget)
+          base44.functions.invoke('GenerateRankingMethods', { industry: res.industry }).catch(() => {});
+          base44.functions.invoke('SprintPlanner', { client_id: res.client_id }).then(() => reload()).catch(() => {});
+        }}
+      />
+    );
+  }
 
   async function runGenerator() {
     setRunning(true);
@@ -46,14 +66,22 @@ export default function SEOGenerator() {
         title="Fastest SEO method discovery engine"
         description="A background generator that persistently mines the live web — Google's blog, the leaked NavBoost docs, Reddit, LinkedIn, X, and YouTube — for the absolute fastest ranking methods, tricks, and hacks for any business or industry. It runs autonomously every 6 hours and stores every novel discovery here."
         actions={
-          <button
-            onClick={runGenerator}
-            disabled={running}
-            className="inline-flex items-center gap-2 rounded bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-          >
-            {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
-            {running ? 'Researching live web…' : 'Run generator now'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="inline-flex items-center gap-2 rounded border border-border px-3.5 py-2 text-xs font-medium text-foreground transition hover:bg-accent"
+            >
+              <Plus className="h-3.5 w-3.5" /> New project
+            </button>
+            <button
+              onClick={runGenerator}
+              disabled={running}
+              className="inline-flex items-center gap-2 rounded bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+            >
+              {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+              {running ? 'Researching live web…' : 'Run generator now'}
+            </button>
+          </div>
         }
       />
 
