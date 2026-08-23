@@ -22,6 +22,7 @@ import AIVisibility from '@/pages/AIVisibility';
 import CompetitiveParity from '@/pages/CompetitiveParity';
 import TechnologyRadar from '@/pages/TechnologyRadar';
 import Research from '@/pages/Research';
+import SEOGenerator from '@/pages/SEOGenerator';
 import ModelLab from '@/pages/ModelLab';
 import AgentControl from '@/pages/AgentControl';
 import Domains from '@/pages/Domains';
@@ -81,6 +82,7 @@ const AuthenticatedApp = () => {
           <Route path="/competitive-parity" element={<CompetitiveParity />} />
           <Route path="/technology-radar" element={<TechnologyRadar />} />
           <Route path="/research" element={<Research />} />
+          <Route path="/seo-generator" element={<SEOGenerator />} />
           <Route path="/models" element={<ModelLab />} />
           <Route path="/agents" element={<AgentControl />} />
           <Route path="/domains" element={<Domains />} />

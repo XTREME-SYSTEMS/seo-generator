@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "Autonomous SEO Generator",
+  "description": "Persistently mines the live web \u2014 Google's blog, the leaked NavBoost docs, Reddit, LinkedIn, X, and YouTube \u2014 for the absolute fastest SEO ranking methods, tricks, and hacks for any business or industry. Runs autonomously every 6 hours and stores every novel discovery as a RankingMethod.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "autonomous_seo_generator",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "GenerateRankingMethods",
+            "args": {
+              "industry": "any"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Research & generate methods",
+            "description": "Live web research for fastest SEO methods"
+          }
+        }
+      }
+    ]
+  }
+}

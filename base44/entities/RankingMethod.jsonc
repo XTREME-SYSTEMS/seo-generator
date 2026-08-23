@@ -1,0 +1,102 @@
+{
+  "name": "RankingMethod",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string",
+      "description": "Null = universal method applicable to any business/industry"
+    },
+    "name": {
+      "type": "string",
+      "description": "Short name of the SEO ranking method, trick, or hack"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "technical",
+        "content",
+        "authority",
+        "ai_search",
+        "local",
+        "programmatic",
+        "ux",
+        "link_building",
+        "brand",
+        "social",
+        "measurement"
+      ],
+      "default": "content"
+    },
+    "speed_tier": {
+      "type": "string",
+      "enum": [
+        "instant",
+        "fast",
+        "medium",
+        "slow"
+      ],
+      "default": "fast",
+      "description": "How quickly the method can impact rankings"
+    },
+    "industry_scope": {
+      "type": "string",
+      "default": "all",
+      "description": "all, or comma-separated industries/sub-industries this targets"
+    },
+    "mechanism": {
+      "type": "string",
+      "description": "The Google algorithm signal or system this method exploits (e.g. NavBoost clickstream, topical authority, E-E-A-T)"
+    },
+    "implementation_steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_impact": {
+      "type": "string"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "safe",
+        "moderate",
+        "aggressive",
+        "black_hat"
+      ],
+      "default": "safe"
+    },
+    "source": {
+      "type": "string",
+      "description": "Where the method was found (reddit, linkedin, google_leak, youtube, google_blog, etc)"
+    },
+    "source_url": {
+      "type": "string"
+    },
+    "proof_level": {
+      "type": "number",
+      "default": 0,
+      "description": "0=modeled/theory, 7=confirmed across multiple live deployments"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "discovered",
+        "testing",
+        "validated",
+        "deprecated"
+      ],
+      "default": "discovered"
+    },
+    "discovered_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator_run_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

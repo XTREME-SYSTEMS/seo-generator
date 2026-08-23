@@ -1,6 +1,6 @@
 import {
   Home, Building2, CircleDollarSign, Gauge, FlaskConical, LineChart, WalletCards, Trophy,
-  ShieldCheck, Radar, Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot,
+  ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings,
 } from 'lucide-react';
 
@@ -33,6 +33,7 @@ export const NAV_GROUPS = [
       { to: '/competitive-parity', label: 'Competitive Parity', icon: GitCompareArrows },
       { to: '/technology-radar', label: 'Technology Radar', icon: Cpu },
       { to: '/research', label: 'Research Lab', icon: Search },
+      { to: '/seo-generator', label: 'SEO Generator', icon: Zap },
       { to: '/models', label: 'Model Lab', icon: BrainCircuit },
       { to: '/agents', label: 'Agent Control', icon: Bot },
     ],
