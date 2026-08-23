@@ -1,33 +1,44 @@
 import React, { useState, useMemo } from 'react';
-import { Zap, Loader2, Filter, ExternalLink, Flame, Clock, ShieldAlert, Plus } from 'lucide-react';
+import { Zap, Loader2, Plus, Clock, ShieldAlert, ExternalLink, Flame, TrendingUp, Layers } from 'lucide-react';
 import PageHeader from '@/components/kit/PageHeader';
-import Panel from '@/components/kit/Panel';
 import StatusPill from '@/components/kit/StatusPill';
-import Provenance from '@/components/kit/Provenance';
 import EmptyState from '@/components/kit/EmptyState';
 import Loading from '@/components/kit/Loading';
 import { useGlobalData } from '@/lib/useTenantData';
 import { useTenant } from '@/lib/TenantContext';
 import OnboardingWizard from '@/components/seo/OnboardingWizard';
 import { base44 } from '@/api/base44Client';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const SPEED_TONE = { instant: 'good', fast: 'good', medium: 'info', slow: 'idle' };
 const RISK_TONE = { safe: 'good', moderate: 'info', aggressive: 'warn', black_hat: 'bad' };
-const CATEGORIES = ['technical', 'content', 'authority', 'ai_search', 'local', 'programmatic', 'ux', 'link_building', 'brand', 'social', 'measurement'];
+
+function StatCard({ icon: Icon, label, value, sub }) {
+  return (
+    <div className="rounded-lg border border-border bg-card hairline p-4">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" />
+        <span className="font-mono text-[10px] uppercase tracking-wider">{label}</span>
+      </div>
+      <div className="mt-2 font-heading text-2xl font-semibold text-foreground tabular">{value}</div>
+      {sub && <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>}
+    </div>
+  );
+}
 
 export default function SEOGenerator() {
   const { rows, loading, reload } = useGlobalData('RankingMethod', '-discovered_at');
   const { clients, setClientId, loading: tenantLoading } = useTenant();
   const [running, setRunning] = useState(false);
-  const [runResult, setRunResult] = useState(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [filterCat, setFilterCat] = useState('all');
-  const [filterSpeed, setFilterSpeed] = useState('all');
+  const [selected, setSelected] = useState(null);
 
-  const filtered = useMemo(() => rows.filter((m) =>
-    (filterCat === 'all' || m.category === filterCat) &&
-    (filterSpeed === 'all' || m.speed_tier === filterSpeed)
-  ), [rows, filterCat, filterSpeed]);
+  const stats = useMemo(() => {
+    const categories = new Set(rows.map((r) => r.category).filter(Boolean));
+    const fast = rows.filter((r) => r.speed_tier === 'instant' || r.speed_tier === 'fast').length;
+    const lastRun = rows[0]?.discovered_at;
+    return { total: rows.length, categories: categories.size, fast, lastRun };
+  }, [rows]);
 
   if (tenantLoading) return <Loading label="Loading" />;
   if (clients.length === 0 || showOnboarding) {
@@ -37,7 +48,6 @@ export default function SEOGenerator() {
           setClientId(res.client_id);
           setShowOnboarding(false);
           reload();
-          // Kick off the background generator + sprint for this new project (fire-and-forget)
           base44.functions.invoke('GenerateRankingMethods', { industry: res.industry }).catch(() => {});
           base44.functions.invoke('SprintPlanner', { client_id: res.client_id }).then(() => reload()).catch(() => {});
         }}
@@ -47,13 +57,10 @@ export default function SEOGenerator() {
 
   async function runGenerator() {
     setRunning(true);
-    setRunResult(null);
     try {
-      const res = await base44.functions.invoke('GenerateRankingMethods', { industry: 'any' });
-      setRunResult(res.data);
+      await base44.functions.invoke('GenerateRankingMethods', { industry: 'any' });
       reload();
-    } catch (e) {
-      setRunResult({ error: e.message });
+    } catch {
     } finally {
       setRunning(false);
     }
@@ -62,86 +69,106 @@ export default function SEOGenerator() {
   return (
     <div>
       <PageHeader
-        eyebrow="Autonomous SEO Generator"
-        title="Fastest SEO method discovery engine"
-        description="A background generator that persistently mines the live web — Google's blog, the leaked NavBoost docs, Reddit, LinkedIn, X, and YouTube — for the absolute fastest ranking methods, tricks, and hacks for any business or industry. It runs autonomously every 6 hours and stores every novel discovery here."
+        eyebrow="Autonomous SEO Engine"
+        title="SEO Generator"
+        description="Mines the live web every 6 hours for the fastest ranking methods. Runs autonomously in the background."
         actions={
           <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowOnboarding(true)}
-              className="inline-flex items-center gap-2 rounded border border-border px-3.5 py-2 text-xs font-medium text-foreground transition hover:bg-accent"
-            >
+            <button onClick={() => setShowOnboarding(true)} className="inline-flex items-center gap-2 rounded border border-border px-3.5 py-2 text-xs font-medium text-foreground transition hover:bg-accent">
               <Plus className="h-3.5 w-3.5" /> New project
             </button>
-            <button
-              onClick={runGenerator}
-              disabled={running}
-              className="inline-flex items-center gap-2 rounded bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-            >
+            <button onClick={runGenerator} disabled={running} className="inline-flex items-center gap-2 rounded bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50">
               {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
-              {running ? 'Researching live web…' : 'Run generator now'}
+              {running ? 'Researching…' : 'Run now'}
             </button>
           </div>
         }
       />
 
-      {runResult && (
-        <div className={`mb-4 rounded border px-4 py-3 text-xs ${runResult.error ? 'border-destructive/40 bg-destructive/10 text-destructive' : 'border-primary/40 bg-primary/10 text-foreground'}`}>
-          {runResult.error ? `Error: ${runResult.error}` : `Run ${runResult.run_id} complete — ${runResult.created} new method${runResult.created === 1 ? '' : 's'} discovered and stored.`}
-        </div>
-      )}
-
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-1.5 text-muted-foreground"><Filter className="h-3.5 w-3.5" /><span className="font-mono text-[10px] uppercase tracking-wider">Filters</span></div>
-        <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)} className="rounded border border-input bg-background px-2 py-1 text-xs">
-          <option value="all">All categories</option>
-          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-        <select value={filterSpeed} onChange={(e) => setFilterSpeed(e.target.value)} className="rounded border border-input bg-background px-2 py-1 text-xs">
-          <option value="all">All speeds</option>
-          <option value="instant">Instant</option>
-          <option value="fast">Fast</option>
-          <option value="medium">Medium</option>
-          <option value="slow">Slow</option>
-        </select>
-        <span className="ml-auto font-mono text-[10px] text-muted-foreground">{filtered.length} methods</span>
+      <div className="mb-5 flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+        </span>
+        <span className="text-xs font-medium text-foreground">Engine running</span>
+        <span className="text-xs text-muted-foreground">· autonomous · next scan in 6h cycle</span>
       </div>
 
-      {loading ? <Loading label="Loading discovered methods" /> : filtered.length === 0 ? (
-        <EmptyState icon={Zap} title="No methods yet" description="Run the generator to mine the live web for the fastest SEO ranking methods." />
+      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard icon={Zap} label="Methods discovered" value={stats.total} />
+        <StatCard icon={Layers} label="Categories" value={stats.categories} />
+        <StatCard icon={TrendingUp} label="Instant / fast" value={stats.fast} sub="high-velocity methods" />
+        <StatCard icon={Clock} label="Last discovery" value={stats.lastRun ? new Date(stats.lastRun).toLocaleDateString() : '—'} />
+      </div>
+
+      {loading ? <Loading label="Loading methods" /> : rows.length === 0 ? (
+        <EmptyState icon={Zap} title="No methods yet" description="The engine runs every 6 hours. Click Run now to start immediately." />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {filtered.map((m) => (
-            <Panel key={m.id}>
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="text-sm font-medium text-foreground">{m.name}</h3>
-                  <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                    <StatusPill tone={SPEED_TONE[m.speed_tier]}><Clock className="mr-1 h-2.5 w-2.5" />{m.speed_tier}</StatusPill>
-                    <StatusPill tone="info">{m.category}</StatusPill>
-                    <StatusPill tone={RISK_TONE[m.risk_level]}><ShieldAlert className="mr-1 h-2.5 w-2.5" />{m.risk_level}</StatusPill>
-                  </div>
-                </div>
-              </div>
-              {m.mechanism && (
-                <p className="mt-3 text-xs leading-relaxed text-muted-foreground"><span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">Mechanism </span>{m.mechanism}</p>
-              )}
-              {m.implementation_steps && m.implementation_steps.length > 0 && (
-                <ol className="mt-3 space-y-1.5">
-                  {m.implementation_steps.map((s, i) => (
-                    <li key={i} className="flex gap-2 text-xs text-foreground/90"><span className="font-mono text-[10px] text-primary">{String(i + 1).padStart(2, '0')}</span><span className="leading-relaxed">{s}</span></li>
-                  ))}
-                </ol>
-              )}
-              {m.expected_impact && <p className="mt-3 text-xs text-muted-foreground"><Flame className="mr-1 inline h-3 w-3 text-primary" />{m.expected_impact}</p>}
-              <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-2.5">
-                <div className="flex items-center gap-2"><Provenance value={m.provenance || 'INFERRED'} /><span className="font-mono text-[10px] text-muted-foreground">{m.source}</span></div>
-                {m.source_url && <a href={m.source_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[10px] text-primary hover:underline">source <ExternalLink className="h-2.5 w-2.5" /></a>}
-              </div>
-            </Panel>
-          ))}
+        <div className="overflow-hidden rounded-lg border border-border bg-card hairline">
+          <table className="w-full">
+            <thead className="border-b border-border bg-muted/30">
+              <tr className="text-left">
+                <th className="px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Method</th>
+                <th className="px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Category</th>
+                <th className="px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Speed</th>
+                <th className="px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Risk</th>
+                <th className="px-4 py-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Proof</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {rows.map((m) => (
+                <tr key={m.id} onClick={() => setSelected(m)} className="cursor-pointer transition hover:bg-accent/50">
+                  <td className="px-4 py-3 text-sm font-medium text-foreground">{m.name}</td>
+                  <td className="px-4 py-3"><StatusPill tone="info">{m.category}</StatusPill></td>
+                  <td className="px-4 py-3"><StatusPill tone={SPEED_TONE[m.speed_tier]}>{m.speed_tier}</StatusPill></td>
+                  <td className="px-4 py-3"><StatusPill tone={RISK_TONE[m.risk_level]}>{m.risk_level}</StatusPill></td>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">L{m.proof_level ?? 0}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
+
+      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{selected?.name}</DialogTitle>
+          </DialogHeader>
+          {selected && (
+            <div className="space-y-4">
+              <div className="flex flex-wrap gap-1.5">
+                <StatusPill tone={SPEED_TONE[selected.speed_tier]}><Clock className="mr-1 h-2.5 w-2.5" />{selected.speed_tier}</StatusPill>
+                <StatusPill tone="info">{selected.category}</StatusPill>
+                <StatusPill tone={RISK_TONE[selected.risk_level]}><ShieldAlert className="mr-1 h-2.5 w-2.5" />{selected.risk_level}</StatusPill>
+              </div>
+              {selected.mechanism && (
+                <div>
+                  <p className="mb-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Mechanism</p>
+                  <p className="text-sm leading-relaxed text-foreground/90">{selected.mechanism}</p>
+                </div>
+              )}
+              {selected.implementation_steps?.length > 0 && (
+                <div>
+                  <p className="mb-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Implementation</p>
+                  <ol className="space-y-1.5">
+                    {selected.implementation_steps.map((s, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-foreground/90"><span className="font-mono text-[10px] text-primary">{String(i + 1).padStart(2, '0')}</span><span className="leading-relaxed">{s}</span></li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {selected.expected_impact && (
+                <div className="flex items-start gap-1.5"><Flame className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" /><p className="text-sm text-foreground/90">{selected.expected_impact}</p></div>
+              )}
+              <div className="flex items-center justify-between border-t border-border pt-3">
+                <span className="font-mono text-[10px] text-muted-foreground">Source: {selected.source} · Proof level {selected.proof_level ?? 0}</span>
+                {selected.source_url && <a href={selected.source_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline">Open source <ExternalLink className="h-3 w-3" /></a>}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
