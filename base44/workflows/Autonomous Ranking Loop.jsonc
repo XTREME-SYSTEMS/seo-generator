@@ -1,0 +1,103 @@
+{
+  "name": "Autonomous Ranking Loop",
+  "description": "Daily autonomous loop: discover new ranking methods, monitor Google algorithm updates, plan a 7-day sprint of gated method applications, then run the attribution feedback loop to promote or demote methods based on concluded experiments. Closes the measure\u2192prioritize\u2192execute\u2192re-measure cycle.",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "autonomous_ranking_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "discover": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "GenerateRankingMethods",
+            "args": {
+              "industry": "any"
+            }
+          },
+          "then": "monitor_updates",
+          "x-base44": {
+            "title": "Discover ranking methods",
+            "description": "Live-web research for novel SEO tactics"
+          }
+        }
+      },
+      {
+        "monitor_updates": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AlgorithmUpdateMonitor",
+            "args": {}
+          },
+          "then": "plan_sprint",
+          "x-base44": {
+            "title": "Monitor algorithm updates",
+            "description": "Tag at-risk and boosted methods"
+          }
+        }
+      },
+      {
+        "plan_sprint": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SprintPlanner",
+            "args": {}
+          },
+          "then": "attribute",
+          "x-base44": {
+            "title": "Plan 7-day sprint",
+            "description": "Queue fastest safe methods as gated jobs"
+          }
+        }
+      },
+      {
+        "attribute": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "MethodAttribution",
+            "args": {}
+          },
+          "then": "validate",
+          "x-base44": {
+            "title": "Run attribution loop",
+            "description": "Promote/demote methods from experiment results"
+          }
+        }
+      },
+      {
+        "validate": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ValidateSystem",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Validate system",
+            "description": "Run full validation suite"
+          }
+        }
+      }
+    ]
+  }
+}

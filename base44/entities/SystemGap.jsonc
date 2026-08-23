@@ -1,0 +1,65 @@
+{
+  "name": "SystemGap",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "measurement",
+        "intelligence",
+        "execution",
+        "orchestration",
+        "validation",
+        "speed",
+        "infrastructure",
+        "connectors"
+      ],
+      "default": "measurement"
+    },
+    "gap": {
+      "type": "string",
+      "description": "What is missing"
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "What to build to close the gap"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "high"
+    },
+    "phase": {
+      "type": "number",
+      "default": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "logged",
+        "implementing",
+        "implemented",
+        "needs_credentials",
+        "validated",
+        "deferred"
+      ],
+      "default": "logged"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "logged_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "gap",
+    "recommendation"
+  ]
+}
