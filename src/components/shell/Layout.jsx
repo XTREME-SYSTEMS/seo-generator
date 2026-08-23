@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Menu, X, ShieldAlert } from 'lucide-react';
 import Sidebar from './Sidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { TenantProvider, useTenant } from '@/lib/TenantContext';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,10 @@ function TopBar({ onOpen }) {
           <span className="truncate">Shadow mode · no paid-media or production mutations · {client ? client.name : 'no tenant'}</span>
         </div>
       </div>
-      <Button variant="ghost" size="sm" className="shrink-0 text-xs text-muted-foreground" onClick={() => base44.auth.logout()}>Sign out</Button>
+      <div className="flex shrink-0 items-center gap-1">
+        <ThemeToggle />
+        <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => base44.auth.logout()}>Sign out</Button>
+      </div>
     </header>
   );
 }
