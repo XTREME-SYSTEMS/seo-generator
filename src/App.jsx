@@ -26,6 +26,8 @@ import SEOGenerator from '@/pages/SEOGenerator';
 import ModelLab from '@/pages/ModelLab';
 import AgentControl from '@/pages/AgentControl';
 import Domains from '@/pages/Domains';
+import Indexing from '@/pages/Indexing';
+import VercelDomains from '@/pages/VercelDomains';
 import Infrastructure from '@/pages/Infrastructure';
 import Connectors from '@/pages/Connectors';
 import SystemHealth from '@/pages/SystemHealth';
@@ -86,6 +88,8 @@ const AuthenticatedApp = () => {
           <Route path="/models" element={<ModelLab />} />
           <Route path="/agents" element={<AgentControl />} />
           <Route path="/domains" element={<Domains />} />
+          <Route path="/indexing" element={<Indexing />} />
+          <Route path="/domain-manager" element={<VercelDomains />} />
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/connectors" element={<Connectors />} />
           <Route path="/system-health" element={<SystemHealth />} />

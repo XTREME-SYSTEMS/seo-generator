@@ -2,6 +2,7 @@ import {
   Home, Building2, CircleDollarSign, Gauge, FlaskConical, LineChart, WalletCards, Trophy,
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings,
+  FileCheck2, Server,
 } from 'lucide-react';
 
 // Route paths + group structure mirror the Vite shell (src/components/Shell.tsx) exactly.
@@ -42,6 +43,8 @@ export const NAV_GROUPS = [
     label: 'Platform',
     items: [
       { to: '/domains', label: 'Domains', icon: Globe2 },
+      { to: '/indexing', label: 'Indexing', icon: FileCheck2 },
+      { to: '/domain-manager', label: 'Domain Manager', icon: Server },
       { to: '/infrastructure', label: 'Infrastructure', icon: Network },
       { to: '/connectors', label: 'Connectors', icon: Cable },
       { to: '/system-health', label: 'System Health', icon: Activity },
