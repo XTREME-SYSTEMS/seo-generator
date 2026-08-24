@@ -1,7 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.40';
 import { secrets } from 'base44:runtime';
 
-const BROWSERLESS_BASE = 'https://production-sfo.browserless.io';
+// CloudBrowser MCP gateway — verified working endpoint
+const MCP_URL = 'https://cloud-browser.base44.app/api/functions/mcpTools';
+
+// Domains to exclude from organic result parsing
+const NOISE_DOMAINS = new Set([
+  'google.com', 'googleapis.com', 'gstatic.com', 'googleadservices.com',
+  'googlesyndication.com', 'google-analytics.com', 'doubleclick.net',
+  'youtube.com', 'gmpg.org', 'w3.org', 'schema.org', 'bing.com',
+  'webmasterworld.com', 'support.google.com', 'policies.google.com',
+  'maps.google.com', 'accounts.google.com', 'play.google.com',
+]);
 
 function extractDomain(url) {
   try {
@@ -19,30 +29,46 @@ function domainsMatch(a, b) {
   return false;
 }
 
-function parseGoogleSerp(html) {
-  // Google wraps organic result URLs in /url?q= redirects.
-  // Extract all of them in order — position = order of appearance.
-  const urlPattern = /\/url\?q=(https?:\/\/[^&"<>]+)/g;
+// Parse text content of a Google SERP to find organic result domains in order
+function parseGoogleSerpText(text) {
+  // Match domain-like patterns: "example.com", "www.example.com", "sub.example.co.uk"
+  // Google SERP text shows visible URLs like "www.example.com" or "example.com/path"
+  const domainPattern = /(?:https?:\/\/)?(?:www\.)?([a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.[a-z]{2,})/gi;
   const results = [];
   const seen = new Set();
   let match;
-  while ((match = urlPattern.exec(html)) !== null) {
-    let url;
-    try { url = decodeURIComponent(match[1]); } catch { url = match[1]; }
-    const domain = extractDomain(url);
-    if (!domain || domain.includes('google.')) continue;
+  while ((match = domainPattern.exec(text)) !== null) {
+    let domain = match[1].toLowerCase();
+    // Extract the main domain (last two parts for most TLDs)
+    const parts = domain.split('.');
+    // Handle common multi-part TLDs
+    if (parts.length >= 3 && ['co', 'com', 'org', 'net'].includes(parts[parts.length - 2])) {
+      domain = parts.slice(-3).join('.');
+    } else if (parts.length >= 2) {
+      domain = parts.slice(-2).join('.');
+    }
+    // Skip noise domains
+    if (NOISE_DOMAINS.has(domain)) continue;
+    if (domain.includes('google.')) continue;
     if (seen.has(domain)) continue;
     seen.add(domain);
-    results.push({ url, domain, position: results.length + 1 });
+    results.push({ domain, position: results.length + 1 });
   }
   return results;
 }
 
-function detectAiOverview(html) {
-  // Google AI Overviews render in containers with specific markers.
-  // Check for common signals without being too fragile.
-  const markers = ['id="overview"', 'data-async-trigger="overview"', 'class="LGOjhe"', 'aria-level="2"'];
-  return markers.some(m => html.includes(m));
+function detectAiOverviewText(text) {
+  const markers = ['AI Overview', 'AI-generated', 'Generated with AI', 'Overview'];
+  return markers.some(m => text.includes(m));
+}
+
+async function callMcp(apiKey, tool, params) {
+  const res = await fetch(MCP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+    body: JSON.stringify({ tool, params }),
+  });
+  return res;
 }
 
 export default async function(req) {
@@ -72,47 +98,84 @@ export default async function(req) {
 
     const clientDomain = extractDomain(client.domain) || client.domain.replace(/^https?:\/\//, '').replace(/^www\./, '').toLowerCase();
 
-    const apiKey = secrets.get('BROWSERLESS_API_KEY');
-    if (!apiKey) return Response.json({ error: 'BROWSERLESS_API_KEY not set' }, { status: 500 });
+    const apiKey = secrets.get('CLOUDBROWSER_API_KEY');
+    if (!apiKey) return Response.json({ error: 'CLOUDBROWSER_API_KEY not set' }, { status: 500 });
 
     const now = new Date().toISOString();
     const results = [];
     let measured = 0;
     let errors = 0;
 
+    // Start a single browser session for the entire batch
+    let sessionId = null;
+    try {
+      const startRes = await callMcp(apiKey, 'browser_start', {});
+      if (!startRes.ok) {
+        const errText = await startRes.text().catch(() => '');
+        return Response.json({ error: `CloudBrowser start failed: ${startRes.status} ${errText.slice(0, 100)}` }, { status: 500 });
+      }
+      const startData = await startRes.json();
+      sessionId = startData.session_id;
+      if (!sessionId) {
+        return Response.json({ error: 'CloudBrowser returned no session_id' }, { status: 500 });
+      }
+    } catch (err) {
+      return Response.json({ error: `CloudBrowser connection failed: ${err.message}` }, { status: 500 });
+    }
+
     for (const q of batch) {
       try {
         const serpUrl = `https://www.google.com/search?q=${encodeURIComponent(q)}&num=100&gl=us&hl=en`;
 
-        const contentRes = await fetch(`${BROWSERLESS_BASE}/content?token=${apiKey}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            url: serpUrl,
-            gotoOptions: { waitUntil: 'domcontentloaded', timeout: 25000 },
-            rejectResourceTypes: ['image', 'media', 'font'],
-            rejectRequestPattern: ['doubleclick.net', 'googlesyndication', 'googleadservices', 'google-analytics'],
-          })
-        });
+        // Navigate to the SERP
+        const navRes = await callMcp(apiKey, 'browser_navigate', { session_id: sessionId, url: serpUrl });
 
-        if (!contentRes.ok) {
-          const errText = await contentRes.text().catch(() => '');
+        if (!navRes.ok) {
           errors++;
-          results.push({ query: q, error: `Browserless ${contentRes.status}: ${errText.slice(0, 150)}` });
+          results.push({ query: q, error: `Navigate failed: ${navRes.status}` });
           continue;
         }
 
-        const html = await contentRes.text();
+        const navData = await navRes.json();
 
-        // Check for captcha / block
-        if (html.includes('unusual traffic') || html.includes('captcha')) {
+        // Check for Google captcha/block — Google redirects to /sorry/
+        if (navData.url?.includes('/sorry/') || navData.url?.includes('captcha')) {
           errors++;
           results.push({ query: q, error: 'Google captcha/block detected', rank: null });
           continue;
         }
 
-        const organic = parseGoogleSerp(html);
-        const aiOverview = detectAiOverview(html);
+        // Wait for page to fully render
+        await new Promise(r => setTimeout(r, 2500));
+
+        // Extract page text content
+        const extractRes = await callMcp(apiKey, 'browser_extract', { session_id: sessionId, selector: 'body' });
+
+        if (!extractRes.ok) {
+          errors++;
+          results.push({ query: q, error: `Extract failed: ${extractRes.status}` });
+          continue;
+        }
+
+        const extractData = await extractRes.json();
+        const text = extractData.data || '';
+
+        if (!text || text.length < 100) {
+          errors++;
+          results.push({ query: q, error: 'Empty page content' });
+          continue;
+        }
+
+        // Check for captcha in text content
+        if (text.includes('unusual traffic') || text.includes('captcha') || text.includes('detected unusual traffic')) {
+          errors++;
+          results.push({ query: q, error: 'Google captcha/block detected', rank: null });
+          continue;
+        }
+
+        // Parse the text content for organic results
+        const organic = parseGoogleSerpText(text);
+        const aiOverview = detectAiOverviewText(text);
 
         // Find client's position
         const clientHit = organic.find(r => domainsMatch(r.domain, clientDomain));
@@ -126,7 +189,7 @@ export default async function(req) {
           source: 'cloudbrowser_control',
           provenance: 'MEASURED',
           rank: rank || 0,
-          url: clientHit ? clientHit.url : '',
+          url: clientHit ? `https://${clientHit.domain}` : '',
           features: aiOverview ? ['ai_overview', ...organic.slice(0, 10).map(r => r.domain)] : organic.slice(0, 10).map(r => r.domain),
         });
 
@@ -150,7 +213,7 @@ export default async function(req) {
 
         // Rate limit between requests to avoid Google blocks
         if (batch.length > 1) {
-          await new Promise(r => setTimeout(r, 1200));
+          await new Promise(r => setTimeout(r, 1500));
         }
       } catch (err) {
         errors++;
@@ -162,7 +225,7 @@ export default async function(req) {
     await base44.asServiceRole.entities.Receipt.create({
       client_id,
       kind: 'measurement',
-      summary: `Cloud browser SERP measurement: ${measured}/${batch.length} queries measured`,
+      summary: `CloudBrowser SERP measurement: ${measured}/${batch.length} queries measured`,
       detail: JSON.stringify(results.map(r => ({ query: r.query, rank: r.rank, error: r.error }))),
       source: 'cloudbrowser_control',
       provenance: 'MEASURED',
