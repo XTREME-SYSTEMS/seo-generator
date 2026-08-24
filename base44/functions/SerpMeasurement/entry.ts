@@ -11,6 +11,8 @@ const NOISE_DOMAINS = new Set([
   'youtube.com', 'gmpg.org', 'w3.org', 'schema.org', 'bing.com',
   'webmasterworld.com', 'support.google.com', 'policies.google.com',
   'maps.google.com', 'accounts.google.com', 'play.google.com',
+  'microsoft.com', 'msn.com', 'live.com', 'bing.net', 'microsoftonline.com',
+  'duckduckgo.com', 'wikipedia.org', 'britannica.com',
 ]);
 
 function extractDomain(url) {
@@ -106,10 +108,10 @@ export default async function(req) {
     let measured = 0;
     let errors = 0;
 
-    // Start a single browser session for the entire batch
+    // Start a single browser session for the entire batch — captcha_solver enabled
     let sessionId = null;
     try {
-      const startRes = await callMcp(apiKey, 'browser_start', {});
+      const startRes = await callMcp(apiKey, 'browser_start', { captcha_solver: true });
       if (!startRes.ok) {
         const errText = await startRes.text().catch(() => '');
         return Response.json({ error: `CloudBrowser start failed: ${startRes.status} ${errText.slice(0, 100)}` }, { status: 500 });
@@ -125,69 +127,78 @@ export default async function(req) {
 
     for (const q of batch) {
       try {
-        const serpUrl = `https://www.google.com/search?q=${encodeURIComponent(q)}&num=100&gl=us&hl=en`;
+        // Step 1: Try Google with captcha_solver enabled
+        const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(q)}&num=100&gl=us&hl=en`;
+        const navRes = await callMcp(apiKey, 'browser_navigate', { session_id: sessionId, url: googleUrl, captcha_solver: true });
 
-        // Navigate to the SERP
-        const navRes = await callMcp(apiKey, 'browser_navigate', { session_id: sessionId, url: serpUrl });
+        let engine = 'google';
+        let serpText = '';
 
-        if (!navRes.ok) {
-          errors++;
-          results.push({ query: q, error: `Navigate failed: ${navRes.status}` });
-          continue;
+        if (navRes.ok) {
+          const navData = await navRes.json();
+          const isBlocked = navData.url?.includes('/sorry/') || navData.url?.includes('captcha');
+
+          if (!isBlocked) {
+            // Wait for page to render, then extract text
+            await new Promise(r => setTimeout(r, 2500));
+            const extractRes = await callMcp(apiKey, 'browser_extract', { session_id: sessionId, selector: 'body' });
+            if (extractRes.ok) {
+              const extractData = await extractRes.json();
+              serpText = extractData.data || '';
+            }
+            // Check for captcha in text content
+            if (serpText.includes('unusual traffic') || serpText.includes('captcha')) {
+              serpText = '';
+            }
+          }
         }
 
-        const navData = await navRes.json();
+        // Step 2: Fall back to Bing if Google is blocked or empty
+        if (!serpText || serpText.length < 200) {
+          engine = 'bing';
+          const bingUrl = `https://www.bing.com/search?q=${encodeURIComponent(q)}&count=50&setlang=en-US&cc=US&form=QBLH`;
+          const bingNavRes = await callMcp(apiKey, 'browser_navigate', { session_id: sessionId, url: bingUrl, captcha_solver: true });
 
-        // Check for Google captcha/block — Google redirects to /sorry/
-        if (navData.url?.includes('/sorry/') || navData.url?.includes('captcha')) {
-          errors++;
-          results.push({ query: q, error: 'Google captcha/block detected', rank: null });
-          continue;
+          if (!bingNavRes.ok) {
+            errors++;
+            results.push({ query: q, error: `Bing navigate failed: ${bingNavRes.status}` });
+            continue;
+          }
+
+          await new Promise(r => setTimeout(r, 3000));
+          const bingExtractRes = await callMcp(apiKey, 'browser_extract', { session_id: sessionId, selector: 'body' });
+          if (!bingExtractRes.ok) {
+            errors++;
+            results.push({ query: q, error: `Bing extract failed: ${bingExtractRes.status}` });
+            continue;
+          }
+          serpText = (await bingExtractRes.json()).data || '';
         }
 
-        // Wait for page to fully render
-        await new Promise(r => setTimeout(r, 2500));
-
-        // Extract page text content
-        const extractRes = await callMcp(apiKey, 'browser_extract', { session_id: sessionId, selector: 'body' });
-
-        if (!extractRes.ok) {
+        if (!serpText || serpText.length < 100) {
           errors++;
-          results.push({ query: q, error: `Extract failed: ${extractRes.status}` });
-          continue;
-        }
-
-        const extractData = await extractRes.json();
-        const text = extractData.data || '';
-
-        if (!text || text.length < 100) {
-          errors++;
-          results.push({ query: q, error: 'Empty page content' });
-          continue;
-        }
-
-        // Check for captcha in text content
-        if (text.includes('unusual traffic') || text.includes('captcha') || text.includes('detected unusual traffic')) {
-          errors++;
-          results.push({ query: q, error: 'Google captcha/block detected', rank: null });
+          results.push({ query: q, error: 'Empty page content from both engines' });
           continue;
         }
 
         // Parse the text content for organic results
-        const organic = parseGoogleSerpText(text);
-        const aiOverview = detectAiOverviewText(text);
+        const organic = parseGoogleSerpText(serpText);
+        const aiOverview = detectAiOverviewText(serpText);
 
         // Find client's position
         const clientHit = organic.find(r => domainsMatch(r.domain, clientDomain));
         const rank = clientHit ? clientHit.position : null;
 
-        // Store measurement
+        // Store measurement — Google=MEASURED, Bing=PROVIDER (proxy for Google)
+        const sourceLabel = engine === 'google' ? 'cloudbrowser_google' : 'cloudbrowser_bing';
+        const provenance = engine === 'google' ? 'MEASURED' : 'PROVIDER';
+
         await base44.asServiceRole.entities.SerpMeasurement.create({
           client_id,
           query: q,
           measured_at: now,
-          source: 'cloudbrowser_control',
-          provenance: 'MEASURED',
+          source: sourceLabel,
+          provenance,
           rank: rank || 0,
           url: clientHit ? `https://${clientHit.domain}` : '',
           features: aiOverview ? ['ai_overview', ...organic.slice(0, 10).map(r => r.domain)] : organic.slice(0, 10).map(r => r.domain),
@@ -198,7 +209,7 @@ export default async function(req) {
         if (opps.length > 0) {
           await base44.asServiceRole.entities.Opportunity.update(opps[0].id, {
             measured_rank: rank || 0,
-            rank_provenance: 'MEASURED'
+            rank_provenance: provenance
           });
         }
 
@@ -206,12 +217,13 @@ export default async function(req) {
         results.push({
           query: q,
           rank,
+          engine,
           organicCount: organic.length,
           aiOverview,
           topResults: organic.slice(0, 5).map(r => r.domain)
         });
 
-        // Rate limit between requests to avoid Google blocks
+        // Rate limit between requests to avoid blocks
         if (batch.length > 1) {
           await new Promise(r => setTimeout(r, 1500));
         }
