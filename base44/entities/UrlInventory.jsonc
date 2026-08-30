@@ -1,0 +1,170 @@
+{
+  "name": "UrlInventory",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "row_key": {
+      "type": "string",
+      "description": "Idempotency key: property|url"
+    },
+    "gsc_property": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "brand": {
+      "type": "string",
+      "enum": [
+        "xtreme_polishing_systems",
+        "xps_xpress",
+        "satellite_location",
+        "lead_gen",
+        "other"
+      ],
+      "default": "other"
+    },
+    "ownership": {
+      "type": "string",
+      "enum": [
+        "owned",
+        "analysis_only"
+      ],
+      "default": "owned"
+    },
+    "industry": {
+      "type": "string",
+      "default": "Epoxy Coatings & Flooring"
+    },
+    "sub_industry": {
+      "type": "string",
+      "description": "e.g. Decorative Concrete, Polished Concrete, Concrete Overlayment"
+    },
+    "page_type": {
+      "type": "string",
+      "enum": [
+        "home",
+        "pillar",
+        "cluster",
+        "service",
+        "location",
+        "product",
+        "category",
+        "blog_resource",
+        "faq",
+        "about_trust",
+        "conversion",
+        "legal",
+        "other"
+      ],
+      "default": "other"
+    },
+    "topic_cluster": {
+      "type": "string",
+      "description": "The pillar/cluster topic this URL belongs to"
+    },
+    "funnel_stage": {
+      "type": "string",
+      "enum": [
+        "tofu",
+        "mofu",
+        "bofu",
+        "retention"
+      ],
+      "default": "tofu"
+    },
+    "search_intent": {
+      "type": "string",
+      "enum": [
+        "informational",
+        "commercial",
+        "transactional",
+        "navigational",
+        "local"
+      ],
+      "default": "informational"
+    },
+    "seo_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "optimized",
+        "needs_review"
+      ],
+      "default": "not_started"
+    },
+    "aeo_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "optimized",
+        "needs_review"
+      ],
+      "default": "not_started"
+    },
+    "ai_search_status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "optimized",
+        "needs_review"
+      ],
+      "default": "not_started"
+    },
+    "clicks_28d": {
+      "type": "number",
+      "default": 0
+    },
+    "impressions_28d": {
+      "type": "number",
+      "default": 0
+    },
+    "ctr_28d": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_position_28d": {
+      "type": "number",
+      "description": "GSC average position. Never an exact rank."
+    },
+    "top_query": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED_GSC",
+        "MODELED"
+      ],
+      "default": "MEASURED_GSC"
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

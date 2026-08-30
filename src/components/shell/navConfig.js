@@ -1,7 +1,7 @@
 import {
   Home, Building2, CircleDollarSign, Gauge, FlaskConical, LineChart, WalletCards, Trophy,
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
-  Globe2, Network, Cable, Activity, KeyRound, Settings,
+  Globe2, Network, Cable, Activity, KeyRound, Settings, Table2,
   FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
 } from 'lucide-react';
 
@@ -13,6 +13,7 @@ export const NAV_GROUPS = [
       { to: '/start', label: 'Start Here', icon: Rocket },
       { to: '/scoreboard', label: 'URL Scoreboard', icon: Target },
       { to: '/sheet', label: 'Ranking Sheet', icon: Rows3 },
+      { to: '/workbook', label: 'URL Workbook', icon: Table2 },
       { to: '/simulator', label: 'Growth Simulator', icon: TrendingUp },
       { to: '/twin', label: 'Twin Optimizer', icon: Boxes },
       { to: '/strategy', label: 'SEO Strategy', icon: Compass },

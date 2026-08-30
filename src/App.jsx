@@ -12,6 +12,7 @@ import Dashboard from '@/pages/Dashboard';
 import StartHere from '@/pages/StartHere';
 import UrlScoreboard from '@/pages/UrlScoreboard';
 import AreSheet from '@/pages/AreSheet';
+import UrlWorkbook from '@/pages/UrlWorkbook';
 import GrowthSimulator from '@/pages/GrowthSimulator';
 import TwinOptimizer from '@/pages/TwinOptimizer';
 import SeoStrategy from '@/pages/SeoStrategy';
@@ -83,6 +84,7 @@ const AuthenticatedApp = () => {
           <Route path="/start" element={<StartHere />} />
           <Route path="/scoreboard" element={<UrlScoreboard />} />
           <Route path="/sheet" element={<AreSheet />} />
+          <Route path="/workbook" element={<UrlWorkbook />} />
           <Route path="/simulator" element={<GrowthSimulator />} />
           <Route path="/twin" element={<TwinOptimizer />} />
           <Route path="/strategy" element={<SeoStrategy />} />
