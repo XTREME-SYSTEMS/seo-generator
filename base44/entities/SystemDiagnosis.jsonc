@@ -1,0 +1,70 @@
+{
+  "name": "SystemDiagnosis",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string",
+      "description": "Null for URL-level (retrieval) diagnosis"
+    },
+    "bottleneck_system": {
+      "type": "string",
+      "enum": [
+        "RETRIEVAL",
+        "CANDIDATE_SELECTION",
+        "RE_RANKING",
+        "PRESENTATION",
+        "NONE_DETECTED"
+      ],
+      "default": "RETRIEVAL"
+    },
+    "gate_retrieval_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "gate_candidate_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "gate_reranking_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "gate_presentation_passed": {
+      "type": "boolean",
+      "default": false
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "default": 0
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "INFERRED",
+        "MODELED",
+        "UNOBSERVED"
+      ],
+      "default": "UNOBSERVED"
+    },
+    "diagnosed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

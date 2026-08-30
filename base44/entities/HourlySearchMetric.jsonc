@@ -1,0 +1,71 @@
+{
+  "name": "HourlySearchMetric",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "gsc_property": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "hour": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of the hour bucket as returned by GSC HOUR dimension"
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "ctr": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_position": {
+      "type": "number",
+      "description": "GSC average position. NEVER an exact rank. Never write to ExactRank."
+    },
+    "data_state": {
+      "type": "string",
+      "enum": [
+        "HOURLY_ALL",
+        "ALL",
+        "FINAL"
+      ],
+      "default": "HOURLY_ALL"
+    },
+    "is_partial": {
+      "type": "boolean",
+      "default": true
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED_GSC"
+      ],
+      "default": "MEASURED_GSC"
+    },
+    "ingested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "row_key": {
+      "type": "string",
+      "description": "Idempotency key: property|url|query|hour"
+    }
+  },
+  "required": [
+    "gsc_property",
+    "hour"
+  ]
+}

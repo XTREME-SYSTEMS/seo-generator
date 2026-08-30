@@ -1,0 +1,124 @@
+{
+  "name": "UrlTarget",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "description": "Canonical URL under management"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "gsc_property": {
+      "type": "string",
+      "description": "Exact Search Console property string, e.g. sc-domain:example.com or https://example.com/"
+    },
+    "url_state": {
+      "type": "string",
+      "enum": [
+        "NEW_NO_HISTORY",
+        "DISCOVERED_NOT_INDEXED",
+        "INDEXED_NO_IMPRESSIONS",
+        "IMPRESSIONS_NO_VERIFIED_RANK",
+        "TOP100",
+        "TOP50",
+        "TOP30",
+        "STRIKING_DISTANCE_11_20",
+        "PAGE_ONE_6_10",
+        "TOP5",
+        "TOP3"
+      ],
+      "default": "NEW_NO_HISTORY"
+    },
+    "target_queries": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "index_state": {
+      "type": "string",
+      "enum": [
+        "UNOBSERVED",
+        "INDEXED",
+        "NOT_INDEXED",
+        "EXCLUDED_NOINDEX",
+        "EXCLUDED_ROBOTS",
+        "CRAWLED_NOT_INDEXED",
+        "DUPLICATE_ALTERNATE"
+      ],
+      "default": "UNOBSERVED"
+    },
+    "google_canonical": {
+      "type": "string"
+    },
+    "declared_canonical": {
+      "type": "string"
+    },
+    "canonical_agrees": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_crawl_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "first_index_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "first_impression_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "top100_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "top50_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "top30_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "striking_distance_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "page_one_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "top5_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "top3_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "clock_started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "deploy_authorized": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_synced_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

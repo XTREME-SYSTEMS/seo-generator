@@ -1,0 +1,118 @@
+{
+  "name": "Asymmetry",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "asymmetry_class": {
+      "type": "string",
+      "enum": [
+        "A1_LATENCY",
+        "A2_THRESHOLD",
+        "A3_COMPETITION",
+        "A4_INTENT",
+        "A5_SURFACE",
+        "A6_INFORMATION",
+        "A7_ENTITY",
+        "A8_CANNIBALIZATION",
+        "A9_RENDER"
+      ]
+    },
+    "signal": {
+      "type": "string",
+      "description": "Human-readable detected condition"
+    },
+    "targeted_system": {
+      "type": "string",
+      "enum": [
+        "RETRIEVAL",
+        "CANDIDATE_SELECTION",
+        "RE_RANKING",
+        "PRESENTATION"
+      ],
+      "default": "RETRIEVAL"
+    },
+    "boundary_target": {
+      "type": "string",
+      "enum": [
+        "INDEXED",
+        "FIRST_IMPRESSION",
+        "TOP100",
+        "TOP50",
+        "TOP30",
+        "PAGE_ONE",
+        "TOP5",
+        "TOP3",
+        "FEATURED_SNIPPET"
+      ],
+      "default": "INDEXED"
+    },
+    "p_cross": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated probability of crossing the boundary"
+    },
+    "delta_traffic": {
+      "type": "number",
+      "default": 0
+    },
+    "hours_estimate": {
+      "type": "number",
+      "default": 1
+    },
+    "priority_score": {
+      "type": "number",
+      "default": 0,
+      "description": "(p_cross * delta_traffic) / hours_estimate"
+    },
+    "latency_class": {
+      "type": "string",
+      "enum": [
+        "FAST_REPROCESS",
+        "SLOW_ACCRUAL"
+      ],
+      "default": "FAST_REPROCESS"
+    },
+    "recommended_treatment": {
+      "type": "string"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "T0_GOOGLE_DOC",
+        "T1_CONFIRMED_SYSTEM",
+        "T2_EXPERIMENT",
+        "T3_OBSERVATIONAL",
+        "T4_SINGLE_CASE",
+        "T5_COMMUNITY",
+        "T6_HYPOTHESIS"
+      ],
+      "default": "T1_CONFIRMED_SYSTEM"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "queued",
+        "treated",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "open"
+    },
+    "detected_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "asymmetry_class"
+  ]
+}
