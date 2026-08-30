@@ -80,10 +80,20 @@ export default async function (req) {
       const allowedGaps = ['SEO', 'AEO', 'SAO', 'TECHNICAL', 'CONTENT', 'AUTHORITY', 'INTENT', 'SURFACE', 'SYSTEM'];
       const allowedTiers = ['T0_GOOGLE_DOC', 'T1_CONFIRMED_SYSTEM', 'T2_EXPERIMENT', 'T3_OBSERVATIONAL', 'T4_SINGLE_CASE', 'T5_COMMUNITY', 'T6_HYPOTHESIS'];
 
+      // Normalize whatever tier string the model returned (e.g. "T1") to a schema value
+      // BEFORE the shippability gate, so a formatting difference never silently drops
+      // an otherwise evidence-anchored suggestion.
+      const normalizeTier = (raw) => {
+        const t = String(raw || '').toUpperCase();
+        const hit = allowedTiers.find((a) => a === t || a.startsWith(`${t.split('_')[0]}_`));
+        return hit || 'T1_CONFIRMED_SYSTEM';
+      };
+
       const payload = (res.suggestions || [])
+        .map((s) => ({ ...s, evidence_tier: normalizeTier(s.evidence_tier) }))
         .filter((s) => s.title && s.treatment)
         .filter((s) => !violatesSpamPolicy(`${s.title} ${s.treatment} ${s.rationale || ''}`))
-        .filter((s) => isShippable(allowedTiers.includes(s.evidence_tier) ? s.evidence_tier : 'T6_HYPOTHESIS'))
+        .filter((s) => isShippable(s.evidence_tier))
         .filter((s) => !existingTitles.has(s.title.toLowerCase()))
         .map((s) => ({
           client_id: client.id,

@@ -24,7 +24,20 @@ export default async function (req) {
     const summary = [];
 
     for (const client of clients.filter(Boolean)) {
-      const targets = await svc.entities.UrlTarget.filter({ client_id: client.id }, '-created_date', 500);
+      let targets = await svc.entities.UrlTarget.filter({ client_id: client.id }, '-created_date', 500);
+
+      // Adopt any URL asset that belongs to this client by domain but was registered before
+      // tenant binding existed — otherwise it would never enter the loop.
+      const clientDomain = (client.domain || '').replace(/^https?:\/\//, '').replace(/\/$/, '').toLowerCase();
+      if (clientDomain) {
+        const orphans = (await svc.entities.UrlTarget.filter({ client_id: null }, '-created_date', 500))
+          .filter((t) => (t.domain || '').toLowerCase() === clientDomain);
+        if (orphans.length) {
+          await svc.entities.UrlTarget.bulkUpdate(orphans.map((t) => ({ id: t.id, client_id: client.id })));
+          targets = targets.concat(orphans.map((t) => ({ ...t, client_id: client.id })));
+        }
+      }
+
       if (!targets.length) { summary.push({ client: client.name, rows: 0, note: 'no url assets' }); continue; }
 
       const [existingRows, serps, competitors, metrics] = await Promise.all([
