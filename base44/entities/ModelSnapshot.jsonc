@@ -1,0 +1,41 @@
+{
+  "name": "ModelSnapshot",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "cycle_id": {
+      "type": "string"
+    },
+    "config": {
+      "type": "string",
+      "description": "Serialized JSON of the URL treatment configuration at snapshot time"
+    },
+    "score_at_snapshot": {
+      "type": "number",
+      "default": 0
+    },
+    "is_last_known_good": {
+      "type": "boolean",
+      "default": false
+    },
+    "restored_count": {
+      "type": "number",
+      "default": 0
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

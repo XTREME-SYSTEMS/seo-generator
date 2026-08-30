@@ -1,0 +1,71 @@
+{
+  "name": "AuthorityDeliverable",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "partner_domain": {
+      "type": "string"
+    },
+    "target_url": {
+      "type": "string",
+      "description": "The URL on our side that the link should point at"
+    },
+    "deliverable": {
+      "type": "string",
+      "description": "e.g. Authorized Installer directory listing with contextual link"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "directory_listing",
+        "case_study",
+        "co_marketing_page",
+        "resource_page",
+        "spec_document",
+        "other"
+      ],
+      "default": "directory_listing"
+    },
+    "modeled_p_cross_boost": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "requested",
+        "in_progress",
+        "live",
+        "verified",
+        "declined"
+      ],
+      "default": "identified"
+    },
+    "live_url": {
+      "type": "string"
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MODELED"
+    }
+  },
+  "required": [
+    "partner_domain",
+    "deliverable"
+  ]
+}

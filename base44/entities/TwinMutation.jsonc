@@ -1,0 +1,62 @@
+{
+  "name": "TwinMutation",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "generation": {
+      "type": "number",
+      "default": 1
+    },
+    "config": {
+      "type": "string",
+      "description": "Serialized module weights for this mutation"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "predicted_rank": {
+      "type": "number"
+    },
+    "predicted_delta": {
+      "type": "number",
+      "default": 0
+    },
+    "is_winner": {
+      "type": "boolean",
+      "default": false
+    },
+    "deployed": {
+      "type": "boolean",
+      "default": false
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MODELED"
+      ],
+      "default": "MODELED"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "session_id",
+    "url"
+  ]
+}

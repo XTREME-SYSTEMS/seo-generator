@@ -1,0 +1,96 @@
+{
+  "name": "UrlScoreSnapshot",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "week_start": {
+      "type": "string",
+      "format": "date",
+      "description": "Monday of the ISO week this snapshot covers"
+    },
+    "snapshot_key": {
+      "type": "string",
+      "description": "Idempotency key: client_id|url|week_start"
+    },
+    "score": {
+      "type": "number",
+      "default": 0,
+      "description": "Composite rank-progress-to-top-3 score, 0-100"
+    },
+    "best_rank": {
+      "type": "number"
+    },
+    "avg_rank": {
+      "type": "number"
+    },
+    "queries_tracked": {
+      "type": "number",
+      "default": 0
+    },
+    "queries_top3": {
+      "type": "number",
+      "default": 0
+    },
+    "queries_page_one": {
+      "type": "number",
+      "default": 0
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "ctr": {
+      "type": "number",
+      "default": 0
+    },
+    "traffic_estimate": {
+      "type": "number",
+      "default": 0
+    },
+    "growth_pct": {
+      "type": "number",
+      "default": 0,
+      "description": "Score change vs previous week, percent"
+    },
+    "open_asymmetries": {
+      "type": "number",
+      "default": 0
+    },
+    "treatments_deployed": {
+      "type": "number",
+      "default": 0
+    },
+    "blocked_count": {
+      "type": "number",
+      "default": 0
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED",
+        "UNOBSERVED"
+      ],
+      "default": "MEASURED"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url",
+    "week_start"
+  ]
+}

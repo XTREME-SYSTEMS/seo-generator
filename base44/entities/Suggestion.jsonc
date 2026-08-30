@@ -1,0 +1,122 @@
+{
+  "name": "Suggestion",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "scoreboard",
+        "sheet",
+        "simulator",
+        "twin",
+        "strategy",
+        "system"
+      ],
+      "default": "sheet"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "enhancement",
+        "upgrade",
+        "gap_fill",
+        "fix",
+        "hardening"
+      ],
+      "default": "enhancement"
+    },
+    "title": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "The concrete change to make"
+    },
+    "gap_type": {
+      "type": "string",
+      "enum": [
+        "SEO",
+        "AEO",
+        "SAO",
+        "TECHNICAL",
+        "CONTENT",
+        "AUTHORITY",
+        "INTENT",
+        "SURFACE",
+        "SYSTEM"
+      ],
+      "default": "SEO"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "enum": [
+        "T0_GOOGLE_DOC",
+        "T1_CONFIRMED_SYSTEM",
+        "T2_EXPERIMENT",
+        "T3_OBSERVATIONAL",
+        "T4_SINGLE_CASE",
+        "T5_COMMUNITY",
+        "T6_HYPOTHESIS"
+      ],
+      "default": "T1_CONFIRMED_SYSTEM"
+    },
+    "evidence_anchor": {
+      "type": "string",
+      "description": "The Google-confirmed factor or measured experiment behind this"
+    },
+    "p_cross": {
+      "type": "number",
+      "default": 0
+    },
+    "delta_traffic": {
+      "type": "number",
+      "default": 0
+    },
+    "hours_estimate": {
+      "type": "number",
+      "default": 1
+    },
+    "priority_score": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "adopted",
+        "dismissed",
+        "implemented"
+      ],
+      "default": "new"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MODELED"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "20 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Independent hourly safety cron. Re-runs the auditor over any reflection record still pending, then runs the full system validation suite so provenance, tenancy, gates, simulation labeling and data integrity are continuously enforced.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "are_self_reflection",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "audit_pending": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreAudit",
+            "args": {}
+          },
+          "then": "validate_system",
+          "x-base44": {
+            "title": "Audit pending cycles",
+            "description": "Auto-fix / harden / roll back"
+          }
+        }
+      },
+      {
+        "validate_system": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ValidateSystem",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run validation suite",
+            "description": "Guidelines must pass"
+          }
+        }
+      }
+    ]
+  },
+  "name": "ARE Self Reflection"
+}

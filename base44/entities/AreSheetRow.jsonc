@@ -1,0 +1,128 @@
+{
+  "name": "AreSheetRow",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "row_key": {
+      "type": "string",
+      "description": "Idempotency key: client_id|url|query"
+    },
+    "url": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string"
+    },
+    "index_state": {
+      "type": "string",
+      "default": "UNOBSERVED"
+    },
+    "canonical_agrees": {
+      "type": "boolean",
+      "default": false
+    },
+    "rank": {
+      "type": "number",
+      "description": "Exact rank from licensed SERP. Null when unmeasured."
+    },
+    "rank_provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "MODELED",
+        "UNOBSERVED"
+      ],
+      "default": "UNOBSERVED"
+    },
+    "avg_position": {
+      "type": "number",
+      "description": "GSC average position. Never an exact rank."
+    },
+    "impressions": {
+      "type": "number",
+      "default": 0
+    },
+    "clicks": {
+      "type": "number",
+      "default": 0
+    },
+    "ctr": {
+      "type": "number",
+      "default": 0
+    },
+    "score": {
+      "type": "number",
+      "default": 0,
+      "description": "Rank progress to top 3, 0-100"
+    },
+    "score_delta_7d": {
+      "type": "number",
+      "default": 0
+    },
+    "asymmetry_class": {
+      "type": "string"
+    },
+    "targeted_system": {
+      "type": "string"
+    },
+    "gap_type": {
+      "type": "string",
+      "enum": [
+        "SEO",
+        "AEO",
+        "SAO",
+        "TECHNICAL",
+        "CONTENT",
+        "AUTHORITY",
+        "INTENT",
+        "SURFACE",
+        "NONE"
+      ],
+      "default": "NONE"
+    },
+    "top_competitor": {
+      "type": "string"
+    },
+    "competitor_rank": {
+      "type": "number"
+    },
+    "recommended_treatment": {
+      "type": "string"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "default": "T1_CONFIRMED_SYSTEM"
+    },
+    "priority_score": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "queued",
+        "deployed",
+        "validated",
+        "rolled_back",
+        "blocked",
+        "goal_met"
+      ],
+      "default": "open"
+    },
+    "binding_constraint": {
+      "type": "string",
+      "description": "Documented reason the loop cannot advance this row further"
+    },
+    "last_reflected_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

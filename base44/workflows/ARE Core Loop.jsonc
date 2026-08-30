@@ -1,0 +1,105 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/15 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Autonomous Ranking Engine core loop. Every 15 minutes: reflect on every URL asset, analyze competitors, detect and classify gaps, recommend evidence-anchored treatments, deploy the highest-priority ones behind a last-known-good snapshot, then audit, auto-fix, auto-harden or roll back. Never idles; every pause is a documented binding constraint.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "are_core_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "reflect_and_detect": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreReflect",
+            "args": {}
+          },
+          "then": "recommend",
+          "x-base44": {
+            "title": "Reflect + detect gaps",
+            "description": "Every URL x query"
+          }
+        }
+      },
+      {
+        "recommend": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreSuggest",
+            "args": {
+              "surface": "sheet",
+              "cycle_id": "${ .reflect_and_detect.cycle_id }"
+            }
+          },
+          "then": "implement",
+          "x-base44": {
+            "title": "Recommend treatments",
+            "description": "Evidence-anchored"
+          }
+        }
+      },
+      {
+        "implement": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreImplement",
+            "args": {
+              "cycle_id": "${ .reflect_and_detect.cycle_id }",
+              "batch_size": 5
+            }
+          },
+          "then": "settle",
+          "x-base44": {
+            "title": "Deploy behind snapshot",
+            "description": "Validated first"
+          }
+        }
+      },
+      {
+        "settle": {
+          "wait": "PT3M",
+          "then": "audit",
+          "x-base44": {
+            "title": "Settle",
+            "description": "Let changes register"
+          }
+        }
+      },
+      {
+        "audit": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreAudit",
+            "args": {
+              "cycle_id": "${ .reflect_and_detect.cycle_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Audit, fix, harden or roll back",
+            "description": "Never leave production broken"
+          }
+        }
+      }
+    ]
+  },
+  "name": "ARE Core Loop"
+}

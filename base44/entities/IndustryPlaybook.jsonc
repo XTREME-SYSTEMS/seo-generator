@@ -1,0 +1,88 @@
+{
+  "name": "IndustryPlaybook",
+  "type": "object",
+  "properties": {
+    "client_id": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "sub_industry": {
+      "type": "string"
+    },
+    "benchmark_summary": {
+      "type": "string",
+      "description": "Reverse-engineered combined benchmark of the top 3 competitors"
+    },
+    "target_summary": {
+      "type": "string",
+      "description": "The 20%-better-than-benchmark target"
+    },
+    "competitor_strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "competitor_failure_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "authority_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "surface_wins": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "norms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Industry norms: word counts, page types, schema, review counts"
+    },
+    "partner_authority_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "partner_p_cross_boost": {
+      "type": "number",
+      "default": 0,
+      "description": "Modeled uplift to p_cross from partner authority links"
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "MEASURED",
+        "PROVIDER",
+        "INFERRED",
+        "MODELED"
+      ],
+      "default": "MODELED"
+    },
+    "compiled_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "industry"
+  ]
+}
