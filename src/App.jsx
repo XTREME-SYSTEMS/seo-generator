@@ -9,6 +9,13 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from '@/components/shell/Layout';
 import Dashboard from '@/pages/Dashboard';
+import StartHere from '@/pages/StartHere';
+import UrlScoreboard from '@/pages/UrlScoreboard';
+import AreSheet from '@/pages/AreSheet';
+import GrowthSimulator from '@/pages/GrowthSimulator';
+import TwinOptimizer from '@/pages/TwinOptimizer';
+import SeoStrategy from '@/pages/SeoStrategy';
+import LoopMonitor from '@/pages/LoopMonitor';
 import AlgorithmCrack from '@/pages/AlgorithmCrack';
 import Clients from '@/pages/Clients';
 import SearchMoneyMap from '@/pages/SearchMoneyMap';
@@ -72,6 +79,13 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/start" element={<StartHere />} />
+          <Route path="/scoreboard" element={<UrlScoreboard />} />
+          <Route path="/sheet" element={<AreSheet />} />
+          <Route path="/simulator" element={<GrowthSimulator />} />
+          <Route path="/twin" element={<TwinOptimizer />} />
+          <Route path="/strategy" element={<SeoStrategy />} />
+          <Route path="/loop" element={<LoopMonitor />} />
           <Route path="/algorithm-crack" element={<AlgorithmCrack />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/money-map" element={<SearchMoneyMap />} />

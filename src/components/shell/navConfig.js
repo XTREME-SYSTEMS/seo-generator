@@ -2,11 +2,23 @@ import {
   Home, Building2, CircleDollarSign, Gauge, FlaskConical, LineChart, WalletCards, Trophy,
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings,
-  FileCheck2, Server, Crosshair,
+  FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
 } from 'lucide-react';
 
 // Route paths + group structure mirror the Vite shell (src/components/Shell.tsx) exactly.
 export const NAV_GROUPS = [
+  {
+    label: 'Ranking Engine',
+    items: [
+      { to: '/start', label: 'Start Here', icon: Rocket },
+      { to: '/scoreboard', label: 'URL Scoreboard', icon: Target },
+      { to: '/sheet', label: 'Ranking Sheet', icon: Rows3 },
+      { to: '/simulator', label: 'Growth Simulator', icon: TrendingUp },
+      { to: '/twin', label: 'Twin Optimizer', icon: Boxes },
+      { to: '/strategy', label: 'SEO Strategy', icon: Compass },
+      { to: '/loop', label: 'Loop Monitor', icon: Repeat },
+    ],
+  },
   {
     label: 'Command',
     items: [
