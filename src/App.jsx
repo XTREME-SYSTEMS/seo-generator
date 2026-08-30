@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from '@/components/shell/Layout';
 import Dashboard from '@/pages/Dashboard';
+import AlgorithmCrack from '@/pages/AlgorithmCrack';
 import Clients from '@/pages/Clients';
 import SearchMoneyMap from '@/pages/SearchMoneyMap';
 import FastPaths from '@/pages/FastPaths';
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/algorithm-crack" element={<AlgorithmCrack />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/money-map" element={<SearchMoneyMap />} />
           <Route path="/fastpaths" element={<FastPaths />} />

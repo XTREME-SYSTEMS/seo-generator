@@ -1,0 +1,63 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/30 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "console_crack_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_console": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SyncSearchConsole",
+            "args": {
+              "action": "sync",
+              "days": 2,
+              "limit": 25
+            }
+          },
+          "then": "detect_asymmetries",
+          "x-base44": {
+            "title": "Sync Search Console",
+            "description": "Hourly data + URL inspection"
+          }
+        }
+      },
+      {
+        "detect_asymmetries": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "DetectAsymmetries",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Detect asymmetries",
+            "description": "Re-rank the opportunity queue"
+          }
+        }
+      }
+    ]
+  },
+  "description": "Persistent 24/7 loop: syncs every registered URL against Google Search Console (hourly data + URL inspection), advances milestone clocks from measured evidence, then re-derives the ranked asymmetry queue.",
+  "name": "Console Crack Loop"
+}
