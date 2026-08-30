@@ -58,6 +58,7 @@ export const NAV_GROUPS = [
       { to: '/domains', label: 'Domains', icon: Globe2 },
       { to: '/indexing', label: 'Indexing', icon: FileCheck2 },
       { to: '/domain-manager', label: 'Domain Manager', icon: Server },
+      { to: '/dns-setup', label: 'DNS Setup', icon: Cable },
       { to: '/infrastructure', label: 'Infrastructure', icon: Network },
       { to: '/connectors', label: 'Connectors', icon: Cable },
       { to: '/system-health', label: 'System Health', icon: Activity },

@@ -36,6 +36,7 @@ import AgentControl from '@/pages/AgentControl';
 import Domains from '@/pages/Domains';
 import Indexing from '@/pages/Indexing';
 import VercelDomains from '@/pages/VercelDomains';
+import DnsSetup from '@/pages/DnsSetup';
 import Infrastructure from '@/pages/Infrastructure';
 import Connectors from '@/pages/Connectors';
 import SystemHealth from '@/pages/SystemHealth';
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
           <Route path="/domains" element={<Domains />} />
           <Route path="/indexing" element={<Indexing />} />
           <Route path="/domain-manager" element={<VercelDomains />} />
+          <Route path="/dns-setup" element={<DnsSetup />} />
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/connectors" element={<Connectors />} />
           <Route path="/system-health" element={<SystemHealth />} />
