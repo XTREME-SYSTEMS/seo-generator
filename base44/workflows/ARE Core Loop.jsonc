@@ -5,7 +5,7 @@
       "trigger_type": "scheduled",
       "events": [],
       "schedule_mode": "recurring",
-      "cron_expression": "*/15 * * * *",
+      "cron_expression": "5 * * * *",
       "one_time_date": null,
       "timezone": "America/New_York",
       "interval_value": null,
@@ -16,12 +16,12 @@
       "ends_after_count": null
     }
   },
-  "description": "Autonomous Ranking Engine core loop. Every 15 minutes: reflect on every URL asset, analyze competitors, detect and classify gaps, recommend evidence-anchored treatments, deploy the highest-priority ones behind a last-known-good snapshot, then audit, auto-fix, auto-harden or roll back. Never idles; every pause is a documented binding constraint.",
+  "description": "Autonomous Ranking Engine core loop. Hourly: pull measured Search Console page x query data for every readable property, detect and classify gaps, recommend one concrete evidence-anchored treatment per URL x query, queue the highest-priority ones behind a snapshot, then audit. Nothing is ever marked deployed without a measured on-page change.",
   "definition": {
     "document": {
       "dsl": "1.0.0",
       "name": "are_core_loop",
-      "version": "1.0",
+      "version": "1.1",
       "namespace": "base44"
     },
     "do": [
@@ -35,7 +35,7 @@
           "then": "recommend",
           "x-base44": {
             "title": "Reflect + detect gaps",
-            "description": "Every URL x query"
+            "description": "Measured GSC page x query"
           }
         }
       },
@@ -52,7 +52,7 @@
           "then": "implement",
           "x-base44": {
             "title": "Recommend treatments",
-            "description": "Evidence-anchored"
+            "description": "One per URL x query"
           }
         }
       },
@@ -68,8 +68,8 @@
           },
           "then": "settle",
           "x-base44": {
-            "title": "Deploy behind snapshot",
-            "description": "Validated first"
+            "title": "Queue behind snapshot",
+            "description": "Validated first, never fake-deployed"
           }
         }
       },

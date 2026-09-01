@@ -92,6 +92,8 @@ export default async function (req) {
         }
       }
 
+      // One target per URL — duplicate registrations would produce duplicate row updates.
+      targets = [...new Map(targets.map((t) => [t.url, t])).values()];
       if (!targets.length) { summary.push({ client: client.name, rows: 0, note: 'no url assets' }); continue; }
 
       const [existingRows, serps, competitors, metrics] = await Promise.all([
@@ -186,7 +188,7 @@ export default async function (req) {
           else if (prev && ['deployed', 'validated'].includes(prev.status)) base.status = prev.status;
           else base.status = 'open';
 
-          if (prev) toUpdate.push({ id: prev.id, ...base });
+          if (prev) { if (!toUpdate.some((u) => u.id === prev.id)) toUpdate.push({ id: prev.id, ...base }); }
           else toCreate.push(base);
 
           const agg = perUrl.get(target.url) || { rows: [], impressions: 0, clicks: 0 };
