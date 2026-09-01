@@ -20,18 +20,21 @@ export default async function (req) {
     const created = [];
 
     for (const client of clients.filter(Boolean)) {
-      const rows = (await svc.entities.AreSheetRow.filter({ client_id: client.id }, '-priority_score', 200))
-        .filter((r) => r.status !== 'goal_met')
-        .slice(0, 12);
-      if (!rows.length) continue;
-
       const [playbooks, methods, open] = await Promise.all([
         svc.entities.IndustryPlaybook.filter({ client_id: client.id }, '-compiled_at', 5),
         svc.entities.RankingMethod.filter({ status: 'validated' }, '-proof_level', 25),
-        svc.entities.Suggestion.filter({ client_id: client.id, status: 'new' }, '-created_at', 200),
+        svc.entities.Suggestion.filter({ client_id: client.id, status: 'new' }, '-created_at', 500),
       ]);
 
       const existingTitles = new Set(open.map((s) => (s.title || '').toLowerCase()));
+      // One open suggestion per URL x query. Never pile duplicates on the same row.
+      const covered = new Set(open.map((s) => `${s.url}|${s.query}`));
+
+      const rows = (await svc.entities.AreSheetRow.filter({ client_id: client.id }, '-priority_score', 200))
+        .filter((r) => r.status !== 'goal_met' && r.gap_type !== 'NONE')
+        .filter((r) => !covered.has(`${r.url}|${r.query}`))
+        .slice(0, 12);
+      if (!rows.length) continue;
 
       const prompt = [
         'You are the recommendation engine of an Autonomous Ranking Engine. Goal: move each URL/query to TOP 3 on Google.',
@@ -40,9 +43,9 @@ export default async function (req) {
         `Business: ${client.name} (${client.domain || 'no domain'}), industry: ${client.industry || 'unknown'}.`,
         playbooks[0] ? `Industry benchmark: ${playbooks[0].benchmark_summary || ''} Target: ${playbooks[0].target_summary || ''}` : '',
         methods.length ? `Validated methods available: ${methods.map((m) => `${m.name} (${m.mechanism || 'n/a'})`).join('; ')}` : '',
-        'Current rows needing work (rank null = unranked):',
-        ...rows.map((r) => `- url=${r.url} | query=${r.query} | rank=${r.rank ?? 'null'} | index=${r.index_state} | impressions=${r.impressions} | ctr=${r.ctr} | gap=${r.gap_type} | asymmetry=${r.asymmetry_class || 'none'} | system=${r.targeted_system}`),
-        'For EACH row, return one concrete, specific, immediately actionable suggestion. No generic advice.',
+        'Current rows needing work. avg_position is Google Search Console 28-day average position (measured). rank is an exact licensed SERP rank when present.',
+        ...rows.map((r) => `- url=${r.url} | query="${r.query}" | rank=${r.rank ?? 'null'} | avg_position=${r.avg_position ?? 'null'} | index=${r.index_state} | impressions_28d=${r.impressions} | clicks_28d=${r.clicks} | ctr=${r.ctr} | gap=${r.gap_type} | asymmetry=${r.asymmetry_class || 'none'} | system=${r.targeted_system}`),
+        'For EACH row, return ONE concrete, specific, immediately actionable change to THAT page for THAT query: the exact title tag / H1 / passage / schema / internal link to add or rewrite. Quote the proposed copy where relevant. No generic advice.',
         'Estimate p_cross (0-1 probability the change crosses the next rank boundary), delta_traffic (monthly visits gained), hours_estimate.',
       ].filter(Boolean).join('\n');
 

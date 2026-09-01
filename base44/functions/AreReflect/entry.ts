@@ -3,6 +3,10 @@ import {
   scoreFromRank, weekStart, growthPct, classifyGap, priorityScore,
   bindingConstraint, newCycleId, RANK_FLOOR, GOAL_RANK,
 } from '../../shared/are.js';
+import { gscHeaders, listSites, propertyForDomain, pageQueryMetrics } from '../../shared/gsc.js';
+
+const MAX_PAGES = 40;
+const QUERIES_PER_PAGE = 5;
 
 // ARE loop steps 1-3: Reflect current state, analyze competitors, detect + classify gaps.
 export default async function (req) {
@@ -23,8 +27,58 @@ export default async function (req) {
 
     const summary = [];
 
+    // One Search Console session for the whole pass.
+    let sites = [];
+    let headers = null;
+    try {
+      headers = await gscHeaders(base44);
+      sites = await listSites(headers);
+    } catch (e) {
+      summary.push({ note: `Search Console unavailable: ${e.message}` });
+    }
+
     for (const client of clients.filter(Boolean)) {
       let targets = await svc.entities.UrlTarget.filter({ client_id: client.id }, '-created_date', 500);
+
+      // MEASURED: pull real page x query performance for this client's property, if readable.
+      const property = headers ? propertyForDomain(sites, client.domain) : null;
+      let gscByPage = new Map();
+      if (property) {
+        gscByPage = await pageQueryMetrics(headers, property.url, 28);
+
+        // Auto-register the pages Google actually shows, with their real top queries.
+        const known = new Set(targets.map((t) => t.url));
+        const topPages = [...gscByPage.entries()]
+          .map(([url, qs]) => ({ url, impressions: qs.reduce((a, q) => a + q.impressions, 0), qs }))
+          .sort((a, b) => b.impressions - a.impressions)
+          .slice(0, MAX_PAGES);
+        const newTargets = topPages
+          .filter((p) => !known.has(p.url))
+          .map((p) => ({
+            client_id: client.id,
+            url: p.url,
+            domain: (client.domain || '').toLowerCase(),
+            gsc_property: property.url,
+            target_queries: p.qs.slice(0, QUERIES_PER_PAGE).map((q) => q.query),
+            index_state: 'INDEXED',
+            first_impression_at: new Date().toISOString(),
+            clock_started_at: new Date().toISOString(),
+            last_synced_at: new Date().toISOString(),
+            notes: 'Auto-registered from measured Search Console impressions.',
+          }));
+        if (newTargets.length) {
+          const created = await svc.entities.UrlTarget.bulkCreate(newTargets);
+          targets = targets.concat(Array.isArray(created) ? created : newTargets);
+        }
+        // Existing targets with no queries adopt their measured top queries.
+        const adopt = targets
+          .filter((t) => !(t.target_queries || []).length && gscByPage.has(t.url))
+          .map((t) => ({ id: t.id, target_queries: gscByPage.get(t.url).slice(0, QUERIES_PER_PAGE).map((q) => q.query) }));
+        if (adopt.length) {
+          await svc.entities.UrlTarget.bulkUpdate(adopt);
+          targets = targets.map((t) => { const a = adopt.find((x) => x.id === t.id); return a ? { ...t, ...a } : t; });
+        }
+      }
 
       // Adopt any URL asset that belongs to this client by domain but was registered before
       // tenant binding existed — otherwise it would never enter the loop.
@@ -61,15 +115,26 @@ export default async function (req) {
           const prev = rowByKey.get(rowKey);
 
           const serp = serps.find((s) => s.query === query && (!s.url || s.url === target.url));
-          const qMetrics = metrics.filter((m) => m.query === query && (!m.url || m.url === target.url));
-          const impressions = qMetrics.reduce((a, m) => a + (m.impressions || 0), 0);
-          const clicks = qMetrics.reduce((a, m) => a + (m.clicks || 0), 0);
-          const avgPosition = qMetrics.length
-            ? Math.round((qMetrics.reduce((a, m) => a + (m.avg_position || 0), 0) / qMetrics.length) * 10) / 10
-            : null;
+          const gscRow = (gscByPage.get(target.url) || []).find((q) => q.query === query);
+          let impressions, clicks, avgPosition;
+          if (gscRow) {
+            impressions = gscRow.impressions;
+            clicks = gscRow.clicks;
+            avgPosition = gscRow.position;
+          } else {
+            const qMetrics = metrics.filter((m) => m.query === query && (!m.url || m.url === target.url));
+            impressions = qMetrics.reduce((a, m) => a + (m.impressions || 0), 0);
+            clicks = qMetrics.reduce((a, m) => a + (m.clicks || 0), 0);
+            avgPosition = qMetrics.length
+              ? Math.round((qMetrics.reduce((a, m) => a + (m.avg_position || 0), 0) / qMetrics.length) * 10) / 10
+              : null;
+          }
 
           const rank = serp && serp.rank ? serp.rank : null;
-          const score = scoreFromRank(rank);
+          // Exact rank when a licensed SERP measurement exists; otherwise the score is banded
+          // from GSC average position (measured by Google, labeled as an average — never an exact rank).
+          const effectiveRank = rank ?? avgPosition;
+          const score = scoreFromRank(effectiveRank);
           const ctr = impressions ? Math.round((clicks / impressions) * 10000) / 10000 : 0;
 
           const base = {
@@ -77,7 +142,9 @@ export default async function (req) {
             row_key: rowKey,
             url: target.url,
             query,
-            index_state: target.index_state || 'UNOBSERVED',
+            // Impressions are proof of indexation.
+            index_state: impressions > 0 && ['UNOBSERVED', 'NOT_INDEXED', 'CRAWLED_NOT_INDEXED'].includes(target.index_state || 'UNOBSERVED')
+              ? 'INDEXED' : (target.index_state || 'UNOBSERVED'),
             canonical_agrees: !!target.canonical_agrees,
             rank,
             rank_provenance: rank ? (serp.provenance || 'MEASURED') : 'UNOBSERVED',
@@ -90,7 +157,7 @@ export default async function (req) {
             last_reflected_at: new Date().toISOString(),
           };
 
-          const gap = classifyGap(base);
+          const gap = classifyGap({ ...base, rank: effectiveRank });
           base.gap_type = gap.gap_type;
           base.asymmetry_class = gap.asymmetry || '';
           base.targeted_system = gap.system;
@@ -100,20 +167,21 @@ export default async function (req) {
             .filter((c) => (c.shared_query_count || 0) > 0 || c.domain)
             .sort((a, b) => (b.authority_signal || 0) - (a.authority_signal || 0))[0];
           base.top_competitor = rival ? (rival.domain || rival.name) : '';
-          base.competitor_rank = rival && rank && rank > 1 ? 1 : null;
+          base.competitor_rank = rival && effectiveRank && effectiveRank > 1 ? 1 : null;
 
           base.recommended_treatment = TREATMENTS[gap.gap_type] || 'Hold — no evidence-based gap detected.';
           base.evidence_tier = gap.gap_type === 'NONE' ? 'T1_CONFIRMED_SYSTEM' : EVIDENCE[gap.gap_type];
 
-          const pCross = pCrossFor(rank, gap.gap_type);
-          const deltaTraffic = Math.max(1, Math.round(impressions * 0.12) + (rank && rank <= 20 ? 40 : 10));
+          const pCross = pCrossFor(effectiveRank, gap.gap_type);
+          // Traffic upside = what moving to the top-3 CTR band would add over what the query gets today.
+          const deltaTraffic = Math.max(1, Math.round(trafficEstimate(3, impressions) - trafficEstimate(effectiveRank, impressions)));
           base.priority_score = priorityScore(pCross, deltaTraffic, HOURS[gap.gap_type] || 4);
 
           const attempts = prev ? (prev.status === 'blocked' ? 10 : 1) : 0;
-          const constraint = bindingConstraint(base, attempts);
+          const constraint = bindingConstraint({ ...base, rank: effectiveRank }, attempts);
           base.binding_constraint = constraint || '';
 
-          if (rank && rank <= GOAL_RANK) base.status = 'goal_met';
+          if (effectiveRank && effectiveRank <= GOAL_RANK) base.status = 'goal_met';
           else if (constraint) base.status = 'blocked';
           else if (prev && ['deployed', 'validated'].includes(prev.status)) base.status = prev.status;
           else base.status = 'open';
@@ -138,7 +206,8 @@ export default async function (req) {
       const snapUpdate = [];
 
       for (const [url, agg] of perUrl.entries()) {
-        const ranked = agg.rows.map((r) => Number(r.rank)).filter((n) => n > 0);
+        const ranked = agg.rows.map((r) => Number(r.rank ?? r.avg_position)).filter((n) => n > 0);
+        const exact = agg.rows.some((r) => r.rank);
         const score = agg.rows.length
           ? Math.round((agg.rows.reduce((a, r) => a + r.score, 0) / agg.rows.length) * 10) / 10
           : 0;
@@ -157,16 +226,16 @@ export default async function (req) {
           best_rank: ranked.length ? Math.min(...ranked) : null,
           avg_rank: ranked.length ? Math.round((ranked.reduce((a, b) => a + b, 0) / ranked.length) * 10) / 10 : null,
           queries_tracked: agg.rows.length,
-          queries_top3: agg.rows.filter((r) => r.rank && r.rank <= 3).length,
-          queries_page_one: agg.rows.filter((r) => r.rank && r.rank <= 10).length,
+          queries_top3: agg.rows.filter((r) => (r.rank ?? r.avg_position) && (r.rank ?? r.avg_position) <= 3).length,
+          queries_page_one: agg.rows.filter((r) => (r.rank ?? r.avg_position) && (r.rank ?? r.avg_position) <= 10).length,
           impressions: agg.impressions,
           clicks: agg.clicks,
           ctr: agg.impressions ? Math.round((agg.clicks / agg.impressions) * 10000) / 10000 : 0,
-          traffic_estimate: Math.round(agg.rows.reduce((a, r) => a + trafficEstimate(r.rank, r.impressions), 0)),
+          traffic_estimate: Math.round(agg.rows.reduce((a, r) => a + trafficEstimate(r.rank ?? r.avg_position, r.impressions), 0)),
           growth_pct: growthPct(score, priorWeek ? priorWeek.score : 0),
           open_asymmetries: agg.rows.filter((r) => r.status === 'open').length,
           blocked_count: agg.rows.filter((r) => r.status === 'blocked').length,
-          provenance: ranked.length ? 'MEASURED' : 'UNOBSERVED',
+          provenance: exact ? 'MEASURED' : ranked.length ? 'PROVIDER' : 'UNOBSERVED',
           captured_at: new Date().toISOString(),
         };
         if (existing) snapUpdate.push({ id: existing.id, ...payload });
@@ -189,6 +258,8 @@ export default async function (req) {
 
       summary.push({
         client: client.name,
+        gsc_property: property ? property.url : null,
+        measured_pages: gscByPage.size,
         rows: toCreate.length + toUpdate.length,
         urls: perUrl.size,
         blocked: [...perUrl.values()].reduce((a, g) => a + g.rows.filter((r) => r.status === 'blocked').length, 0),

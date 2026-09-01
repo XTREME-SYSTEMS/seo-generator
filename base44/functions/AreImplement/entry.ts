@@ -23,7 +23,7 @@ export default async function (req) {
 
     for (const client of clients.filter(Boolean)) {
       const candidates = (await svc.entities.AreSheetRow.filter({ client_id: client.id }, '-priority_score', 200))
-        .filter((r) => ['open', 'queued'].includes(r.status) && r.gap_type !== 'NONE' && !r.binding_constraint)
+        .filter((r) => r.status === 'open' && r.gap_type !== 'NONE' && !r.binding_constraint)
         .slice(0, batchSize);
 
       if (!candidates.length) { results.push({ client: client.name, deployed: 0, note: 'nothing eligible' }); continue; }
@@ -61,11 +61,16 @@ export default async function (req) {
         // 2. Validate against the deploy guidelines.
         const validation = validateDeploy(row, true);
 
-        // 3. Deploy (or refuse and record why).
-        const deployed = validation.passed;
+        // 3. Queue for implementation (or refuse and record why).
+        // HONESTY RULE: this engine has no CMS/hosting connection, so it never claims "deployed".
+        // A passing treatment is QUEUED with the exact change; the status only becomes
+        // deployed/validated when a measured change on the live page is observed.
+        const approved = validation.passed;
         await svc.entities.AreSheetRow.update(row.id, {
-          status: deployed ? 'deployed' : 'blocked',
-          binding_constraint: deployed ? '' : `Deploy guidelines failed: ${validation.failed.join(', ')}`,
+          status: approved ? 'queued' : 'blocked',
+          binding_constraint: approved
+            ? 'Awaiting on-page implementation — no CMS/hosting connection for this domain.'
+            : `Deploy guidelines failed: ${validation.failed.join(', ')}`,
         });
 
         const expectedScore = Math.min(100, (row.score || 0) + expectedLift(row));
@@ -73,15 +78,15 @@ export default async function (req) {
         await svc.entities.ReflectionRecord.create({
           client_id: client.id,
           cycle_id: cycleId,
-          phase: deployed ? 'implement' : 'validate',
+          phase: approved ? 'recommend' : 'validate',
           url: row.url,
           query: row.query,
-          deployed: deployed ? row.recommended_treatment : 'refused — guidelines not met',
-          expected: deployed
-            ? `${row.gap_type} treatment on ${row.targeted_system}; score ${row.score} -> ~${expectedScore}`
+          deployed: approved ? `QUEUED (not deployed): ${row.recommended_treatment}` : 'refused — guidelines not met',
+          expected: approved
+            ? `${row.gap_type} treatment on ${row.targeted_system}; score ${row.score} -> ~${expectedScore} once implemented`
             : validation.failed.join(', '),
           expected_score: expectedScore,
-          validation_status: deployed ? 'pending' : 'fail',
+          validation_status: 'not_applicable',
           failed_guidelines: validation.failed,
           rolled_back_to: '',
           provenance: 'MODELED',
@@ -91,16 +96,16 @@ export default async function (req) {
         await svc.entities.Receipt.create({
           client_id: client.id,
           kind: 'gate_decision',
-          summary: deployed
-            ? `Deployed ${row.gap_type} treatment · ${row.query}`
-            : `Refused deploy · ${row.query} · ${validation.failed.join(', ')}`,
+          summary: approved
+            ? `Queued ${row.gap_type} treatment · ${row.query} (awaiting implementation)`
+            : `Refused · ${row.query} · ${validation.failed.join(', ')}`,
           detail: `${row.url} | snapshot=${snapshot.id} | cycle=${cycleId}`,
           source: 'AreImplement',
           provenance: 'MEASURED',
           occurred_at: new Date().toISOString(),
         });
 
-        results.push({ client: client.name, url: row.url, query: row.query, deployed, failed: validation.failed });
+        results.push({ client: client.name, url: row.url, query: row.query, queued: approved, failed: validation.failed });
       }
     }
 

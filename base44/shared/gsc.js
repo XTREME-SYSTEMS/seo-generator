@@ -48,6 +48,41 @@ export async function searchAnalytics(headers, siteUrl, body) {
   return rows;
 }
 
+// Finds the GSC property the connected account can actually read for a client domain.
+export function propertyForDomain(sites, domain) {
+  const d = String(domain || '').replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/$/, '').toLowerCase();
+  if (!d) return null;
+  const readable = sites.filter((s) => s.permission && s.permission !== 'siteUnverifiedUser');
+  return readable.find((s) => s.url === `sc-domain:${d}`)
+    || readable.find((s) => normalize(s.url).replace(/^www\./, '') === d)
+    || null;
+}
+
+// Measured page x query performance for the last N days. Returns Map<page, rows[]>
+// where each row = { query, clicks, impressions, ctr, position } sorted by impressions desc.
+export async function pageQueryMetrics(headers, siteUrl, days = 28) {
+  const end = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10); // GSC lags ~2 days
+  const start = new Date(Date.now() - (days + 2) * 86400000).toISOString().slice(0, 10);
+  const rows = await searchAnalytics(headers, siteUrl, {
+    startDate: start, endDate: end, dimensions: ['page', 'query'], dataState: 'all',
+  });
+  const byPage = new Map();
+  for (const r of rows) {
+    const [page, query] = r.keys;
+    const list = byPage.get(page) || [];
+    list.push({
+      query,
+      clicks: r.clicks || 0,
+      impressions: r.impressions || 0,
+      ctr: r.ctr || 0,
+      position: r.position ? Math.round(r.position * 10) / 10 : null,
+    });
+    byPage.set(page, list);
+  }
+  for (const list of byPage.values()) list.sort((a, b) => b.impressions - a.impressions);
+  return byPage;
+}
+
 export async function submitSitemap(headers, siteUrl, sitemapUrl) {
   const r = await fetch(
     `${WM}/sites/${encodeURIComponent(siteUrl)}/sitemaps/${encodeURIComponent(sitemapUrl)}`,
