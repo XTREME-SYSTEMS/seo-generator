@@ -11,6 +11,7 @@ import Layout from '@/components/shell/Layout';
 import Dashboard from '@/pages/Dashboard';
 import StartHere from '@/pages/StartHere';
 import UrlScoreboard from '@/pages/UrlScoreboard';
+import RankingProgress from '@/pages/RankingProgress';
 import AreSheet from '@/pages/AreSheet';
 import UrlWorkbook from '@/pages/UrlWorkbook';
 import GrowthSimulator from '@/pages/GrowthSimulator';
@@ -84,6 +85,7 @@ const AuthenticatedApp = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/start" element={<StartHere />} />
           <Route path="/scoreboard" element={<UrlScoreboard />} />
+          <Route path="/ranking-progress" element={<RankingProgress />} />
           <Route path="/sheet" element={<AreSheet />} />
           <Route path="/workbook" element={<UrlWorkbook />} />
           <Route path="/simulator" element={<GrowthSimulator />} />

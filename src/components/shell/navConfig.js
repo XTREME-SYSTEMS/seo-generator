@@ -12,6 +12,7 @@ export const NAV_GROUPS = [
     items: [
       { to: '/start', label: 'Start Here', icon: Rocket },
       { to: '/scoreboard', label: 'URL Scoreboard', icon: Target },
+      { to: '/ranking-progress', label: 'Ranking Progress', icon: LineChart },
       { to: '/sheet', label: 'Ranking Sheet', icon: Rows3 },
       { to: '/workbook', label: 'URL Workbook', icon: Table2 },
       { to: '/simulator', label: 'Growth Simulator', icon: TrendingUp },
