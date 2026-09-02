@@ -27,6 +27,9 @@ export default function Indexing() {
   const [sitemapMsg, setSitemapMsg] = useState(null);
   const [sitemapBusy, setSitemapBusy] = useState(false);
 
+  const [allBusy, setAllBusy] = useState(false);
+  const [allResults, setAllResults] = useState(null);
+
   const [analytics, setAnalytics] = useState([]);
   const [analyticsBusy, setAnalyticsBusy] = useState(false);
   const [startDate, setStartDate] = useState(todayMinus(28));
@@ -56,6 +59,15 @@ export default function Indexing() {
       setSitemapMsg(res.data);
     } catch (e) { setSitemapMsg({ error: e.message }); }
     finally { setSitemapBusy(false); }
+  }
+
+  async function runSubmitAll() {
+    setAllBusy(true); setAllResults(null);
+    try {
+      const res = await base44.functions.invoke('SearchConsoleIndex', { action: 'submit_all_sitemaps' });
+      setAllResults(res.data);
+    } catch (e) { setAllResults({ error: e.message }); }
+    finally { setAllBusy(false); }
   }
 
   async function runAnalytics() {
@@ -144,6 +156,38 @@ export default function Indexing() {
           {sitemapMsg && (
             <p className={`mt-3 text-xs ${sitemapMsg.error ? 'text-destructive' : 'text-emerald-400'}`}>{sitemapMsg.error || sitemapMsg.message || 'Submitted'}</p>
           )}
+
+          <div className="mt-5 rounded border border-border bg-muted/30 p-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-heading text-sm font-medium text-foreground">Submit all sitemaps at once</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Submits <code className="font-mono">/sitemap.xml</code> for every property in your Search Console account — asks Google to crawl and index all listed URLs.</p>
+              </div>
+              <button onClick={runSubmitAll} disabled={allBusy} className="inline-flex shrink-0 items-center gap-1.5 rounded bg-primary px-3.5 py-2 text-xs font-medium text-primary-foreground disabled:opacity-50">
+                {allBusy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}Submit all
+              </button>
+            </div>
+            {allResults?.error && <p className="mt-3 text-xs text-destructive">{allResults.error}</p>}
+            {allResults?.results && (
+              <div className="mt-3 space-y-1.5">
+                <p className="text-xs text-emerald-400">{allResults.submitted}/{allResults.total} sitemaps submitted</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <tbody>
+                      {allResults.results.map((r, i) => (
+                        <tr key={i} className="border-b border-border/40">
+                          <td className="py-1.5 font-mono text-[11px] text-foreground/90">{r.site}</td>
+                          <td className="py-1.5 text-right"><StatusPill tone={r.ok ? 'good' : 'bad'}>{r.ok ? 'submitted' : 'failed'}</StatusPill></td>
+                          <td className="py-1.5 pl-3 text-[11px] text-muted-foreground">{r.message}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+
           <p className="mt-3 text-xs text-muted-foreground">Note: Google's public API submits sitemaps and reads index status. On-demand "request indexing" of individual pages is only available for job postings & livestreams via the Indexing API — for general pages, sitemap submission + content quality is the indexing lever.</p>
         </Panel>
       )}

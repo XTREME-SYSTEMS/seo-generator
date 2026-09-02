@@ -57,6 +57,30 @@ export default async function(req) {
       return Response.json({ rows: data.rows || [] });
     }
 
+    if (action === 'submit_all_sitemaps') {
+      const sitesRes = await fetch('https://www.googleapis.com/webmasters/v3/sites', { headers: h });
+      const sitesData = await sitesRes.json().catch(() => ({}));
+      if (!sitesRes.ok) return Response.json({ error: sitesData.error?.message || 'list_sites failed', status: sitesRes.status }, { status: sitesRes.status });
+      const sites = sitesData.siteEntry || [];
+      const results = [];
+      for (const s of sites) {
+        const siteUrl = s.siteUrl;
+        let sitemapUrl;
+        if (siteUrl.startsWith('sc-domain:')) {
+          sitemapUrl = `https://${siteUrl.slice('sc-domain:'.length)}/sitemap.xml`;
+        } else {
+          const base = siteUrl.endsWith('/') ? siteUrl : siteUrl + '/';
+          sitemapUrl = base + 'sitemap.xml';
+        }
+        const r = await fetch(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/sitemaps/${encodeURIComponent(sitemapUrl)}`, {
+          method: 'PUT', headers: h
+        });
+        const data = await r.json().catch(() => ({}));
+        results.push({ site: siteUrl, sitemap: sitemapUrl, ok: r.ok, status: r.status, message: r.ok ? 'submitted — Google will fetch it shortly' : (data.error?.message || 'submit failed') });
+      }
+      return Response.json({ results, total: results.length, submitted: results.filter((x) => x.ok).length });
+    }
+
     return Response.json({ error: `unknown action: ${action}` }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
