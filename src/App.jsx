@@ -34,6 +34,7 @@ import Research from '@/pages/Research';
 import SEOGenerator from '@/pages/SEOGenerator';
 import ModelLab from '@/pages/ModelLab';
 import AgentControl from '@/pages/AgentControl';
+import VisionCortex from '@/pages/VisionCortex';
 import Domains from '@/pages/Domains';
 import Indexing from '@/pages/Indexing';
 import VercelDomains from '@/pages/VercelDomains';
@@ -106,6 +107,7 @@ const AuthenticatedApp = () => {
           <Route path="/seo-generator" element={<SEOGenerator />} />
           <Route path="/models" element={<ModelLab />} />
           <Route path="/agents" element={<AgentControl />} />
+          <Route path="/vision-cortex" element={<VisionCortex />} />
           <Route path="/domains" element={<Domains />} />
           <Route path="/indexing" element={<Indexing />} />
           <Route path="/domain-manager" element={<VercelDomains />} />

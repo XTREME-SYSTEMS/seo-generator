@@ -51,6 +51,7 @@ export const NAV_GROUPS = [
       { to: '/seo-generator', label: 'SEO Generator', icon: Zap },
       { to: '/models', label: 'Model Lab', icon: BrainCircuit },
       { to: '/agents', label: 'Agent Control', icon: Bot },
+      { to: '/vision-cortex', label: 'Vision Cortex', icon: BrainCircuit },
     ],
   },
   {
