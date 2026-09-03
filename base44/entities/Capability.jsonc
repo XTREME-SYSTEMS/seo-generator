@@ -1,0 +1,64 @@
+{
+  "name": "Capability",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "measurement",
+        "seo_technical",
+        "seo_content",
+        "aeo",
+        "ai_search",
+        "authority",
+        "cloud_browser",
+        "autonomous",
+        "local",
+        "ecosystem"
+      ],
+      "default": "seo_technical"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "implemented",
+        "available",
+        "requires_credentials",
+        "roadmap"
+      ],
+      "default": "available"
+    },
+    "implement_function": {
+      "type": "string",
+      "description": "Backend function invoked by the Implement button"
+    },
+    "evidence_tier": {
+      "type": "string",
+      "default": "T1_CONFIRMED_SYSTEM"
+    },
+    "automation": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "on_demand",
+        "scheduled",
+        "continuous"
+      ],
+      "default": "on_demand"
+    },
+    "last_implemented_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "category",
+    "name"
+  ]
+}

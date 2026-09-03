@@ -1,0 +1,42 @@
+{
+  "name": "ApiKey",
+  "type": "object",
+  "properties": {
+    "label": {
+      "type": "string"
+    },
+    "key_prefix": {
+      "type": "string",
+      "description": "First 8 chars shown for identification"
+    },
+    "key_hash": {
+      "type": "string",
+      "description": "SHA-256 hash of the full key for lookup"
+    },
+    "scopes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "revoked"
+      ],
+      "default": "active"
+    },
+    "last_used_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "label"
+  ]
+}

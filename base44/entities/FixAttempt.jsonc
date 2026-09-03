@@ -1,0 +1,59 @@
+{
+  "name": "FixAttempt",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string"
+    },
+    "gap_id": {
+      "type": "string",
+      "description": "Asymmetry or SystemDiagnosis id being remediated"
+    },
+    "gap_type": {
+      "type": "string"
+    },
+    "asymmetry_class": {
+      "type": "string"
+    },
+    "attempt": {
+      "type": "number",
+      "default": 1
+    },
+    "approach": {
+      "type": "string",
+      "description": "The fix strategy tried this attempt"
+    },
+    "diagnosis": {
+      "type": "string"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "Concrete change prescribed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "applied",
+        "validated",
+        "failed",
+        "exhausted"
+      ],
+      "default": "pending"
+    },
+    "error": {
+      "type": "string"
+    },
+    "validated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

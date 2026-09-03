@@ -3,6 +3,7 @@ import {
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings, Table2,
   FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
+  ListChecks, ClipboardList, Plug,
 } from 'lucide-react';
 
 // Route paths + group structure mirror the Vite shell (src/components/Shell.tsx) exactly.
@@ -12,6 +13,7 @@ export const NAV_GROUPS = [
     items: [
       { to: '/start', label: 'Start Here', icon: Rocket },
       { to: '/scoreboard', label: 'URL Scoreboard', icon: Target },
+      { to: '/url-command', label: 'URL Command', icon: ClipboardList },
       { to: '/ranking-progress', label: 'Ranking Progress', icon: LineChart },
       { to: '/sheet', label: 'Ranking Sheet', icon: Rows3 },
       { to: '/workbook', label: 'URL Workbook', icon: Table2 },
@@ -53,6 +55,7 @@ export const NAV_GROUPS = [
       { to: '/models', label: 'Model Lab', icon: BrainCircuit },
       { to: '/agents', label: 'Agent Control', icon: Bot },
       { to: '/vision-cortex', label: 'Vision Cortex', icon: BrainCircuit },
+      { to: '/capabilities', label: 'Capabilities', icon: ListChecks },
     ],
   },
   {
@@ -66,6 +69,7 @@ export const NAV_GROUPS = [
       { to: '/connectors', label: 'Connectors', icon: Cable },
       { to: '/system-health', label: 'System Health', icon: Activity },
       { to: '/admin', label: 'Admin', icon: KeyRound },
+      { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
       { to: '/settings', label: 'Settings', icon: Settings },
     ],
   },
