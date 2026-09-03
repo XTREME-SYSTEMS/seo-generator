@@ -27,12 +27,20 @@ export default async function(req) {
     const jobs = await base44.asServiceRole.entities.AgentJob.filter({ status: 'queued' });
     results.push({ suite: 'module_coverage', name: 'sprint_plan_exists', requirement: '7-day sprint has queued method applications', status: jobs.length > 0 ? 'pass' : 'blocked', detail: `${jobs.length} queued jobs`, last_run_at: now });
 
-    // 5. Connectors authorized
+    // 5. Connectors authorized — inspect real OAuth connection state, not stale entity records
+    let gscState = 'missing', ga4State = 'missing';
+    try { const c = await base44.asServiceRole.connectors.getConnection('google_search_console'); if (c?.accessToken) gscState = 'authorized'; } catch {}
+    try { const c = await base44.asServiceRole.connectors.getConnection('google_analytics'); if (c?.accessToken) ga4State = 'authorized'; } catch {}
     const connectors = await base44.asServiceRole.entities.ConnectorStatus.list();
-    const gsc = connectors.find((c) => c.service === 'google_search_console');
-    const ga4 = connectors.find((c) => c.service === 'google_analytics');
-    results.push({ suite: 'tenancy', name: 'gsc_authorized', requirement: 'Google Search Console connector authorized', status: gsc?.state === 'authorized' ? 'pass' : 'fail', detail: gsc?.state || 'missing', last_run_at: now });
-    results.push({ suite: 'tenancy', name: 'ga4_authorized', requirement: 'Google Analytics connector authorized', status: ga4?.state === 'authorized' ? 'pass' : 'fail', detail: ga4?.state || 'missing', last_run_at: now });
+    async function syncStatus(service, state) {
+      const rec = connectors.find((c) => c.service === service);
+      if (rec) { if (rec.state !== state) await base44.asServiceRole.entities.ConnectorStatus.update(rec.id, { state, last_sync_at: now }); }
+      else await base44.asServiceRole.entities.ConnectorStatus.create({ service, state, purpose: service === 'google_search_console' ? 'Search Console data + indexing' : 'Analytics traffic', provides: [], last_sync_at: now });
+    }
+    await syncStatus('google_search_console', gscState);
+    await syncStatus('google_analytics', ga4State);
+    results.push({ suite: 'tenancy', name: 'gsc_authorized', requirement: 'Google Search Console connector authorized', status: gscState === 'authorized' ? 'pass' : 'fail', detail: gscState, last_run_at: now });
+    results.push({ suite: 'tenancy', name: 'ga4_authorized', requirement: 'Google Analytics connector authorized', status: ga4State === 'authorized' ? 'pass' : 'fail', detail: ga4State, last_run_at: now });
 
     // 6. Data integrity: receipts exist
     const receipts = await base44.asServiceRole.entities.Receipt.list('-occurred_at', 50);
