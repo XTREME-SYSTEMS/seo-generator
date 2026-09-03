@@ -1,0 +1,65 @@
+{
+  "name": "PromptLibrary",
+  "type": "object",
+  "properties": {
+    "category": {
+      "type": "string",
+      "enum": [
+        "audit",
+        "implement",
+        "automate",
+        "autonomy",
+        "validate",
+        "monitor",
+        "demonstrate",
+        "fast_rank",
+        "research",
+        "ecosystem"
+      ],
+      "default": "implement"
+    },
+    "title": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string",
+      "description": "The full prompt text to invoke the agent"
+    },
+    "intent": {
+      "type": "string",
+      "description": "What this prompt achieves"
+    },
+    "invoke_function": {
+      "type": "string",
+      "description": "Backend function to auto-run, if any"
+    },
+    "impact": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "high"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "run",
+        "pending"
+      ],
+      "default": "ready"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "category",
+    "title",
+    "prompt"
+  ]
+}

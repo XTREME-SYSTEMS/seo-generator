@@ -3,7 +3,7 @@ import {
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings, Table2,
   FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
-  ListChecks, ClipboardList, Plug, Wand2, BarChart3,
+  ListChecks, ClipboardList, Plug, Wand2, BarChart3, BookMarked,
 } from 'lucide-react';
 
 // Route paths + group structure mirror the Vite shell (src/components/Shell.tsx) exactly.
@@ -58,6 +58,7 @@ export const NAV_GROUPS = [
       { to: '/capabilities', label: 'Capabilities', icon: ListChecks },
       { to: '/implement', label: 'Universal Implementer', icon: Wand2 },
       { to: '/traction', label: 'Traction Scanner', icon: BarChart3 },
+      { to: '/prompts', label: 'Prompt Library', icon: BookMarked },
     ],
   },
   {
