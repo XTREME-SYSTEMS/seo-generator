@@ -39,6 +39,8 @@ import VisionCortex from '@/pages/VisionCortex';
 import Capabilities from '@/pages/Capabilities';
 import UrlCommand from '@/pages/UrlCommand';
 import Ecosystem from '@/pages/Ecosystem';
+import UniversalImplementer from '@/pages/UniversalImplementer';
+import TractionScanner from '@/pages/TractionScanner';
 import Domains from '@/pages/Domains';
 import Indexing from '@/pages/Indexing';
 import VercelDomains from '@/pages/VercelDomains';
@@ -116,6 +118,8 @@ const AuthenticatedApp = () => {
           <Route path="/capabilities" element={<Capabilities />} />
           <Route path="/url-command" element={<UrlCommand />} />
           <Route path="/ecosystem" element={<Ecosystem />} />
+          <Route path="/implement" element={<UniversalImplementer />} />
+          <Route path="/traction" element={<TractionScanner />} />
           <Route path="/domains" element={<Domains />} />
           <Route path="/indexing" element={<Indexing />} />
           <Route path="/domain-manager" element={<VercelDomains />} />

@@ -1,0 +1,76 @@
+{
+  "name": "TractionKeyword",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string",
+      "default": "US"
+    },
+    "keyword": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "head",
+        "long_tail",
+        "question",
+        "local_modifier",
+        "underserved",
+        "trending"
+      ],
+      "default": "long_tail"
+    },
+    "trend": {
+      "type": "string",
+      "enum": [
+        "rising",
+        "stable",
+        "declining",
+        "breakout"
+      ],
+      "default": "stable"
+    },
+    "competition": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "difficulty": {
+      "type": "number",
+      "default": 50,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "opportunity_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Higher = faster traction"
+    },
+    "intent": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "scanned_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "keyword"
+  ]
+}

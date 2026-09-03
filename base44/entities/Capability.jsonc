@@ -35,8 +35,7 @@
       "default": "available"
     },
     "implement_function": {
-      "type": "string",
-      "description": "Backend function invoked by the Implement button"
+      "type": "string"
     },
     "evidence_tier": {
       "type": "string",
@@ -51,6 +50,39 @@
         "continuous"
       ],
       "default": "on_demand"
+    },
+    "impact_score": {
+      "type": "number",
+      "default": 50,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Estimated ranking + traffic impact, 0-100"
+    },
+    "speed_tier": {
+      "type": "string",
+      "enum": [
+        "instant",
+        "fast",
+        "medium",
+        "slow"
+      ],
+      "default": "medium",
+      "description": "How quickly impact manifests after implementation"
+    },
+    "delivery": {
+      "type": "string",
+      "enum": [
+        "automated",
+        "ai_assisted",
+        "google_sync",
+        "manual"
+      ],
+      "default": "ai_assisted",
+      "description": "How the capability is executed: autonomous loop, AI on demand, direct Google sync, or human"
+    },
+    "effort_hours": {
+      "type": "number",
+      "default": 2
     },
     "last_implemented_at": {
       "type": "string",

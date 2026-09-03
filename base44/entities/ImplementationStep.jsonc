@@ -1,0 +1,74 @@
+{
+  "name": "ImplementationStep",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "business": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "client_id": {
+      "type": "string"
+    },
+    "step_number": {
+      "type": "number",
+      "default": 1
+    },
+    "capability_name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "impact_score": {
+      "type": "number",
+      "default": 0
+    },
+    "speed_tier": {
+      "type": "string",
+      "default": "medium"
+    },
+    "delivery": {
+      "type": "string",
+      "default": "ai_assisted"
+    },
+    "priority_score": {
+      "type": "number",
+      "default": 0,
+      "description": "impact_score * speed_weight"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "running",
+        "done",
+        "failed",
+        "skipped"
+      ],
+      "default": "pending"
+    },
+    "result": {
+      "type": "string"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "run_id",
+    "capability_name"
+  ]
+}
