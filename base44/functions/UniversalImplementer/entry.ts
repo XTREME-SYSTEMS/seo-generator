@@ -87,8 +87,10 @@ export default async function (req) {
       await svc.entities.ImplementationStep.update(step.id, { status: 'running', started_at: startedAt });
       try {
         const payload = payloadFor(cap.implement_function);
-        const result = await base44.functions.invoke(cap.implement_function, payload);
-        const summary = typeof result === 'string' ? result : (result?.ok ? `ok — ${JSON.stringify(result).slice(0, 200)}` : JSON.stringify(result).slice(0, 300));
+        const invokeRes = await base44.functions.invoke(cap.implement_function, payload);
+        let data = invokeRes;
+        try { if (invokeRes && typeof invokeRes.json === 'function') data = await invokeRes.json(); } catch (_) {}
+        const summary = data && data.ok ? 'ok' : (data && data.error ? `error: ${String(data.error).slice(0, 200)}` : 'completed');
         await svc.entities.ImplementationStep.update(step.id, { status: 'done', result: summary, completed_at: new Date().toISOString() });
         executed.push({ step: step.step_number, capability: cap.name, status: 'done' });
       } catch (e) {

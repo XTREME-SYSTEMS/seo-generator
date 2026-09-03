@@ -82,13 +82,15 @@ export default async function (req) {
     if (action === 'fix_url') {
       if (!scopes.includes('fix')) return Response.json({ error: 'scope "fix" required' }, { status: 403 });
       // Delegate to FixEngine by re-running its logic inline is heavy; instead trigger via invoke.
-      const fixRes = await base44.functions.invoke('FixEngine', { url: body.url, gap_id: body.gap_id, gap_type: body.gap_type, max_attempts: body.max_attempts || 3 });
+      let fixRes = await base44.functions.invoke('FixEngine', { url: body.url, gap_id: body.gap_id, gap_type: body.gap_type, max_attempts: body.max_attempts || 3 });
+      try { if (fixRes && typeof fixRes.json === 'function') fixRes = await fixRes.json(); } catch (_) {}
       return Response.json({ ok: true, result: fixRes });
     }
 
     if (action === 'sync') {
       if (!scopes.includes('sync')) return Response.json({ error: 'scope "sync" required' }, { status: 403 });
-      const syncRes = await base44.functions.invoke('SyncSearchConsole', { action: 'sync', limit: body.limit || 100 });
+      let syncRes = await base44.functions.invoke('SyncSearchConsole', { action: 'sync', limit: body.limit || 100 });
+      try { if (syncRes && typeof syncRes.json === 'function') syncRes = await syncRes.json(); } catch (_) {}
       return Response.json({ ok: true, result: syncRes });
     }
 
