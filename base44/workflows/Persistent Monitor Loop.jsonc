@@ -1,0 +1,45 @@
+{
+  "description": "The persistent monitoring watchdog that runs every 15 minutes. Cross-references all ranking evidence against the target vision (all URLs at top-5), identifies every gap, triggers immediate auto-fix sequences via FixEngine, and escalates unresolvable gaps to the Vision Cortex brain. This is the always-on eyes of the system that never sleeps.",
+  "name": "Persistent Monitor Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "persistent_monitor_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "monitor_and_fix": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "PersistentMonitor",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Monitor & Auto-Fix",
+            "description": "Cross-reference evidence vs vision, auto-fix gaps, escalate unresolvable issues"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/15 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

@@ -5,7 +5,7 @@ import Panel from '@/components/kit/Panel';
 import StatusPill from '@/components/kit/StatusPill';
 import Loading from '@/components/kit/Loading';
 import EmptyState from '@/components/kit/EmptyState';
-import { Wrench, Loader2, ChevronRight, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Wrench, Loader2, ChevronRight, RefreshCw, AlertTriangle, CheckSquare, Square, Zap, X } from 'lucide-react';
 
 export default function UrlCommand() {
   const [targets, setTargets] = useState([]);
@@ -16,6 +16,9 @@ export default function UrlCommand() {
   const [selected, setSelected] = useState(null);
   const [fixing, setFixing] = useState(null);
   const [syncing, setSyncing] = useState(false);
+  const [selectedUrls, setSelectedUrls] = useState(new Set());
+  const [bulkRunning, setBulkRunning] = useState(false);
+  const [bulkResult, setBulkResult] = useState(null);
 
   async function loadAll() {
     setLoading(true);
@@ -92,6 +95,45 @@ export default function UrlCommand() {
     }
   }
 
+  function toggleUrl(url) {
+    const next = new Set(selectedUrls);
+    if (next.has(url)) next.delete(url);
+    else next.add(url);
+    setSelectedUrls(next);
+  }
+
+  function toggleAll() {
+    if (selectedUrls.size === sorted.length) {
+      setSelectedUrls(new Set());
+    } else {
+      setSelectedUrls(new Set(sorted.map((u) => u.url)));
+    }
+  }
+
+  async function runBulkCycle() {
+    if (selectedUrls.size === 0) return;
+    setBulkRunning(true);
+    setBulkResult(null);
+    try {
+      const res = await base44.functions.invoke('BulkProcess', {
+        urls: [...selectedUrls],
+        phases: ['detect', 'suggest', 'implement', 'fix', 'validate'],
+      });
+      setBulkResult(res);
+      await loadAll();
+    } catch (e) {
+      console.error(e);
+      setBulkResult({ error: e.message });
+    } finally {
+      setBulkRunning(false);
+    }
+  }
+
+  function clearSelection() {
+    setSelectedUrls(new Set());
+    setBulkResult(null);
+  }
+
   if (loading) return <Loading label="Loading all URLs" />;
 
   return (
@@ -99,7 +141,7 @@ export default function UrlCommand() {
       <PageHeader
         eyebrow="URL Command Center"
         title="All URLs — Score, Gaps & AI Fixes"
-        description="Every URL in the system with its live rank-progress score, detected gaps, and one-click AI-assisted fixes with retry-until-resolved."
+        description="Every URL in the system with its live rank-progress score, detected gaps, and one-click AI-assisted fixes with retry-until-resolved. Select multiple URLs to run the full autonomous cycle in bulk."
         actions={
           <button
             onClick={syncAll}
@@ -112,36 +154,90 @@ export default function UrlCommand() {
         }
       />
 
+      {/* Bulk Action Bar */}
+      {selectedUrls.size > 0 && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3">
+          <span className="text-sm font-medium text-foreground">
+            {selectedUrls.size} URL{selectedUrls.size !== 1 ? 's' : ''} selected
+          </span>
+          <button
+            onClick={runBulkCycle}
+            disabled={bulkRunning}
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+          >
+            {bulkRunning ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+            Run Autonomous Cycle on Selected
+          </button>
+          <button
+            onClick={clearSelection}
+            disabled={bulkRunning}
+            className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground disabled:opacity-50"
+          >
+            <X className="h-3.5 w-3.5" />
+            Clear
+          </button>
+          {bulkResult && (
+            <span className={`text-xs ${bulkResult.error ? 'text-red-500' : 'text-emerald-600'}`}>
+              {bulkResult.error ? `Error: ${bulkResult.error}` : `✓ Processed ${bulkResult.processed} URLs — detect → suggest → implement → fix → validate`}
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <Panel title="URL Inventory" subtitle={`${sorted.length} URLs`}>
+          <Panel title="URL Inventory" subtitle={`${sorted.length} URLs · ${selectedUrls.size} selected`} right={
+            <label className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground">
+              {selectedUrls.size === sorted.length && sorted.length > 0 ? (
+                <CheckSquare className="h-3.5 w-3.5 text-primary" onClick={toggleAll} />
+              ) : (
+                <Square className="h-3.5 w-3.5" onClick={toggleAll} />
+              )}
+              Select All
+            </label>
+          }>
             {sorted.length === 0 ? (
               <EmptyState title="No URLs" description="Sync Google Search Console to load URLs." />
             ) : (
               <div className="max-h-[70vh] overflow-y-auto divide-y divide-border">
                 {sorted.map((u) => (
-                  <button
+                  <div
                     key={u.id}
-                    onClick={() => setSelected(u)}
-                    className={`flex w-full items-center gap-3 px-1 py-2.5 text-left hover:bg-accent/50 ${selected?.id === u.id ? 'bg-accent/70' : ''}`}
+                    className={`flex w-full items-center gap-2 px-1 py-2.5 text-left hover:bg-accent/50 ${selected?.id === u.id ? 'bg-accent/70' : ''}`}
                   >
-                    <ScoreBadge score={u.score} />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-xs font-medium text-foreground">{u.url}</div>
-                      <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground">
-                        <span>{u.index_state || 'UNOBSERVED'}</span>
-                        <span>·</span>
-                        <span>{u.url_state || 'NEW'}</span>
-                        {u.gaps.length > 0 && (
-                          <>
-                            <span>·</span>
-                            <span className="text-amber-600">{u.gaps.length} gap(s)</span>
-                          </>
-                        )}
+                    <button
+                      onClick={() => toggleUrl(u.url)}
+                      className="shrink-0 p-1"
+                      title="Select for bulk processing"
+                    >
+                      {selectedUrls.has(u.url) ? (
+                        <CheckSquare className="h-4 w-4 text-primary" />
+                      ) : (
+                        <Square className="h-4 w-4 text-muted-foreground/50 hover:text-muted-foreground" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setSelected(u)}
+                      className="flex min-w-0 flex-1 items-center gap-3 text-left"
+                    >
+                      <ScoreBadge score={u.score} />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-xs font-medium text-foreground">{u.url}</div>
+                        <div className="mt-0.5 flex items-center gap-2 text-[10px] text-muted-foreground">
+                          <span>{u.index_state || 'UNOBSERVED'}</span>
+                          <span>·</span>
+                          <span>{u.url_state || 'NEW'}</span>
+                          {u.gaps.length > 0 && (
+                            <>
+                              <span>·</span>
+                              <span className="text-amber-600">{u.gaps.length} gap(s)</span>
+                            </>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  </button>
+                      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    </button>
+                  </div>
                 ))}
               </div>
             )}
