@@ -11,27 +11,34 @@ export default async function(req) {
     // Load concluded experiments and all ranking methods
     const experiments = await base44.asServiceRole.entities.Experiment.filter({ status: 'concluded' });
     const methods = await base44.asServiceRole.entities.RankingMethod.list('-discovered_at', 200);
-    const methodByName = new Map(methods.map((m) => [m.name.toLowerCase(), m]));
 
+    // Quantitative attribution: parse the measured score delta from each concluded
+    // experiment and promote/demote ranking methods by category. Replaces the
+    // dead-end regex ('lift'/'improved' keyword) approach with numeric comparison.
+    const GAP_TO_CATEGORY = {
+      TECHNICAL: 'technical', CONTENT: 'content', AUTHORITY: 'authority',
+      SEO: 'content', SURFACE: 'ux', AEO: 'ai_search', SAO: 'ai_search',
+      INTENT: 'content', SYSTEM: 'technical',
+    };
     let promoted = 0, demoted = 0, unchanged = 0;
     for (const exp of experiments) {
-      // Match experiment to a ranking method via treatment / method / name fields
-      const key = (exp.method || exp.treatment || exp.name || '').toLowerCase();
-      const m = methodByName.get(key);
+      const m = (exp.result_summary || '').match(/lift ([+-]?[0-9.]+)/);
       if (!m) { unchanged++; continue; }
-      const liftText = exp.result_summary || '';
-      const positive = /lift|increase|improved|positive|gained|up|rose/i.test(liftText);
-      const negative = /drop|decrease|declined|negative|fell|lost|down/i.test(liftText);
-      if (positive && !negative) {
-        const newLevel = Math.min(7, (m.proof_level || 0) + 2);
-        await base44.asServiceRole.entities.RankingMethod.update(m.id, { proof_level: newLevel, status: 'validated' });
-        promoted++;
-      } else if (negative && !positive) {
-        const newLevel = Math.max(0, (m.proof_level || 0) - 1);
-        await base44.asServiceRole.entities.RankingMethod.update(m.id, { proof_level: newLevel, status: m.proof_level > 2 ? 'deprecated' : 'discovered' });
-        demoted++;
-      } else {
-        unchanged++;
+      const lift = Number(m[1]);
+      const category = GAP_TO_CATEGORY[exp.method];
+      if (!category) { unchanged++; continue; }
+      const categoryMethods = methods.filter((mth) => mth.category === category);
+      if (!categoryMethods.length) { unchanged++; continue; }
+      for (const mth of categoryMethods) {
+        if (lift >= 2) {
+          const newLevel = Math.min(7, (mth.proof_level || 0) + 1);
+          await base44.asServiceRole.entities.RankingMethod.update(mth.id, { proof_level: newLevel, status: 'validated' });
+          promoted++;
+        } else if (lift <= -2) {
+          const newLevel = Math.max(0, (mth.proof_level || 0) - 1);
+          await base44.asServiceRole.entities.RankingMethod.update(mth.id, { proof_level: newLevel, status: newLevel > 2 ? 'deprecated' : 'discovered' });
+          demoted++;
+        } else { unchanged++; }
       }
     }
 

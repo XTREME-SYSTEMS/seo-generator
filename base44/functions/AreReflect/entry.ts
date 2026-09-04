@@ -247,6 +247,46 @@ export default async function (req) {
       if (snapCreate.length) await svc.entities.UrlScoreSnapshot.bulkCreate(snapCreate);
       if (snapUpdate.length) await svc.entities.UrlScoreSnapshot.bulkUpdate(snapUpdate);
 
+      // Attribution pass: compare current measured GSC score to the pre-deploy
+      // snapshot and write concluded Experiments from real movement. This is the
+      // measured signal that closes the loop — MethodAttribution reads these to
+      // promote/demote ranking methods quantitatively.
+      const queuedRows = (await svc.entities.AreSheetRow.filter({ client_id: client.id }, '-priority_score', 200))
+        .filter((r) => ['queued', 'deployed', 'validated', 'goal_met'].includes(r.status));
+      if (queuedRows.length) {
+        const snaps = await svc.entities.ModelSnapshot.filter({ client_id: client.id, is_last_known_good: true }, '-captured_at', 200);
+        const snapByUrl = new Map(snaps.map((s) => [s.url, s]));
+        const existingExps = await svc.entities.Experiment.filter({ client_id: client.id }, '-started_at', 500);
+        const expKeys = new Set(existingExps.map((e) => e.name));
+        const expCreate = [];
+        for (const row of queuedRows) {
+          const snap = snapByUrl.get(row.url);
+          if (!snap) continue;
+          let pre; try { pre = JSON.parse(snap.config); } catch { continue; }
+          const preScore = Number(pre.score) || 0;
+          const postScore = Number(row.score) || 0;
+          const scoreDelta = Math.round((postScore - preScore) * 10) / 10;
+          if (Math.abs(scoreDelta) < 2) continue;
+          const gapType = pre.gap_type || row.gap_type || 'SEO';
+          const name = `${gapType} · ${row.url} · ${row.query}`;
+          if (expKeys.has(name)) continue;
+          expCreate.push({
+            client_id: client.id,
+            name,
+            hypothesis: `${gapType} treatment on ${row.targeted_system || 'RE_RANKING'} would move ${row.url} toward top 3 for "${row.query}"`,
+            treatment: pre.treatment || row.recommended_treatment || '',
+            method: gapType,
+            status: 'concluded',
+            mode: 'reality',
+            target_queries: [row.query],
+            started_at: snap.captured_at,
+            result_summary: `score ${preScore} -> ${postScore} (lift ${scoreDelta > 0 ? '+' : ''}${scoreDelta}); avg_position ${pre.rank ?? 'null'} -> ${row.avg_position ?? 'null'}; row_status=${row.status}`,
+            lift_provenance: 'MEASURED',
+          });
+        }
+        if (expCreate.length) await svc.entities.Experiment.bulkCreate(expCreate);
+      }
+
       await svc.entities.ReflectionRecord.create({
         client_id: client.id,
         cycle_id: cycleId,
