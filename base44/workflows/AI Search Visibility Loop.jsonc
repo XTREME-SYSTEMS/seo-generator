@@ -1,0 +1,47 @@
+{
+  "description": "Checks AI search visibility every 4 hours. Queries AI search engines (simulated via web-grounded LLM) for each managed URL's target queries and checks if the URL/domain appears in the answer. Stores results as AIAnswerObservation records. This closes the AEO/SAO gap \u2014 tracking whether the site appears in ChatGPT, Perplexity, and Google AI Overviews.",
+  "name": "AI Search Visibility Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ai_search_visibility_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_ai_visibility": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AISearchVisibility",
+            "args": {
+              "limit": 20
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Check AI Search Visibility",
+            "description": "Check if managed URLs appear in AI search engine answers"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */4 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

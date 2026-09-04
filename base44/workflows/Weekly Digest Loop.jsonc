@@ -1,0 +1,45 @@
+{
+  "description": "Sends a weekly performance digest email every Monday at 8 AM ET. Summarizes convergence progress, URLs at target, gaps fixed, capabilities implemented, methods discovered, system health, and top priorities for the next week.",
+  "name": "Weekly Digest Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_digest_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_digest": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "WeeklyDigest",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send Weekly Digest",
+            "description": "Generate and email the weekly performance report"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * 1",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

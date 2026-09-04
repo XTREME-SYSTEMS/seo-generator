@@ -1,0 +1,47 @@
+{
+  "description": "Generates content for SEO treatments every 3 hours. For each priority URL, generates meta titles, meta descriptions, H1 headings, schema markup, opening paragraphs, and FAQ sections. Stores as Suggestions ready for implementation. This closes the content generation gap \u2014 the system suggests what to change and now also creates the actual content.",
+  "name": "Content Generation Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "content_generation_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_content": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ContentGenerator",
+            "args": {
+              "limit": 10
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Generate Content",
+            "description": "Generate meta tags, schema, and page content for priority URLs"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */3 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
