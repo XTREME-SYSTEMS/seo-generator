@@ -1,0 +1,47 @@
+{
+  "description": "Generates multi-platform social media content every 12 hours. Creates optimized posts for Facebook, Instagram, TikTok, and YouTube based on managed URL content.",
+  "name": "Multi-Platform Social Sync Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "social_sync_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_social": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "MultiPlatformSocialSync",
+            "args": {
+              "limit": 5
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sync Social Media",
+            "description": "Generate multi-platform social content"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

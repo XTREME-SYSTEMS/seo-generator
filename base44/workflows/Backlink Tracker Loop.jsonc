@@ -1,0 +1,47 @@
+{
+  "description": "Monitors backlink velocity every 12 hours. Uses web-grounded LLM to check backlinks for managed domains, detects new and lost links, and suggests link-building opportunities.",
+  "name": "Backlink Tracker Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "backlink_tracker_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "track_backlinks": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "BacklinkTracker",
+            "args": {
+              "limit": 10
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Track Backlinks",
+            "description": "Monitor link velocity and detect new/lost backlinks"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

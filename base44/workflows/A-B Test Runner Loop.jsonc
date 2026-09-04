@@ -1,0 +1,47 @@
+{
+  "description": "Runs A/B tests in the SERP Digital Twin every 6 hours. Creates treatment variants with different module weights, simulates outcomes, and promotes winners to deployment suggestions.",
+  "name": "A/B Test Runner Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "ab_test_runner_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_ab_tests": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ABTestRunner",
+            "args": {
+              "limit": 5
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run A/B Tests",
+            "description": "Test treatment variants in the twin and promote winners"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

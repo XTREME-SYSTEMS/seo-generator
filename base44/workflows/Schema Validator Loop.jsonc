@@ -1,0 +1,47 @@
+{
+  "description": "Validates schema markup every 8 hours. Fetches managed URLs, extracts JSON-LD schema, validates against schema.org types, and generates fix suggestions for missing or invalid schema.",
+  "name": "Schema Validator Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "schema_validator_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "validate_schema": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SchemaValidator",
+            "args": {
+              "limit": 15
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Validate Schema",
+            "description": "Extract and validate JSON-LD schema markup"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */8 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

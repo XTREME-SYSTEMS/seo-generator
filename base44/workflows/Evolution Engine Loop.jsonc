@@ -1,0 +1,47 @@
+{
+  "description": "The Evolution Engine \u2014 the learn-and-grow brain of the Vision Cortex. Runs every 4 hours. Gathers system state, reflects on patterns, generates novel improvement ideas via LLM, simulates each idea, scores by impact/risk, and promotes high-scoring ideas to capabilities. This is the engine that makes the system continuously find new and improved ways to optimize search performance.",
+  "name": "Evolution Engine Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "evolution_engine_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_evolution_cycle": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "EvolutionEngine",
+            "args": {
+              "idea_count": 5
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run Evolution Cycle",
+            "description": "Gather, reflect, ideate, simulate, score, and promote novel ideas"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */4 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

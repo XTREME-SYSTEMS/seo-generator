@@ -1,0 +1,45 @@
+{
+  "description": "Builds cross-domain authority every 24 hours. Analyzes all owned domains, identifies topical relevance, and suggests cross-linking strategies to distribute authority across the domain portfolio.",
+  "name": "Cross-Domain Authority Builder Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "cross_domain_authority_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "build_cross_domain_authority": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "CrossDomainAuthorityBuilder",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Build Cross-Domain Authority",
+            "description": "Suggest cross-links between owned domains"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 10 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

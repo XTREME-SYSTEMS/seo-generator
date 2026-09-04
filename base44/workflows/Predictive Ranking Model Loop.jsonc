@@ -1,0 +1,47 @@
+{
+  "description": "Predicts ranking trajectories every 12 hours. Uses historical score snapshots to calculate velocity, momentum, and predicted time-to-top-5 for each URL. Prioritizes high-potential URLs for accelerated optimization.",
+  "name": "Predictive Ranking Model Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "predictive_ranking_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "predict_rankings": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "PredictiveRankingModel",
+            "args": {
+              "weeks": 8
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Predict Rankings",
+            "description": "Predict which URLs will reach top-5 fastest"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

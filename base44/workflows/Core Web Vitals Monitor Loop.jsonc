@@ -1,0 +1,47 @@
+{
+  "description": "Monitors Core Web Vitals every 6 hours. Fetches managed URLs, analyzes HTML for performance issues (render-blocking, CLS risks, missing lazy-load), and generates technical SEO suggestions.",
+  "name": "Core Web Vitals Monitor Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "core_web_vitals_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "check_cwv": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "CoreWebVitalsMonitor",
+            "args": {
+              "limit": 10
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Check Core Web Vitals",
+            "description": "Analyze page speed and generate CWV fix suggestions"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import {
   Home, Building2, CircleDollarSign, Gauge, FlaskConical, LineChart, WalletCards, Trophy,
-  ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
+  ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap, Dna,
   Globe2, Network, Cable, Activity, KeyRound, Settings, Table2,
   FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
   ListChecks, ClipboardList, Plug, Wand2, BarChart3, BookMarked, Eye, CalendarDays, MessageSquare,
@@ -56,6 +56,7 @@ export const NAV_GROUPS = [
       { to: '/seo-generator', label: 'SEO Generator', icon: Zap },
       { to: '/models', label: 'Model Lab', icon: BrainCircuit },
       { to: '/agents', label: 'Agent Control', icon: Bot },
+      { to: '/ultimate-vision', label: 'Ultimate Vision', icon: Dna },
       { to: '/vision-cortex-chat', label: 'Vision Cortex Chat', icon: MessageSquare },
       { to: '/vision-cortex', label: 'Vision Cortex', icon: BrainCircuit },
       { to: '/capabilities', label: 'Capabilities', icon: ListChecks },

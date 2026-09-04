@@ -1,0 +1,47 @@
+{
+  "description": "Monitors competitor pages for changes every 6 hours. Fetches competitor URLs, compares with stored snapshots, detects content/schema/structure changes, and auto-generates counter-strategy suggestions.",
+  "name": "Competitor Watchdog Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "competitor_watchdog_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "watch_competitors": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "CompetitorWatchdog",
+            "args": {
+              "limit": 10
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Watch Competitors",
+            "description": "Monitor competitor pages for changes and auto-respond"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

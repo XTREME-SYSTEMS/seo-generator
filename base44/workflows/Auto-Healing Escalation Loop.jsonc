@@ -1,0 +1,47 @@
+{
+  "description": "Escalates failed fix attempts every 2 hours. When FixEngine fails, this loop retries with alternative approaches, simplifies treatments, or escalates to human review after exhausting automated options.",
+  "name": "Auto-Healing Escalation Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "auto_healing_escalation_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "escalate_fixes": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AutoHealingEscalation",
+            "args": {
+              "max_attempts": 4
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Escalate Failed Fixes",
+            "description": "Retry failed fixes with escalating approaches"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */2 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

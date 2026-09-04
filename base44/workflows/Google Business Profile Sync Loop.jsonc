@@ -1,0 +1,47 @@
+{
+  "description": "Generates Google Business Profile content every 24 hours. Creates optimized GBP posts, Q&A pairs, and service updates for local SEO based on managed URLs and industry.",
+  "name": "Google Business Profile Sync Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "gbp_sync_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_gbp": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "GoogleBusinessProfileSync",
+            "args": {
+              "limit": 5
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sync Google Business Profile",
+            "description": "Generate GBP posts and Q&A content"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 9 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "description": "Detects traffic and ranking anomalies every 4 hours. Compares recent GSC metrics with historical baselines, detects sudden drops, investigates causes via web-grounded LLM, and generates urgent fix suggestions.",
+  "name": "Anomaly Detection Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "anomaly_detection_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "detect_anomalies": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AnomalyDetection",
+            "args": {
+              "threshold": 30
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Detect Anomalies",
+            "description": "Detect sudden traffic/ranking drops and investigate"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */4 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

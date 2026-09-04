@@ -1,0 +1,108 @@
+{
+  "name": "EvolutionIdea",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Short name of the idea"
+    },
+    "description": {
+      "type": "string",
+      "description": "What the idea does and how it improves the system"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "strategy",
+        "tactic",
+        "method",
+        "tool",
+        "improvement",
+        "paradigm"
+      ],
+      "default": "improvement"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "self_reflection",
+        "llm_generation",
+        "web_research",
+        "anomaly_detection",
+        "competitor_analysis",
+        "user_input"
+      ],
+      "default": "llm_generation"
+    },
+    "simulated_impact_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "LLM-simulated impact score, 0-100"
+    },
+    "simulated_risk_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "simulated_ranking_delta": {
+      "type": "number",
+      "default": 0,
+      "description": "Predicted ranking positions improved"
+    },
+    "simulation_results": {
+      "type": "string",
+      "description": "Full JSON of simulation output"
+    },
+    "implementation_plan": {
+      "type": "string",
+      "description": "Step-by-step plan to implement this idea"
+    },
+    "why_novel": {
+      "type": "string",
+      "description": "What makes this idea different from existing approaches"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "simulating",
+        "tested",
+        "promoted",
+        "archived",
+        "rejected"
+      ],
+      "default": "idea"
+    },
+    "promoted_to_entity": {
+      "type": "string",
+      "description": "Entity type this idea was promoted to (e.g. Capability, RankingMethod)"
+    },
+    "promoted_to_id": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "simulated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "promoted_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

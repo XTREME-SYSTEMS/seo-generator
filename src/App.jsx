@@ -37,6 +37,7 @@ import ModelLab from '@/pages/ModelLab';
 import AgentControl from '@/pages/AgentControl';
 import VisionCortex from '@/pages/VisionCortex';
 import VisionCortexChat from '@/pages/VisionCortexChat';
+import UltimateVision from '@/pages/UltimateVision';
 import Capabilities from '@/pages/Capabilities';
 import UrlCommand from '@/pages/UrlCommand';
 import Ecosystem from '@/pages/Ecosystem';
@@ -121,6 +122,7 @@ const AuthenticatedApp = () => {
           <Route path="/agents" element={<AgentControl />} />
           <Route path="/vision-cortex" element={<VisionCortex />} />
           <Route path="/vision-cortex-chat" element={<VisionCortexChat />} />
+          <Route path="/ultimate-vision" element={<UltimateVision />} />
           <Route path="/capabilities" element={<Capabilities />} />
           <Route path="/url-command" element={<UrlCommand />} />
           <Route path="/ecosystem" element={<Ecosystem />} />

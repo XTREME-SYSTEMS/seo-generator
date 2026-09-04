@@ -1,0 +1,47 @@
+{
+  "description": "Analyzes internal link structure every 12 hours. Fetches page HTML, maps the internal link graph, identifies orphan pages and low-link pages, and suggests internal links to distribute authority.",
+  "name": "Internal Link Optimizer Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "internal_link_optimizer_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "optimize_internal_links": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "InternalLinkOptimizer",
+            "args": {
+              "limit": 20
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Optimize Internal Links",
+            "description": "Analyze link graph and suggest internal links"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
