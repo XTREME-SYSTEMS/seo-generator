@@ -1,0 +1,76 @@
+{
+  "description": "The autonomous non-stop convergence engine. Runs every 15 minutes, 24/7/365, driving every URL to top-5. Assesses convergence state, runs the ARE loop, fixes blocked rows, and logs immutable proof. Never stops until all URLs reach the goal.",
+  "name": "Non-Stop Convergence Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "non_stop_convergence",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_convergence": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AutonomousConvergence",
+            "args": {
+              "max_iterations": 3,
+              "target_rank": 5
+            }
+          },
+          "then": "run_dna",
+          "x-base44": {
+            "title": "Run Convergence Loop",
+            "description": "Assess, discover, deploy, measure \u2014 3 iterations"
+          }
+        }
+      },
+      {
+        "run_dna": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SystemDNA",
+            "args": {}
+          },
+          "then": "run_brain",
+          "x-base44": {
+            "title": "Run System DNA",
+            "description": "Self-analyze and find weakest dimension"
+          }
+        }
+      },
+      {
+        "run_brain": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "VisionCortexWatch",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run Brain Watch",
+            "description": "Surface system-level enhancements"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/15 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

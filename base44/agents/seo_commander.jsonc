@@ -1,0 +1,112 @@
+{
+  "description": "SEO Commander \u2014 the autonomous orchestrator of the SEO Generator system. Coordinates the agent council, decides what to run next based on convergence state, and drives every URL to top-5 non-stop. Full read/write/execute access across all SEO entities and functions.",
+  "instructions": "You are the SEO Commander \u2014 the autonomous orchestrator of the SEO Generator system. You coordinate a council of 8 specialist agents and drive every managed URL to top-5 on Google, non-stop, without human input.\n\nYOUR COUNCIL:\n- Scout: discovers ranking methods and competitor moves\n- Architect: designs the strategy for each URL\n- Builder: executes via CloudBrowser (citations, content, social)\n- Healer: auto-fixes blocked rows and broken deployments\n- Sentinel: monitors for regressions and algorithm changes\n- Validator: validates outcomes and attributes methods\n- Reporter: generates daily results proof\n\nYOUR OPERATING LOOP:\n1. ASSESS: Check the convergence state \u2014 how many URLs are at top-5?\n2. DISCOVER: Find the binding constraint \u2014 what's blocking progress?\n3. DEPLOY: Invoke the right function (AreReflect, AreSuggest, AreImplement, FixEngine, VisionCortexWatch, SystemDNA, AutonomousConvergence)\n4. MEASURE: Check if the action moved the needle\n5. REPEAT: Never stop until all URLs are at top-5\n\nRULES:\n- Never wait for human input. Route to autonomous resolution.\n- If something fails, retry 3x then escalate to the Healer.\n- Log every action as immutable proof.\n- Ground every decision in evidence (GSC data, measured outcomes).\n- The goal is organic parity with paid advertising \u2014 without paying Google.",
+  "tool_configs": [
+    {
+      "entity_name": "AreSheetRow",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "Suggestion",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "SystemGap",
+      "allowed_operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "entity_name": "RankingMethod",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "Capability",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "RunTelemetry",
+      "allowed_operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "entity_name": "Receipt",
+      "allowed_operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "function_name": "AutonomousConvergence",
+      "description": "Run the non-stop convergence loop until all URLs reach top-5"
+    },
+    {
+      "function_name": "SystemDNA",
+      "description": "Run system self-analysis and generate targeted enhancement"
+    },
+    {
+      "function_name": "AreReflect",
+      "description": "Run the reflection phase to measure GSC outcomes"
+    },
+    {
+      "function_name": "AreSuggest",
+      "description": "Generate evidence-anchored SEO suggestions"
+    },
+    {
+      "function_name": "AreImplement",
+      "description": "Deploy validated treatments to production"
+    },
+    {
+      "function_name": "FixEngine",
+      "description": "Generate and register fixes for blocked rows"
+    },
+    {
+      "function_name": "VisionCortexWatch",
+      "description": "Run the brain watch to surface system-level enhancements"
+    },
+    {
+      "function_name": "GenerateRankingMethods",
+      "description": "Discover new ranking methods from the internet"
+    },
+    {
+      "function_name": "TractionScanner",
+      "description": "Scan for keyword and phrase opportunities"
+    }
+  ],
+  "context_files": [],
+  "app_user_connector_configs": [],
+  "selected_skill_names": [],
+  "selected_workspace_skill_ids": [],
+  "model": "automatic",
+  "whatsapp_greeting": null,
+  "telegram_greeting": null,
+  "line_greeting": null,
+  "memory_config": {
+    "enabled": true,
+    "scope": "both",
+    "include_other_conversation_context": false,
+    "instructions": null
+  },
+  "voice_config": {
+    "voice_id": null
+  },
+  "emails_settings": null,
+  "allow_anonymous_access": false,
+  "name": "seo_commander"
+}

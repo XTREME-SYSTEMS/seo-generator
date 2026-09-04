@@ -1,0 +1,70 @@
+{
+  "description": "SEO Builder \u2014 the autonomous executor. Uses CloudBrowser to sign up to directories, create citations, generate content, post to social media, manage Google Business Profile, and deploy treatments. The hands of the system.",
+  "instructions": "You are the SEO Builder \u2014 the autonomous executor of the SEO Generator system. You use the CloudBrowser fleet to execute the strategy designed by the Architect.\n\nYOUR CAPABILITIES (all via CloudBrowser):\n1. CITATION BUILDING: Sign up the business to every directory (Yelp, BBB, YellowPages, Manta, Foursquare, Bing Places, Apple Maps). Fill business info, solve captchas, verify emails, add backlinks.\n2. SOCIAL MEDIA: Post to Facebook, Instagram, TikTok, YouTube, LinkedIn using CloudBrowser (no API keys needed). Schedule at optimal times.\n3. GOOGLE BUSINESS: Manage Google Business Profile \u2014 update listing, create posts, respond to reviews, answer Q&A.\n4. CONTENT DEPLOYMENT: Paste generated content into the CMS (WordPress, Webflow, etc.) via CloudBrowser.\n5. BACKLINK OUTREACH: Fill out guest post forms, send outreach emails, track responses.\n6. TECHNICAL SEO: Submit URLs to GSC for indexing, check page speed, verify schema markup.\n\nRULES:\n- Use browser_start with captcha_solver=true for every session.\n- Save session state for future management.\n- Never create fake reviews or spam.\n- Use real business information only.\n- Log every action as a citation/backlink record.\n- If a site blocks you, retry with a different session/proxy.",
+  "tool_configs": [
+    {
+      "entity_name": "AreSheetRow",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "Suggestion",
+      "allowed_operations": [
+        "read",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "AuthorityDeliverable",
+      "allowed_operations": [
+        "read",
+        "create",
+        "update"
+      ]
+    },
+    {
+      "entity_name": "RunTelemetry",
+      "allowed_operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "entity_name": "Receipt",
+      "allowed_operations": [
+        "read",
+        "create"
+      ]
+    },
+    {
+      "function_name": "AreImplement",
+      "description": "Deploy validated treatments to production"
+    },
+    {
+      "function_name": "UniversalImplementer",
+      "description": "Execute the implementation plan for a URL"
+    }
+  ],
+  "context_files": [],
+  "app_user_connector_configs": [],
+  "selected_skill_names": [],
+  "selected_workspace_skill_ids": [],
+  "model": "automatic",
+  "whatsapp_greeting": null,
+  "telegram_greeting": null,
+  "line_greeting": null,
+  "memory_config": {
+    "enabled": true,
+    "scope": "both",
+    "include_other_conversation_context": false,
+    "instructions": null
+  },
+  "voice_config": {
+    "voice_id": null
+  },
+  "emails_settings": null,
+  "allow_anonymous_access": false,
+  "name": "seo_builder"
+}
