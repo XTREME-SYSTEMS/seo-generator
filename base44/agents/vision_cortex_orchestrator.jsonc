@@ -164,7 +164,7 @@
     },
     {
       "function_name": "EvolutionEngine",
-      "description": "The learn-and-grow brain \u2014 generate novel ideas, simulate, score, and promote winners"
+      "description": "The learn-and-grow brain \u2014 generates novel ideas, simulates, scores, and promotes winners"
     },
     {
       "function_name": "AutonomousSystemImplementer",
@@ -212,7 +212,7 @@
     },
     {
       "function_name": "AutoHealingEscalation",
-      "description": "Escalate failed fixes through increasingly aggressive approaches"
+      "description": "Escalates failed fixes through increasingly aggressive approaches"
     },
     {
       "function_name": "ValidateSystem",
@@ -288,47 +288,47 @@
     },
     {
       "function_name": "CompetitorWatchdog",
-      "description": "Monitor competitor pages for changes and auto-respond"
+      "description": "Monitors competitor pages for changes and auto-responds"
     },
     {
       "function_name": "BacklinkTracker",
-      "description": "Monitor backlink velocity and detect new/lost links"
+      "description": "Monitors backlink velocity and detects new/lost links"
     },
     {
       "function_name": "CoreWebVitalsMonitor",
-      "description": "Analyze page speed and generate CWV fix suggestions"
+      "description": "Analyzes page speed and generates CWV fix suggestions"
     },
     {
       "function_name": "InternalLinkOptimizer",
-      "description": "Analyze internal link graph and suggest links for orphan pages"
+      "description": "Analyzes internal link graph and suggests links for orphan pages"
     },
     {
       "function_name": "SchemaValidator",
-      "description": "Extract and validate JSON-LD schema markup on pages"
+      "description": "Extracts and validates JSON-LD schema markup on pages"
     },
     {
       "function_name": "GoogleBusinessProfileSync",
-      "description": "Generate Google Business Profile posts and Q&A content"
+      "description": "Generates Google Business Profile posts and Q&A content"
     },
     {
       "function_name": "MultiPlatformSocialSync",
-      "description": "Generate multi-platform social media content"
+      "description": "Generates multi-platform social media content"
     },
     {
       "function_name": "AnomalyDetection",
-      "description": "Detect sudden traffic/ranking drops and investigate causes"
+      "description": "Detects sudden traffic/ranking drops and investigates causes"
     },
     {
       "function_name": "ABTestRunner",
-      "description": "A/B test treatment variants in the twin and promote winners"
+      "description": "A/B tests treatment variants in the twin and promotes winners"
     },
     {
       "function_name": "CrossDomainAuthorityBuilder",
-      "description": "Suggest cross-links between owned domains to distribute authority"
+      "description": "Suggests cross-links between owned domains"
     },
     {
       "function_name": "PredictiveRankingModel",
-      "description": "Predict which URLs will reach top-5 fastest using historical data"
+      "description": "Predicts which URLs will reach top-5 fastest"
     }
   ],
   "context_files": [],
