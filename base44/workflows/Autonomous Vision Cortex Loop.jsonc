@@ -1,0 +1,45 @@
+{
+  "description": "The master autonomous loop. Runs every hour, 24/7/365. Executes the full Vision Cortex Orchestrator cycle: audit \u2192 reflect \u2192 discover \u2192 suggest \u2192 implement \u2192 validate \u2192 heal \u2192 converge \u2192 run prompts. This is the persistent engine that follows the vision and strategy non-stop, auto-fixing, auto-healing, auto-hardening, auto-optimizing, and auto-implementing all capabilities.",
+  "name": "Autonomous Vision Cortex Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "autonomous_vision_cortex_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_orchestrator": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "VisionCortexOrchestrator",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run Vision Cortex Orchestrator",
+            "description": "Execute the full autonomous cycle: audit, reflect, discover, suggest, implement, validate, heal, converge, run prompts"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

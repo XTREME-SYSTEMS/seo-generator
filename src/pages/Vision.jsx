@@ -4,6 +4,7 @@ import PageHeader from '@/components/kit/PageHeader';
 import Panel from '@/components/kit/Panel';
 import StatusPill from '@/components/kit/StatusPill';
 import { Copy, Check, Target, Rocket, Brain, Globe, Zap, Eye, Crosshair, Bot, Network, TrendingUp } from 'lucide-react';
+import AutonomousSystemPanel from '@/components/vision/AutonomousSystemPanel';
 
 const MASTER_PROMPT = `You are the Search Dominance OS — an autonomous search-ranking weapon.
 
@@ -54,7 +55,7 @@ const MOAT_ELEMENTS = [
 
 export default function Vision() {
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState('strategy');
+  const [activeTab, setActiveTab] = useState('autonomous');
 
   async function copyPrompt() {
     await navigator.clipboard.writeText(MASTER_PROMPT);
@@ -99,16 +100,21 @@ export default function Vision() {
 
       {/* Tab Navigation */}
       <div className="mb-6 flex gap-1 border-b border-border">
-        {['strategy', 'pillars', 'moat', 'prompt'].map((tab) => (
+        {['autonomous', 'strategy', 'pillars', 'moat', 'prompt'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${activeTab === tab ? 'border-b-2 border-primary text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
           >
-            {tab === 'prompt' ? 'Master Prompt' : tab}
+            {tab === 'prompt' ? 'Master Prompt' : tab === 'autonomous' ? 'Autonomous System' : tab}
           </button>
         ))}
       </div>
+
+      {/* Autonomous System */}
+      {activeTab === 'autonomous' && (
+        <AutonomousSystemPanel />
+      )}
 
       {/* Strategy Phases */}
       {activeTab === 'strategy' && (
