@@ -125,6 +125,49 @@ export default async function (req) {
       await svc.entities.Asymmetry.bulkCreate(found.slice(i, i + 400));
     }
 
+    // Bridge: upsert AreSheetRow (the loop's working table) from detected asymmetries
+    // so AreSuggest/AreImplement read a single unified url×query×gap table.
+    const existingRows = await svc.entities.AreSheetRow.list('-created_date', 500);
+    const rowByKey = new Map(existingRows.map((r) => [r.row_key, r]));
+    const gapMap = { A2_THRESHOLD: 'TECHNICAL', A1_LATENCY: 'TECHNICAL', A4_INTENT: 'INTENT', A8_CANNIBALIZATION: 'SEO' };
+    const toCreate = [];
+    const updateById = new Map();
+    for (const f of found) {
+      const query = f.query || '';
+      const rowKey = `${f.client_id || 'unassigned'}|${f.url}|${query}`;
+      const agg = query ? perUrlQuery.get(`${normalize(f.url)}||${query}`) : null;
+      const pos = agg && agg.positions.length ? avg(agg.positions) : null;
+      const baseFields = {
+        client_id: f.client_id || null,
+        url: f.url,
+        query,
+        row_key: rowKey,
+        index_state: f.index_state || 'UNOBSERVED',
+        canonical_agrees: f.canonical_agrees ?? false,
+        avg_position: pos,
+        impressions: agg ? agg.impressions : 0,
+        clicks: agg ? agg.clicks : 0,
+        ctr: agg && agg.impressions ? agg.clicks / agg.impressions : 0,
+        asymmetry_class: f.asymmetry_class,
+        targeted_system: f.targeted_system,
+        gap_type: gapMap[f.asymmetry_class] || 'SEO',
+        recommended_treatment: f.recommended_treatment,
+        evidence_tier: f.evidence_tier,
+        priority_score: f.priority_score,
+        last_reflected_at: nowIso,
+      };
+      const existing = rowByKey.get(rowKey);
+      if (existing && (existing.status === 'open' || existing.status === 'queued')) {
+        const prev = updateById.get(existing.id);
+        if (!prev || (f.priority_score || 0) > (prev.priority_score || 0)) updateById.set(existing.id, { id: existing.id, ...baseFields });
+      } else if (!existing) {
+        toCreate.push({ ...baseFields, status: 'open', score: 0, score_delta_7d: 0 });
+      }
+    }
+    if (toCreate.length) await svc.entities.AreSheetRow.bulkCreate(toCreate);
+    const toUpdate = [...updateById.values()];
+    if (toUpdate.length) await svc.entities.AreSheetRow.bulkUpdate(toUpdate);
+
     await svc.entities.RunTelemetry.create({
       run_type: 'opportunity_generation', subsystem: 'search', status: 'ok',
       started_at: nowIso, duration_ms: Date.now() - startedAt, records_written: found.length,
@@ -145,6 +188,8 @@ function mk(t, query, cls, system, boundary, signal, treatment, p, value, hours,
     client_id: t.client_id || null,
     url: t.url,
     query: query || null,
+    index_state: t.index_state || 'UNOBSERVED',
+    canonical_agrees: t.canonical_agrees ?? false,
     asymmetry_class: cls,
     signal,
     targeted_system: system,

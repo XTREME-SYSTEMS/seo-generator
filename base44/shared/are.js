@@ -59,12 +59,12 @@ export const DEPLOY_GUIDELINES = [
 
 export const REGRESSION_TOLERANCE = 5; // score points
 
-export function validateDeploy(row, snapshotExists) {
+export function validateDeploy(row, snapshotExists, allowUnassigned = false) {
   const failed = [];
   if (!isShippable(row.evidence_tier)) failed.push('G1_EVIDENCE_ANCHOR');
   if (violatesSpamPolicy(row.recommended_treatment || '')) failed.push('G2_NO_SPAM_TACTIC');
   if (!row.rank_provenance) failed.push('G3_PROVENANCE_LABELED');
-  if (!row.client_id) failed.push('G4_TENANT_SCOPED');
+  if (!row.client_id && !allowUnassigned) failed.push('G4_TENANT_SCOPED');
   if (!snapshotExists) failed.push('G5_SNAPSHOT_EXISTS');
   if (row.canonical_agrees === false && row.index_state === 'DUPLICATE_ALTERNATE') failed.push('G7_CANONICAL_INTACT');
   if (['EXCLUDED_NOINDEX', 'EXCLUDED_ROBOTS'].includes(row.index_state)) failed.push('G8_INDEXABLE');

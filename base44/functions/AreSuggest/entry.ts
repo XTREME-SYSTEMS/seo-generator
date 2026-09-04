@@ -135,6 +135,81 @@ export default async function (req) {
       });
     }
 
+    // Autopilot pool: unassigned URLs (client_id null) — keeps the loop autonomous
+    // without requiring manual property→client mapping.
+    const assignedIds = new Set(clients.filter(Boolean).map((c) => c.id));
+    const unassignedRows = (await svc.entities.AreSheetRow.filter({}, '-priority_score', 200))
+      .filter((r) => !r.client_id || !assignedIds.has(r.client_id))
+      .filter((r) => r.status !== 'goal_met' && r.gap_type !== 'NONE')
+      .slice(0, 12);
+    if (unassignedRows.length) {
+      const openUnassigned = await svc.entities.Suggestion.filter({ status: 'new' }, '-created_at', 500);
+      const covered = new Set(openUnassigned.map((s) => `${s.url}|${s.query}`));
+      const rows = unassignedRows.filter((r) => !covered.has(`${r.url}|${r.query}`));
+      if (rows.length) {
+        const prompt = [
+          'You are the recommendation engine of an Autonomous Ranking Engine. Goal: move each URL/query to TOP 3 on Google.',
+          'EVIDENCE-FIRST: every suggestion must be anchored to a Google-confirmed ranking factor (T0/T1) or a measured experiment (T2).',
+          'STRUCTURALLY FORBIDDEN: PBNs, paid links, link schemes, llms.txt, brand impersonation, cloaking, doorway pages, scaled content abuse.',
+          'Autopilot pool — URLs not yet assigned to a specific client business. Infer industry from the URL/content context.',
+          'Validated methods available: ' + ((await svc.entities.RankingMethod.filter({ status: 'validated' }, '-proof_level', 25)).map((m) => `${m.name} (${m.mechanism || 'n/a'})`).join('; ') || 'none yet — use T1-confirmed factors'),
+          'Current rows needing work. avg_position is Google Search Console 28-day average position (measured).',
+          ...rows.map((r) => `- url=${r.url} | query="${r.query}" | rank=${r.rank ?? 'null'} | avg_position=${r.avg_position ?? 'null'} | index=${r.index_state} | impressions=${r.impressions} | clicks=${r.clicks} | gap=${r.gap_type} | asymmetry=${r.asymmetry_class || 'none'} | system=${r.targeted_system}`),
+          'For EACH row, return ONE concrete, specific, immediately actionable change to THAT page for THAT query: the exact title tag / H1 / passage / schema / internal link to add or rewrite. Quote the proposed copy where relevant.',
+          'Estimate p_cross (0-1), delta_traffic (monthly visits), hours_estimate.',
+        ].join('\n');
+
+        const res = await svc.integrations.Core.InvokeLLM({
+          prompt, add_context_from_internet: true, model: 'gemini_3_flash',
+          response_json_schema: {
+            type: 'object',
+            properties: { suggestions: { type: 'array', items: {
+              type: 'object', properties: {
+                url: { type: 'string' }, query: { type: 'string' },
+                kind: { type: 'string', enum: ['enhancement', 'upgrade', 'gap_fill', 'fix', 'hardening'] },
+                title: { type: 'string' }, rationale: { type: 'string' }, treatment: { type: 'string' },
+                gap_type: { type: 'string' }, evidence_tier: { type: 'string' }, evidence_anchor: { type: 'string' },
+                p_cross: { type: 'number' }, delta_traffic: { type: 'number' }, hours_estimate: { type: 'number' },
+              },
+            } } },
+          },
+        });
+
+        const allowedGaps = ['SEO', 'AEO', 'SAO', 'TECHNICAL', 'CONTENT', 'AUTHORITY', 'INTENT', 'SURFACE', 'SYSTEM'];
+        const allowedTiers = ['T0_GOOGLE_DOC', 'T1_CONFIRMED_SYSTEM', 'T2_EXPERIMENT', 'T3_OBSERVATIONAL', 'T4_SINGLE_CASE', 'T5_COMMUNITY', 'T6_HYPOTHESIS'];
+        const normalizeTier = (raw) => { const t = String(raw || '').toUpperCase(); const hit = allowedTiers.find((a) => a === t || a.startsWith(`${t.split('_')[0]}_`)); return hit || 'T1_CONFIRMED_SYSTEM'; };
+        const existingTitles = new Set(openUnassigned.map((s) => (s.title || '').toLowerCase()));
+        const payload = (res.suggestions || [])
+          .map((s) => ({ ...s, evidence_tier: normalizeTier(s.evidence_tier) }))
+          .filter((s) => s.title && s.treatment)
+          .filter((s) => !violatesSpamPolicy(`${s.title} ${s.treatment} ${s.rationale || ''}`))
+          .filter((s) => isShippable(s.evidence_tier))
+          .filter((s) => !existingTitles.has(s.title.toLowerCase()))
+          .map((s) => ({
+            client_id: null, surface, url: s.url || '', query: s.query || '',
+            kind: ['enhancement', 'upgrade', 'gap_fill', 'fix', 'hardening'].includes(s.kind) ? s.kind : 'enhancement',
+            title: s.title, rationale: s.rationale || '', treatment: s.treatment,
+            gap_type: allowedGaps.includes(s.gap_type) ? s.gap_type : 'SEO',
+            evidence_tier: allowedTiers.includes(s.evidence_tier) ? s.evidence_tier : 'T1_CONFIRMED_SYSTEM',
+            evidence_anchor: s.evidence_anchor || '',
+            p_cross: Math.max(0, Math.min(1, Number(s.p_cross) || 0.2)),
+            delta_traffic: Math.max(0, Number(s.delta_traffic) || 0),
+            hours_estimate: Math.max(0.25, Number(s.hours_estimate) || 2),
+            priority_score: priorityScore(s.p_cross, s.delta_traffic, s.hours_estimate),
+            status: 'new', provenance: 'MODELED', created_at: new Date().toISOString(),
+          }));
+        if (payload.length) {
+          await svc.entities.Suggestion.bulkCreate(payload);
+          created.push({ client: 'autopilot (unassigned)', count: payload.length });
+        }
+        await svc.entities.ReflectionRecord.create({
+          client_id: null, cycle_id: cycleId, phase: 'recommend',
+          deployed: `${payload.length} evidence-anchored suggestions (autopilot pool)`,
+          validation_status: 'not_applicable', provenance: 'MODELED', occurred_at: new Date().toISOString(),
+        });
+      }
+    }
+
     return Response.json({ ok: true, cycle_id: cycleId, created });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

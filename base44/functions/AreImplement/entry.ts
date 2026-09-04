@@ -109,6 +109,48 @@ export default async function (req) {
       }
     }
 
+    // Autopilot pool: unassigned rows (client_id null).
+    const assignedIds = new Set(clients.filter(Boolean).map((c) => c.id));
+    const unassigned = (await svc.entities.AreSheetRow.filter({}, '-priority_score', 200))
+      .filter((r) => (!r.client_id || !assignedIds.has(r.client_id)) && r.status === 'open' && r.gap_type !== 'NONE' && !r.binding_constraint)
+      .slice(0, batchSize);
+    if (unassigned.length) {
+      let deployed = 0;
+      for (const row of unassigned) {
+        const priorGood = await svc.entities.ModelSnapshot.filter(
+          { client_id: null, url: row.url, is_last_known_good: true }, '-captured_at', 5,
+        );
+        if (priorGood.length) await svc.entities.ModelSnapshot.bulkUpdate(priorGood.map((s) => ({ id: s.id, is_last_known_good: false })));
+        const snapshot = await svc.entities.ModelSnapshot.create({
+          client_id: null, url: row.url, label: `pre-deploy ${row.gap_type} · ${row.query}`, cycle_id: cycleId,
+          config: JSON.stringify({ query: row.query, index_state: row.index_state, canonical_agrees: row.canonical_agrees, rank: row.rank, impressions: row.impressions, clicks: row.clicks, ctr: row.ctr, score: row.score, gap_type: row.gap_type, treatment: row.recommended_treatment }),
+          score_at_snapshot: row.score || 0, is_last_known_good: true, captured_at: new Date().toISOString(),
+        });
+        const validation = validateDeploy(row, true, true);
+        const approved = validation.passed;
+        await svc.entities.AreSheetRow.update(row.id, {
+          status: approved ? 'queued' : 'blocked',
+          binding_constraint: approved ? 'Awaiting on-page implementation — no CMS/hosting connection for this domain.' : `Deploy guidelines failed: ${validation.failed.join(', ')}`,
+        });
+        const expectedScore = Math.min(100, (row.score || 0) + expectedLift(row));
+        await svc.entities.ReflectionRecord.create({
+          client_id: null, cycle_id: cycleId, phase: approved ? 'recommend' : 'validate', url: row.url, query: row.query,
+          deployed: approved ? `QUEUED (not deployed): ${row.recommended_treatment}` : 'refused — guidelines not met',
+          expected: approved ? `${row.gap_type} treatment on ${row.targeted_system}; score ${row.score} -> ~${expectedScore} once implemented` : validation.failed.join(', '),
+          expected_score: expectedScore, validation_status: 'not_applicable', failed_guidelines: validation.failed, rolled_back_to: '', provenance: 'MODELED', occurred_at: new Date().toISOString(),
+        });
+        await svc.entities.Receipt.create({
+          client_id: null, kind: 'gate_decision',
+          summary: approved ? `Queued ${row.gap_type} treatment · ${row.query} (autopilot, awaiting implementation)` : `Refused · ${row.query} · ${validation.failed.join(', ')}`,
+          detail: `${row.url} | snapshot=${snapshot.id} | cycle=${cycleId}`, source: 'AreImplement', provenance: 'MEASURED', occurred_at: new Date().toISOString(),
+        });
+        if (approved) deployed++;
+        results.push({ client: 'autopilot (unassigned)', url: row.url, query: row.query, queued: approved, failed: validation.failed });
+      }
+      if (!results.find((r) => r.client === 'autopilot (unassigned)')) results.push({ client: 'autopilot (unassigned)', deployed: 0, note: 'nothing eligible' });
+      else results.push({ client: 'autopilot (unassigned)', deployed });
+    }
+
     return Response.json({ ok: true, cycle_id: cycleId, results });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
