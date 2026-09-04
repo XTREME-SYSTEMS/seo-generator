@@ -84,32 +84,41 @@ export default async function (req: Request): Promise<Response> {
       }
     }
 
-    // ── 2. AUDIT — find the binding constraint ──
-    await runPhase('audit_dna', 'SystemDNA', {});
-    await runPhase('audit_brain', 'VisionCortexWatch', {});
+    // ── 2-3. AUDIT + REFLECT (parallel — independent phases) ──
+    await Promise.all([
+      runPhase('audit_dna', 'SystemDNA', {}),
+      runPhase('audit_brain', 'VisionCortexWatch', {}),
+      runPhase('reflect', 'SystemSelfReflection', { cycle_id: cycleId, vision: VISION }),
+    ]);
 
-    // ── 3. REFLECT — compare state vs vision ──
-    await runPhase('reflect', 'SystemSelfReflection', { cycle_id: cycleId, vision: VISION });
+    // ── 4. DISCOVER (parallel — independent phases) ──
+    await Promise.all([
+      runPhase('discover_capabilities', 'DiscoverCapabilities', {}),
+      runPhase('discover_methods', 'GenerateRankingMethods', {}),
+    ]);
 
-    // ── 4. DISCOVER — find new methods and capabilities ──
-    await runPhase('discover_capabilities', 'DiscoverCapabilities', {});
-    await runPhase('discover_methods', 'GenerateRankingMethods', {});
-
-    // ── 5. SUGGEST — generate evidence-anchored suggestions ──
+    // ── 5. SUGGEST ──
     await runPhase('suggest', 'AreSuggest', {});
 
-    // ── 6. IMPLEMENT — deploy treatments and implement capabilities ──
-    await runPhase('implement_capabilities', 'AutonomousSystemImplementer', { cycle_id: cycleId });
-    await runPhase('implement_treatments', 'AreImplement', {});
+    // ── 6. IMPLEMENT (parallel — independent) ──
+    await Promise.all([
+      runPhase('implement_capabilities', 'AutonomousSystemImplementer', { cycle_id: cycleId }),
+      runPhase('implement_treatments', 'AreImplement', {}),
+    ]);
 
-    // ── 7. VALIDATE — validate outcomes ──
-    await runPhase('validate', 'ValidateSystem', {});
+    // ── 7-8. VALIDATE + HEAL (parallel — independent) ──
+    await Promise.all([
+      runPhase('validate', 'ValidateSystem', {}),
+      runPhase('heal', 'FixEngine', {}),
+    ]);
 
-    // ── 8. HEAL — auto-fix blocked rows ──
-    await runPhase('heal', 'FixEngine', {});
-
-    // ── 9. CONVERGE — drive URLs to top-5 ──
-    await runPhase('converge', 'AutonomousConvergence', { max_iterations: 3, target_rank: 5 });
+    // ── 9. CONVERGE — drive URLs to top-5 (runs last, depends on everything above) ──
+    // Note: the Non-Stop Convergence Loop workflow also handles this every 15 min,
+    // so we skip it here to avoid duplication and keep the orchestrator fast.
+    if (!skipPhases.has('converge')) {
+      console.log('[VisionCortexOrchestrator] Skipping converge phase (handled by Non-Stop Convergence Loop workflow every 15 min)');
+      results.phases.converge = { skipped: true, reason: 'handled by Non-Stop Convergence Loop workflow' };
+    }
 
     // ── 10. PROMPTS — execute ready prompts from the Prompt Library ──
     for (const p of prompts) {
