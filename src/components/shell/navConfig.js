@@ -3,7 +3,7 @@ import {
   ShieldCheck, Radar,   Sparkles, GitCompareArrows, Cpu, Search, BrainCircuit, Bot, Zap,
   Globe2, Network, Cable, Activity, KeyRound, Settings, Table2,
   FileCheck2, Server, Crosshair, Rocket, Target, Rows3, TrendingUp, Boxes, Compass, Repeat,
-  ListChecks, ClipboardList, Plug, Wand2, BarChart3, BookMarked,
+  ListChecks, ClipboardList, Plug, Wand2, BarChart3, BookMarked, Eye, CalendarDays,
 } from 'lucide-react';
 
 // Route paths + group structure mirror the Vite shell (src/components/Shell.tsx) exactly.
@@ -12,6 +12,8 @@ export const NAV_GROUPS = [
     label: 'Ranking Engine',
     items: [
       { to: '/start', label: 'Start Here', icon: Rocket },
+      { to: '/vision', label: 'The Vision', icon: Eye },
+      { to: '/daily', label: 'Daily Results', icon: CalendarDays },
       { to: '/scoreboard', label: 'URL Scoreboard', icon: Target },
       { to: '/url-command', label: 'URL Command', icon: ClipboardList },
       { to: '/ranking-progress', label: 'Ranking Progress', icon: LineChart },
@@ -56,6 +58,7 @@ export const NAV_GROUPS = [
       { to: '/agents', label: 'Agent Control', icon: Bot },
       { to: '/vision-cortex', label: 'Vision Cortex', icon: BrainCircuit },
       { to: '/capabilities', label: 'Capabilities', icon: ListChecks },
+      { to: '/cloud-browser', label: 'CloudBrowser', icon: Globe2 },
       { to: '/implement', label: 'Universal Implementer', icon: Wand2 },
       { to: '/traction', label: 'Traction Scanner', icon: BarChart3 },
       { to: '/prompts', label: 'Prompt Library', icon: BookMarked },

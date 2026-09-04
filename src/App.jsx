@@ -42,6 +42,9 @@ import Ecosystem from '@/pages/Ecosystem';
 import UniversalImplementer from '@/pages/UniversalImplementer';
 import TractionScanner from '@/pages/TractionScanner';
 import PromptLibrary from '@/pages/PromptLibrary';
+import Vision from '@/pages/Vision';
+import CloudBrowser from '@/pages/CloudBrowser';
+import DailyResults from '@/pages/DailyResults';
 import Domains from '@/pages/Domains';
 import Indexing from '@/pages/Indexing';
 import VercelDomains from '@/pages/VercelDomains';
@@ -122,6 +125,9 @@ const AuthenticatedApp = () => {
           <Route path="/implement" element={<UniversalImplementer />} />
           <Route path="/traction" element={<TractionScanner />} />
           <Route path="/prompts" element={<PromptLibrary />} />
+          <Route path="/vision" element={<Vision />} />
+          <Route path="/cloud-browser" element={<CloudBrowser />} />
+          <Route path="/daily" element={<DailyResults />} />
           <Route path="/domains" element={<Domains />} />
           <Route path="/indexing" element={<Indexing />} />
           <Route path="/domain-manager" element={<VercelDomains />} />
