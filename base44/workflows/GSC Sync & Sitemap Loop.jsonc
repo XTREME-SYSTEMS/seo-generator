@@ -1,0 +1,73 @@
+{
+  "description": "Syncs Google Search Console data and ingests sitemaps every 6 hours. Pulls fresh impressions/clicks/CTR/position data, discovers new URLs from sitemaps, submits them for indexing, and updates the URL inventory. This is how the system autonomously stays in sync with Google.",
+  "name": "GSC Sync & Sitemap Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "gsc_sync_sitemap_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_gsc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SyncSearchConsole",
+            "args": {}
+          },
+          "then": "sync_inventory",
+          "x-base44": {
+            "title": "Sync GSC Data",
+            "description": "Pull fresh impressions, clicks, CTR, position from Google Search Console"
+          }
+        }
+      },
+      {
+        "sync_inventory": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "UrlInventorySync",
+            "args": {}
+          },
+          "then": "submit_indexing",
+          "x-base44": {
+            "title": "Sync URL Inventory",
+            "description": "Update the URL inventory with new URLs from GSC"
+          }
+        }
+      },
+      {
+        "submit_indexing": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SearchConsoleIndex",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Submit URLs for Indexing",
+            "description": "Submit new and updated URLs to GSC for indexing"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

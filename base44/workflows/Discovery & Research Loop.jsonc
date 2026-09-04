@@ -1,0 +1,87 @@
+{
+  "description": "Discovers new ranking methods and capabilities every 12 hours. Crawls the internet for the latest SEO/AEO/AI-search techniques, discovers new capabilities, scans for keyword traction opportunities, and benchmarks against competitors. This is how the system persistently discovers new ways to rank.",
+  "name": "Discovery & Research Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "discovery_research_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "discover_capabilities": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "DiscoverCapabilities",
+            "args": {}
+          },
+          "then": "discover_methods",
+          "x-base44": {
+            "title": "Discover New Capabilities",
+            "description": "Research the latest 2025-2026 SEO/AEO/AI-search capabilities"
+          }
+        }
+      },
+      {
+        "discover_methods": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "GenerateRankingMethods",
+            "args": {}
+          },
+          "then": "scan_traction",
+          "x-base44": {
+            "title": "Discover Ranking Methods",
+            "description": "Crawl Reddit, LinkedIn, Google leaks, YouTube, patents for new methods"
+          }
+        }
+      },
+      {
+        "scan_traction": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "TractionScanner",
+            "args": {}
+          },
+          "then": "monitor_algorithm",
+          "x-base44": {
+            "title": "Scan for Traction",
+            "description": "Scan for emerging keyword opportunities and trending searches"
+          }
+        }
+      },
+      {
+        "monitor_algorithm": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AlgorithmUpdateMonitor",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Monitor Algorithm Changes",
+            "description": "Check for Google algorithm updates and adjust the sprint plan"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */12 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

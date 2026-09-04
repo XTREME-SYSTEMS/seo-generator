@@ -1,0 +1,59 @@
+{
+  "description": "Measures SERP rankings every hour. Uses the CloudBrowser fleet to query Google, extract organic rankings, and persist the data. This is how the system persistently measures its own performance and the performance of competitors.",
+  "name": "SERP Scraping Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "serp_scraping_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "measure_serp": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SerpMeasurement",
+            "args": {}
+          },
+          "then": "detect_asymmetries",
+          "x-base44": {
+            "title": "Measure SERP Rankings",
+            "description": "Scrape Google SERPs and measure rankings for all tracked URLs"
+          }
+        }
+      },
+      {
+        "detect_asymmetries": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "DetectAsymmetries",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Detect Asymmetries",
+            "description": "Compare current rankings to expected rankings and classify gaps"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

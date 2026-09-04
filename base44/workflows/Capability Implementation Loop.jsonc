@@ -1,0 +1,45 @@
+{
+  "description": "Implements unimplemented capabilities every 2 hours. Finds every capability in the registry that is not yet implemented, generates an implementation plan, invokes the right backend function, and marks it as implemented. Auto-heals any failures. This is how the system persistently closes the capability gap.",
+  "name": "Capability Implementation Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "capability_implementation_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "implement_capabilities": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AutonomousSystemImplementer",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Implement Unimplemented Capabilities",
+            "description": "Find and implement all capabilities that have not been implemented yet"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 */2 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

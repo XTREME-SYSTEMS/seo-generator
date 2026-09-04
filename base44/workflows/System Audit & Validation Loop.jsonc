@@ -1,0 +1,73 @@
+{
+  "description": "Audits the system every 30 minutes. Runs the full validation suite, audits the ARE loop for compliance, and auto-fixes any failing tests or blocked rows. This is how the system persistently audits itself and corrects everything.",
+  "name": "System Audit & Validation Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "system_audit_validation_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "validate_system": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ValidateSystem",
+            "args": {}
+          },
+          "then": "audit_are",
+          "x-base44": {
+            "title": "Run Validation Suite",
+            "description": "Run all validation tests across 7 categories"
+          }
+        }
+      },
+      {
+        "audit_are": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AreAudit",
+            "args": {}
+          },
+          "then": "fix_blocked",
+          "x-base44": {
+            "title": "Audit ARE Loop",
+            "description": "Audit the ARE loop for evidence-first compliance"
+          }
+        }
+      },
+      {
+        "fix_blocked": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "FixEngine",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Auto-Fix Blocked Rows",
+            "description": "Find and fix all blocked rows and failing tests"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/30 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
