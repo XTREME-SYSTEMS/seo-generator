@@ -215,6 +215,10 @@
     {
       "function_name": "UniversalImplementer",
       "description": "Execute the implementation plan for a URL"
+    },
+    {
+      "function_name": "SitemapIngestion",
+      "description": "Fetch and parse sitemap XML to discover and ingest new URLs"
     }
   ],
   "context_files": [],
