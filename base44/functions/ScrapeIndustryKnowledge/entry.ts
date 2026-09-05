@@ -63,15 +63,11 @@ Output strict JSON: { knowledge: [{ topic, summary, key_facts, data_points, sour
     let stored = 0;
     for (const k of data.knowledge) {
       await svc.entities.ResearchFinding.create({
-        topic: k.topic,
-        industry,
-        summary: k.summary,
-        key_facts: k.key_facts || [],
-        data_points: k.data_points || [],
-        sources: k.sources || [],
-        confidence: k.confidence || 'medium',
+        topic: `${industry}: ${k.topic}`,
+        finding: k.summary,
+        source: (k.sources || []).join(', '),
         provenance: 'INFERRED',
-        discovered_at: new Date().toISOString(),
+        observed_at: new Date().toISOString(),
       }).catch(() => {});
       stored++;
     }

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.46';
+import { analyzePage } from '../../shared/pageAnalysis.ts';
 
 // ComputeIndustryBenchmarks — computes SEO benchmarks for an industry by
 // analyzing top performers. Gathers data on: average word count, page speed,
@@ -34,16 +35,8 @@ export default async function (req: Request): Promise<Response> {
         const url = `https://${domain.replace(/^https?:\/\//, '')}`;
         const resp = await fetch(url, { headers: { 'User-Agent': 'SEOGenerator-Benchmark/1.0' }, signal: AbortSignal.timeout(10000), redirect: 'follow' });
         const html = await resp.text();
-        const wordCount = html.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
-        const hasSchema = /<script[^>]+type=["']application\/ld\+json["']/i.test(html);
-        const hasFAQ = /FAQPage/i.test(html);
-        const hasLocalBusiness = /LocalBusiness/i.test(html);
-        const hasService = /"Service"/i.test(html);
-        const scriptCount = (html.match(/<script[^>]*>/gi) || []).length;
-        const imgCount = (html.match(/<img[^>]+src=/gi) || []).length;
-        const internalLinks = (html.match(/href=["']\/[^"']*["']/gi) || []).length;
-        const h2Count = (html.match(/<h2[^>]*>/gi) || []).length;
-        analyses.push({ domain, wordCount, hasSchema, hasFAQ, hasLocalBusiness, hasService, scriptCount, imgCount, internalLinks, h2Count });
+        const a = analyzePage(html, domain);
+        analyses.push({ domain, ...a });
       } catch { /* skip */ }
     }
 

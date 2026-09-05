@@ -73,15 +73,11 @@ Output strict JSON: { pricing: [{ service, price_range, price_unit, factors, com
     let stored = 0;
     for (const p of data.pricing) {
       await svc.entities.ResearchFinding.create({
-        topic: 'pricing',
-        industry,
-        summary: `${p.service}: ${p.price_range} ${p.price_unit}`,
-        key_facts: [p.price_range, `Factors: ${(p.factors || []).join(', ')}`],
-        data_points: [p.price_range],
-        sources: p.source_url ? [p.source_url] : [],
-        confidence: p.confidence || 'medium',
+        topic: `${industry}: pricing`,
+        finding: `${p.service}: ${p.price_range} ${p.price_unit}`,
+        source: p.source_url || '',
         provenance: 'INFERRED',
-        discovered_at: new Date().toISOString(),
+        observed_at: new Date().toISOString(),
       }).catch(() => {});
       stored++;
     }

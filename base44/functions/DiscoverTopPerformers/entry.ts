@@ -76,15 +76,9 @@ Output strict JSON: { performers: [{ domain, name, estimated_traffic, top_keywor
       await svc.entities.Competitor.create({
         domain: p.domain,
         name: p.name || p.domain,
-        industry,
-        strengths: p.strengths || [],
-        weaknesses: p.weaknesses || [],
-        top_keywords: p.top_keywords || [],
-        key_pages: p.key_pages || [],
-        schema_types: p.schema_types || [],
-        backlink_estimate: p.backlink_estimate || 0,
-        estimated_traffic: p.estimated_traffic || 0,
-        discovered_at: new Date().toISOString(),
+        authority_signal: p.backlink_estimate || 0,
+        content_velocity: p.estimated_traffic || 0,
+        last_observed_at: new Date().toISOString(),
       }).catch(() => {});
       stored++;
     }

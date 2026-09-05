@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.46';
+import { extractMeta, extractAll, safeUrl, fetchWithTimeout } from '../../shared/htmlUtils.ts';
 
 // TechnicalSeoAudit — scans a URL for technical SEO issues using fetch + regex.
 // Checks: title, meta, canonical, OG tags, JSON-LD schema, H1s, images, alt text,
@@ -8,18 +9,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.46';
 // Invoke: base44.functions.invoke('TechnicalSeoAudit', { url })
 // Returns: { ok, url, score, issues, meta, counts }
 
-function extractMeta(html, re) {
-  const m = html.match(re);
-  return m ? m[1] : null;
-}
-
-function extractAll(html, re) {
-  const out = [];
-  let m;
-  while ((m = re.exec(html)) !== null) out.push(m[1] || m[0]);
-  return out;
-}
-
 export default async function (req: Request): Promise<Response> {
   try {
     const base44 = createClientFromRequest(req);
@@ -28,23 +17,12 @@ export default async function (req: Request): Promise<Response> {
     const url = String(body.url || '').trim();
     if (!url) return Response.json({ error: 'url is required' }, { status: 400 });
 
-    // Validate URL
-    let parsed;
-    try { parsed = new URL(url); } catch { return Response.json({ error: 'Invalid URL' }, { status: 400 }); }
-    if (!['http:', 'https:'].includes(parsed.protocol)) return Response.json({ error: 'Only http/https allowed' }, { status: 400 });
+    const parsed = safeUrl(url);
+    if (!parsed) return Response.json({ error: 'Invalid URL (only http/https allowed)' }, { status: 400 });
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
-    let resp;
-    try {
-      resp = await fetch(url, { headers: { 'User-Agent': 'SEOGenerator-TechnicalAudit/1.0' }, redirect: 'follow', signal: controller.signal });
-    } catch (e) {
-      clearTimeout(timeout);
-      return Response.json({ error: 'Fetch failed: ' + (e?.message || 'unknown') }, { status: 502 });
-    }
-    clearTimeout(timeout);
-    const html = await resp.text();
-    const finalUrl = (() => { try { return new URL(resp.url || url); } catch { return parsed; } })();
+    const fetched = await fetchWithTimeout(url, 'SEOGenerator-TechnicalAudit/1.0');
+    if ('error' in fetched) return Response.json({ error: fetched.error }, { status: 502 });
+    const { html, finalUrl } = fetched;
 
     const metaTitle = extractMeta(html, /<title[^>]*>([^<]+)<\/title>/i);
     const metaDescription = extractMeta(html, /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) ||
@@ -55,7 +33,6 @@ export default async function (req: Request): Promise<Response> {
     const robotsTag = extractMeta(html, /<meta[^>]+name=["']robots["'][^>]+content=["']([^"']+)["']/i);
     const jsonLdBlocks = extractAll(html, /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi);
     const h1s = extractAll(html, /<h1[^>]*>([^<]+)<\/h1>/gi);
-    const h2s = extractAll(html, /<h2[^>]*>([^<]+)<\/h2>/gi);
     const imgs = html.match(/<img[^>]+src=/gi) || [];
     const imgsNoAlt = (html.match(/<img(?![^>]*\salt=)[^>]*src=/gi) || []).length;
     const internalLinks = (html.match(/href=["']\/[^"']*["']/gi) || []).length;
@@ -96,7 +73,6 @@ export default async function (req: Request): Promise<Response> {
     const low = issues.filter(i => i.severity === 'low').length;
     const score = Math.max(0, 100 - (critical * 25 + high * 10 + medium * 5 + low * 2));
 
-    // Log as receipt
     await svc.entities.Receipt.create({
       type: 'technical_seo_audit',
       url,
@@ -114,7 +90,7 @@ export default async function (req: Request): Promise<Response> {
       issues,
       summary: { critical, high, medium, low, total: issues.length },
       meta: { metaTitle, metaDescription, canonical, ogTitle, ogImage, robotsTag },
-      counts: { h1s: h1s.length, h2s: h2s.length, images: imgs.length, imgsNoAlt, internalLinks, externalLinks, wordCount, jsonLdBlocks: jsonLdBlocks.length },
+      counts: { h1s: h1s.length, h2s: extractAll(html, /<h2[^>]*>([^<]+)<\/h2>/gi).length, images: imgs.length, imgsNoAlt, internalLinks, externalLinks, wordCount, jsonLdBlocks: jsonLdBlocks.length },
       robotsTxt: robotsTxt ? 'present' : 'missing',
       sitemapXml,
       auditedAt: new Date().toISOString(),

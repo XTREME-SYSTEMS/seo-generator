@@ -71,15 +71,11 @@ Output strict JSON: { news: [{ title, summary, category, impact, action_required
     let stored = 0;
     for (const n of data.news) {
       await svc.entities.ResearchFinding.create({
-        topic: 'tech_news',
-        industry: 'SEO',
-        summary: n.summary,
-        key_facts: [n.title, n.action_required],
-        data_points: [n.category, n.impact],
-        sources: n.source_url ? [n.source_url] : [],
-        confidence: n.impact === 'high' ? 'high' : 'medium',
+        topic: `tech_news: ${n.category}`,
+        finding: `${n.title}: ${n.summary}`,
+        source: n.source_url || '',
         provenance: 'INFERRED',
-        discovered_at: new Date().toISOString(),
+        observed_at: new Date().toISOString(),
       }).catch(() => {});
       stored++;
     }
