@@ -366,7 +366,7 @@
     },
     {
       "function_name": "SiteAudit",
-      "description": "Full site audit orchestrator \u2014 scores every axis 0-100"
+      "description": "Full site audit orchestrator scoring every axis 0-100"
     },
     {
       "function_name": "CroAudit",
@@ -398,7 +398,7 @@
     },
     {
       "function_name": "ExtractDesignDNA",
-      "description": "Extracts design DNA (colors, fonts, layout) from competitors"
+      "description": "Extracts design DNA from competitor URLs"
     },
     {
       "function_name": "ResearchBestMethods",
@@ -426,7 +426,7 @@
     },
     {
       "function_name": "ScoutTechNews",
-      "description": "Scouts web for Google algorithm + SEO industry news"
+      "description": "Scouts web for Google algorithm and SEO industry news"
     },
     {
       "function_name": "ComputeIndustryBenchmarks",
