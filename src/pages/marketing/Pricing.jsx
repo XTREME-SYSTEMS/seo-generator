@@ -16,7 +16,6 @@ function Pricing() {
   const [checkingOut, setCheckingOut] = useState(null);
 
   const handleCheckout = async (planKey) => {
-    // Check if in iframe (preview)
     if (window.self !== window.top) {
       alert('Checkout works only from the published app. Please open the app in a new tab.');
       return;
@@ -58,8 +57,8 @@ function Pricing() {
             <div className="mb-4 flex justify-center">
               <img src={LOGO_URL} alt="Xtreme SEO" className="h-16 w-auto" />
             </div>
-            <h1 className="font-heading text-4xl font-bold sm:text-5xl">Choose Your Plan</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">
+            <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">Choose Your Plan</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
               From starter to enterprise. Every plan includes autonomous AI agents working 24/7 to get you to the first page.
             </p>
           </div>
@@ -67,28 +66,28 @@ function Pricing() {
           {/* Promo Code */}
           <div className="mx-auto mb-12 flex max-w-md flex-col gap-2 sm:flex-row">
             <div className="relative flex-1">
-              <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/30" />
+              <Tag className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
               <Input
                 type="text"
                 placeholder="Enter promo code"
                 value={promoCode}
                 onChange={(e) => setPromoCode(e.target.value)}
-                className="border-white/10 bg-white/5 pl-10 text-white placeholder:text-white/30"
+                className="pl-10"
               />
             </div>
             <Button
               onClick={handleValidatePromo}
               disabled={promoChecking || !promoCode.trim()}
               variant="outline"
-              className="border-[#FFD700]/30 text-[#FFD700] hover:bg-[#FFD700]/10"
+              className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10"
             >
               {promoChecking ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
             </Button>
             {promoValid?.valid && (
-              <div className="text-xs text-[#FFD700] sm:absolute sm:mt-12">{promoValid.percentOff}% off applied!</div>
+              <div className="text-xs text-[#B8860B] sm:absolute sm:mt-12">{promoValid.percentOff}% off applied!</div>
             )}
             {promoValid?.valid === false && (
-              <div className="text-xs text-red-400 sm:absolute sm:mt-12">Invalid promo code</div>
+              <div className="text-xs text-red-500 sm:absolute sm:mt-12">Invalid promo code</div>
             )}
           </div>
 
@@ -98,7 +97,7 @@ function Pricing() {
               <div
                 key={key}
                 className={`relative flex flex-col rounded-xl border p-6 ${
-                  key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.03]' : 'border-white/10 bg-white/[0.02]'
+                  key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.05]' : 'border-border bg-slate-50/50'
                 }`}
               >
                 {key === 'professional' && (
@@ -106,27 +105,27 @@ function Pricing() {
                     Most Popular
                   </div>
                 )}
-                <h3 className="font-heading text-xl font-semibold">{plan.name}</h3>
+                <h3 className="font-heading text-xl font-semibold text-foreground">{plan.name}</h3>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="font-heading text-4xl font-bold">${plan.price}</span>
-                  <span className="text-sm text-white/40">/mo</span>
+                  <span className="font-heading text-4xl font-bold text-foreground">${plan.price}</span>
+                  <span className="text-sm text-muted-foreground">/mo</span>
                 </div>
-                <p className="mt-1 text-xs text-white/40">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {plan.url_limit >= 9999 ? 'Unlimited URLs' : `${plan.url_limit} URLs under optimization`}
                 </p>
                 <Button
                   onClick={() => handleCheckout(key)}
                   disabled={checkingOut === key}
                   className={`mt-5 w-full ${
-                    key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-white/10 text-white hover:bg-white/20'
+                    key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-foreground text-background hover:bg-foreground/90'
                   }`}
                 >
                   {checkingOut === key ? <Loader2 className="h-4 w-4 animate-spin" /> : `Choose ${plan.name}`}
                 </Button>
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-white/60">
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#FFD700]" />
+                    <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B8860B]" />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -138,17 +137,17 @@ function Pricing() {
           {/* Upgrades */}
           <div className="mt-20">
             <div className="mb-8 text-center">
-              <h2 className="font-heading text-2xl font-bold sm:text-3xl">Individual Tool Upgrades</h2>
-              <p className="mt-2 text-sm text-white/50">Add powerful tools to any plan. Cancel anytime.</p>
+              <h2 className="font-heading text-2xl font-bold text-foreground sm:text-3xl">Individual Tool Upgrades</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Add powerful tools to any plan. Cancel anytime.</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {Object.entries(UPGRADE_FEATURES).map(([key, upgrade]) => (
-                <div key={key} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] p-4">
+                <div key={key} className="flex items-center justify-between rounded-lg border border-border bg-slate-50/50 p-4">
                   <div>
-                    <h4 className="text-sm font-semibold">{upgrade.name}</h4>
-                    <p className="text-xs text-white/40">${upgrade.price}/mo</p>
+                    <h4 className="text-sm font-semibold text-foreground">{upgrade.name}</h4>
+                    <p className="text-xs text-muted-foreground">${upgrade.price}/mo</p>
                   </div>
-                  <Button size="sm" variant="outline" className="border-[#FFD700]/30 text-[#FFD700] hover:bg-[#FFD700]/10">
+                  <Button size="sm" variant="outline" className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10">
                     Add
                   </Button>
                 </div>
@@ -158,7 +157,7 @@ function Pricing() {
 
           {/* FAQ */}
           <div className="mx-auto mt-20 max-w-3xl">
-            <h2 className="mb-8 text-center font-heading text-2xl font-bold">Frequently Asked Questions</h2>
+            <h2 className="mb-8 text-center font-heading text-2xl font-bold text-foreground">Frequently Asked Questions</h2>
             <div className="space-y-4">
               {[
                 { q: 'How does the autonomous system work?', a: 'Once you complete onboarding, AI agents continuously audit your URLs, research competitors, generate optimized content, deploy changes, and monitor rankings — 24/7, without human input.' },
@@ -167,9 +166,9 @@ function Pricing() {
                 { q: 'Can I cancel anytime?', a: 'Yes. Cancel your subscription at any time from your customer portal. No long-term contracts.' },
                 { q: 'What is Vision Cortex integration?', a: 'Vision Cortex is our master AI brain that orchestrates all agents, discovers new ranking methods, and evolves the system. Elite and Enterprise plans include full Vision Cortex sync.' },
               ].map((faq) => (
-                <div key={faq.q} className="rounded-lg border border-white/10 bg-white/[0.02] p-5">
-                  <h3 className="mb-2 font-semibold text-[#FFD700]">{faq.q}</h3>
-                  <p className="text-sm text-white/60">{faq.a}</p>
+                <div key={faq.q} className="rounded-lg border border-border bg-slate-50/50 p-5">
+                  <h3 className="mb-2 font-semibold text-[#B8860B]">{faq.q}</h3>
+                  <p className="text-sm text-muted-foreground">{faq.a}</p>
                 </div>
               ))}
             </div>

@@ -28,23 +28,23 @@ function Services() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-16 text-center">
             <img src={LOGO_URL} alt="Xtreme SEO" className="mx-auto mb-6 h-16 w-auto" />
-            <h1 className="font-heading text-4xl font-bold sm:text-5xl">Services & Tools</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">
+            <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">Services & Tools</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
               Every tool you need to dominate search — bundled in plans or available as individual upgrades.
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {SERVICES.map((s) => (
-              <div key={s.title} className="group rounded-xl border border-white/5 bg-white/[0.02] p-6 transition-all hover:border-[#FFD700]/30 hover:bg-[#FFD700]/[0.03]">
-                <div className="mb-4 inline-flex rounded-lg bg-[#FFD700]/10 p-3">
-                  <s.icon className="h-6 w-6 text-[#FFD700]" />
+              <div key={s.title} className="group rounded-xl border border-border bg-slate-50/50 p-6 transition-all hover:border-[#FFD700]/40 hover:bg-[#FFD700]/[0.05]">
+                <div className="mb-4 inline-flex rounded-lg bg-[#FFD700]/15 p-3">
+                  <s.icon className="h-6 w-6 text-[#B8860B]" />
                 </div>
-                <h3 className="mb-2 font-heading text-lg font-semibold">{s.title}</h3>
-                <p className="mb-3 text-sm leading-relaxed text-white/50">{s.desc}</p>
+                <h3 className="mb-2 font-heading text-lg font-semibold text-foreground">{s.title}</h3>
+                <p className="mb-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-[#FFD700]">{s.price}</span>
+                  <span className="font-mono text-xs text-[#B8860B]">{s.price}</span>
                   <Link to="/pricing">
-                    <Button size="sm" variant="ghost" className="text-white/60 hover:text-[#FFD700]">
+                    <Button size="sm" variant="ghost" className="text-muted-foreground hover:text-[#B8860B]">
                       Get <ArrowRight className="ml-1 h-3 w-3" />
                     </Button>
                   </Link>

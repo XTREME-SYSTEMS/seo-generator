@@ -37,20 +37,20 @@ function Landing() {
     <MarketingLayout>
       {/* Hero */}
       <section className="relative overflow-hidden py-20 sm:py-32">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFD700]/5 via-transparent to-transparent" />
-        <div className="absolute top-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#FFD700]/10 blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFD700]/10 via-transparent to-transparent" />
+        <div className="absolute top-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#FFD700]/15 blur-[120px]" />
         <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6">
           <div className="mb-8 flex justify-center">
             <img src={LOGO_URL} alt="Xtreme SEO Optimizer" className="h-24 w-auto sm:h-28" />
           </div>
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#FFD700]/30 bg-[#FFD700]/5 px-4 py-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-[#FFD700]" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FFD700]">Intelligence for Growth</span>
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#FFD700]/40 bg-[#FFD700]/10 px-4 py-1.5">
+            <Sparkles className="h-3.5 w-3.5 text-[#B8860B]" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#B8860B]">Intelligence for Growth</span>
           </div>
-          <h1 className="mx-auto max-w-4xl font-heading text-4xl font-bold leading-tight tracking-tight sm:text-6xl">
-            Autonomous AI SEO That Gets You to the <span className="text-[#FFD700]">First Page of Google</span>
+          <h1 className="mx-auto max-w-4xl font-heading text-4xl font-bold leading-tight tracking-tight text-foreground sm:text-6xl">
+            Autonomous AI SEO That Gets You to the <span className="text-[#B8860B]">First Page of Google</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-white/60 sm:text-xl">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
             The only platform that combines autonomous AI agents, competitor intelligence, and full SEO + AEO + AI search optimization
             to drive your URLs to the top — while you sleep.
           </p>
@@ -61,7 +61,7 @@ function Landing() {
               </Button>
             </Link>
             <Link to="/services">
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/5 text-base px-8 h-12">
+              <Button size="lg" variant="outline" className="border-border text-foreground hover:bg-muted text-base px-8 h-12">
                 Explore Services
               </Button>
             </Link>
@@ -71,13 +71,13 @@ function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/5 bg-white/[0.02] py-12">
+      <section className="border-y border-border bg-slate-50 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
             {STATS.map((s) => (
               <div key={s.label} className="text-center">
-                <div className="font-heading text-3xl font-bold text-[#FFD700] sm:text-4xl">{s.value}</div>
-                <div className="mt-1 text-sm text-white/50">{s.label}</div>
+                <div className="font-heading text-3xl font-bold text-[#B8860B] sm:text-4xl">{s.value}</div>
+                <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
               </div>
             ))}
           </div>
@@ -88,19 +88,19 @@ function Landing() {
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-16 text-center">
-            <h2 className="font-heading text-3xl font-bold sm:text-4xl">Everything You Need to Dominate Search</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">
+            <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Everything You Need to Dominate Search</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
               One platform. Full autonomous SEO, AEO, AI search optimization, competitor intelligence, and persistent AI agents.
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f) => (
-              <div key={f.title} className="group rounded-xl border border-white/5 bg-white/[0.02] p-6 transition-all hover:border-[#FFD700]/30 hover:bg-[#FFD700]/[0.03]">
-                <div className="mb-4 inline-flex rounded-lg bg-[#FFD700]/10 p-3">
-                  <f.icon className="h-6 w-6 text-[#FFD700]" />
+              <div key={f.title} className="group rounded-xl border border-border bg-slate-50/50 p-6 transition-all hover:border-[#FFD700]/40 hover:bg-[#FFD700]/[0.05]">
+                <div className="mb-4 inline-flex rounded-lg bg-[#FFD700]/15 p-3">
+                  <f.icon className="h-6 w-6 text-[#B8860B]" />
                 </div>
-                <h3 className="mb-2 font-heading text-lg font-semibold">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-white/50">{f.desc}</p>
+                <h3 className="mb-2 font-heading text-lg font-semibold text-foreground">{f.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -108,18 +108,18 @@ function Landing() {
       </section>
 
       {/* How It Works */}
-      <section className="border-y border-white/5 bg-white/[0.02] py-20 sm:py-28">
+      <section className="border-y border-border bg-slate-50 py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-16 text-center">
-            <h2 className="font-heading text-3xl font-bold sm:text-4xl">How It Works</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">Three steps to autonomous SEO dominance.</p>
+            <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">How It Works</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">Three steps to autonomous SEO dominance.</p>
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {STEPS.map((s) => (
               <div key={s.num} className="relative">
-                <div className="mb-4 font-mono text-5xl font-bold text-[#FFD700]/20">{s.num}</div>
-                <h3 className="mb-2 font-heading text-xl font-semibold">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-white/50">{s.desc}</p>
+                <div className="mb-4 font-mono text-5xl font-bold text-[#FFD700]/30">{s.num}</div>
+                <h3 className="mb-2 font-heading text-xl font-semibold text-foreground">{s.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -130,30 +130,30 @@ function Landing() {
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-16 text-center">
-            <h2 className="font-heading text-3xl font-bold sm:text-4xl">Simple, Transparent Pricing</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-white/50">Choose your plan. Cancel anytime. Start dominating search today.</p>
+            <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">Simple, Transparent Pricing</h2>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">Choose your plan. Cancel anytime. Start dominating search today.</p>
           </div>
           <div className="grid gap-6 lg:grid-cols-4">
             {Object.entries(PLAN_FEATURES).map(([key, plan]) => (
-              <div key={key} className={`rounded-xl border p-6 ${key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.03]' : 'border-white/10 bg-white/[0.02]'}`}>
+              <div key={key} className={`rounded-xl border p-6 ${key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.05]' : 'border-border bg-slate-50/50'}`}>
                 {key === 'professional' && (
                   <div className="mb-3 inline-block rounded-full bg-[#FFD700] px-3 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black">Most Popular</div>
                 )}
-                <h3 className="font-heading text-lg font-semibold">{plan.name}</h3>
+                <h3 className="font-heading text-lg font-semibold text-foreground">{plan.name}</h3>
                 <div className="mt-2 flex items-baseline gap-1">
-                  <span className="font-heading text-3xl font-bold">${plan.price}</span>
-                  <span className="text-sm text-white/40">/mo</span>
+                  <span className="font-heading text-3xl font-bold text-foreground">${plan.price}</span>
+                  <span className="text-sm text-muted-foreground">/mo</span>
                 </div>
-                <p className="mt-1 text-xs text-white/40">{plan.url_limit >= 9999 ? 'Unlimited URLs' : `${plan.url_limit} URLs`}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{plan.url_limit >= 9999 ? 'Unlimited URLs' : `${plan.url_limit} URLs`}</p>
                 <Link to="/pricing" className="mt-4 block">
-                  <Button className={`w-full ${key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-white/10 text-white hover:bg-white/20'}`} size="sm">
+                  <Button className={`w-full ${key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-foreground text-background hover:bg-foreground/90'}`} size="sm">
                     Choose {plan.name}
                   </Button>
                 </Link>
                 <ul className="mt-5 space-y-2">
                   {plan.features.slice(0, 4).map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-white/60">
-                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#FFD700]" />
+                    <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#B8860B]" />
                       <span>{f}</span>
                     </li>
                   ))}
@@ -166,11 +166,11 @@ function Landing() {
 
       {/* CTA */}
       <section className="relative overflow-hidden py-20 sm:py-28">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#FFD700]/10 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#FFD700]/15 to-transparent" />
         <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
           <img src={LOGO_URL} alt="Xtreme SEO" className="mx-auto mb-8 h-20 w-auto" />
-          <h2 className="font-heading text-3xl font-bold sm:text-5xl">Ready to Dominate Search?</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/60">
+          <h2 className="font-heading text-3xl font-bold text-foreground sm:text-5xl">Ready to Dominate Search?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
             Join the ranks of businesses using autonomous AI to reach the first page of Google.
           </p>
           <Link to="/pricing" className="mt-8 inline-block">
