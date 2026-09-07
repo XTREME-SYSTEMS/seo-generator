@@ -14,8 +14,8 @@ function TopBar({ onOpen }) {
       <div className="flex min-w-0 items-center gap-3">
         <button onClick={onOpen} className="rounded p-1.5 text-muted-foreground hover:bg-muted lg:hidden"><Menu className="h-4 w-4" /></button>
         <div className="flex min-w-0 items-center gap-2 truncate font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground">
-          <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-amber-400" />
-          <span className="truncate">Shadow mode · no paid-media or production mutations · {client ? client.name : 'no tenant'}</span>
+          <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-primary" />
+          <span className="truncate">Xtreme SEO Optimizer · Admin Portal · {client ? client.name : 'no tenant'}</span>
         </div>
       </div>
       <div className="flex shrink-0 items-center gap-1">

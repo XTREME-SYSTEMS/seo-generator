@@ -28,7 +28,7 @@ export const NAV_GROUPS = [
   {
     label: 'Command',
     items: [
-      { to: '/', label: 'Executive', icon: Home },
+      { to: '/admin', label: 'Executive', icon: Home },
       { to: '/algorithm-crack', label: 'Algorithm Crack', icon: Crosshair },
       { to: '/clients', label: 'Clients', icon: Building2 },
       { to: '/money-map', label: 'Search Money Map', icon: CircleDollarSign },
@@ -76,7 +76,8 @@ export const NAV_GROUPS = [
       { to: '/infrastructure', label: 'Infrastructure', icon: Network },
       { to: '/connectors', label: 'Connectors', icon: Cable },
       { to: '/system-health', label: 'System Health', icon: Activity },
-      { to: '/admin', label: 'Admin', icon: KeyRound },
+      { to: '/admin-config', label: 'Admin Config', icon: KeyRound },
+      { to: '/system', label: 'System Management', icon: Settings },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
       { to: '/settings', label: 'Settings', icon: Settings },
     ],

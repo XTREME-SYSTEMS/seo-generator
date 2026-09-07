@@ -8,6 +8,16 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from '@/components/shell/Layout';
+import Copilot from '@/components/Copilot';
+import Landing from '@/pages/marketing/Landing';
+import PricingPage from '@/pages/marketing/Pricing';
+import Services from '@/pages/marketing/Services';
+import CustomerPortal from '@/pages/portal/CustomerPortal';
+import Onboarding from '@/pages/portal/Onboarding';
+import UrlTracker from '@/pages/portal/UrlTracker';
+import AgentBuilder from '@/pages/portal/AgentBuilder';
+import PortalSettings from '@/pages/portal/PortalSettings';
+import AdminPortal from '@/pages/admin/AdminPortal';
 import Dashboard from '@/pages/Dashboard';
 import StartHere from '@/pages/StartHere';
 import UrlScoreboard from '@/pages/UrlScoreboard';
@@ -87,13 +97,31 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      {/* Public Marketing Pages */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/pricing" element={<PricingPage />} />
+      <Route path="/services" element={<Services />} />
+
+      {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+
+      {/* Customer Portal */}
+      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+        <Route path="/portal" element={<CustomerPortal />} />
+        <Route path="/portal/onboarding" element={<Onboarding />} />
+        <Route path="/portal/urls" element={<UrlTracker />} />
+        <Route path="/portal/agents" element={<AgentBuilder />} />
+        <Route path="/portal/settings" element={<PortalSettings />} />
+      </Route>
+
+      {/* Admin Portal */}
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/system" element={<AdminPortal />} />
           <Route path="/start" element={<StartHere />} />
           <Route path="/scoreboard" element={<UrlScoreboard />} />
           <Route path="/ranking-progress" element={<RankingProgress />} />
@@ -139,7 +167,7 @@ const AuthenticatedApp = () => {
           <Route path="/infrastructure" element={<Infrastructure />} />
           <Route path="/connectors" element={<Connectors />} />
           <Route path="/system-health" element={<SystemHealth />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin-config" element={<Admin />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
@@ -159,6 +187,7 @@ function App() {
           <AuthenticatedApp />
         </Router>
         <Toaster />
+        <Copilot />
       </QueryClientProvider>
     </AuthProvider>
   )

@@ -1,0 +1,71 @@
+{
+  "name": "PromoCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "The promo code string users enter at checkout"
+    },
+    "stripe_coupon_id": {
+      "type": "string",
+      "description": "Stripe coupon ID linked to this promo code"
+    },
+    "stripe_promo_code_id": {
+      "type": "string",
+      "description": "Stripe promotion code ID"
+    },
+    "discount_type": {
+      "type": "string",
+      "enum": [
+        "percent",
+        "fixed"
+      ],
+      "default": "percent"
+    },
+    "discount_value": {
+      "type": "number",
+      "description": "Percent off (1-100) or fixed amount in cents"
+    },
+    "duration": {
+      "type": "string",
+      "enum": [
+        "once",
+        "repeating",
+        "forever"
+      ],
+      "default": "repeating"
+    },
+    "duration_in_months": {
+      "type": "number",
+      "default": 1
+    },
+    "max_redemptions": {
+      "type": "number",
+      "description": "Null = unlimited"
+    },
+    "times_redeemed": {
+      "type": "number",
+      "default": 0
+    },
+    "valid": {
+      "type": "boolean",
+      "default": true
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "created_by_admin": {
+      "type": "boolean",
+      "default": true
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "discount_type",
+    "discount_value"
+  ]
+}

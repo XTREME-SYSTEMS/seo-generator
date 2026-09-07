@@ -1,0 +1,87 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Base44 user ID of the subscriber"
+    },
+    "customer_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_subscription_id": {
+      "type": "string"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "elite",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "canceled",
+        "trialing",
+        "paused"
+      ],
+      "default": "active"
+    },
+    "url_limit": {
+      "type": "number",
+      "default": 5
+    },
+    "urls_used": {
+      "type": "number",
+      "default": 0
+    },
+    "upgrades": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "competitor_intelligence",
+          "ai_search_visibility",
+          "content_generator_pro",
+          "backlink_tracker",
+          "core_web_vitals",
+          "vision_cortex_link"
+        ]
+      },
+      "default": []
+    },
+    "current_period_start": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "current_period_end": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "canceled_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "onboarding_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "promo_code_used": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_id",
+    "plan"
+  ]
+}

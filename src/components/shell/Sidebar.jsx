@@ -7,9 +7,14 @@ export default function Sidebar({ onNavigate }) {
   const { pathname } = useLocation();
   return (
     <nav className="flex h-full w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar">
-      <div className="border-b border-sidebar-border px-5 py-5">
-        <div className="font-heading text-sm font-semibold tracking-tight text-foreground">SEO GENERATOR</div>
-        <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.18em] text-primary">Shadow Mode · V2</div>
+      <div className="border-b border-sidebar-border px-5 py-4">
+        <Link to="/admin" className="flex items-center gap-2.5">
+          <img src="https://media.base44.com/images/public/6a8aaecf2642e595c591a5dc/f3a5caad5_LOGO.png" alt="Xtreme SEO" className="h-9 w-auto" />
+          <div>
+            <div className="font-heading text-sm font-semibold tracking-tight text-foreground">XTREME SEO</div>
+            <div className="font-mono text-[9px] uppercase tracking-[0.18em] text-primary">Admin Portal</div>
+          </div>
+        </Link>
       </div>
       <div className="border-b border-sidebar-border px-4 py-3">
         <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Tenant</div>
