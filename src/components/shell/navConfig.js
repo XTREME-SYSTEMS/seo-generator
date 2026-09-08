@@ -69,6 +69,7 @@ export const NAV_GROUPS = [
   {
     label: 'Platform',
     items: [
+      { to: '/delivery', label: 'Delivery Guarantee', icon: ShieldCheck },
       { to: '/domains', label: 'Domains', icon: Globe2 },
       { to: '/indexing', label: 'Indexing', icon: FileCheck2 },
       { to: '/domain-manager', label: 'Domain Manager', icon: Server },

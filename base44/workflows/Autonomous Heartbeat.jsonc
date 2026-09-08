@@ -1,0 +1,56 @@
+{
+  "description": "The deterministic autonomous heartbeat. Runs the full MasterOrchestrator cycle every hour \u2014 sync GSC, reflect, detect gaps, suggest, implement, fix blocked rows, validate, and audit delivery against pricing promises. Fully autonomous, no human input required. Error-isolated, batched, and resumable.",
+  "name": "Autonomous Heartbeat",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "autonomous_heartbeat",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_master_cycle": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "MasterOrchestrator",
+            "args": {
+              "phases": [
+                "sync",
+                "reflect",
+                "detect",
+                "suggest",
+                "implement",
+                "fix",
+                "validate",
+                "deliver"
+              ]
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run Full Autonomous Cycle",
+            "description": "MasterOrchestrator: sync \u2192 reflect \u2192 detect \u2192 suggest \u2192 implement \u2192 fix \u2192 validate \u2192 deliver"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

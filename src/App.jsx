@@ -18,6 +18,7 @@ import UrlTracker from '@/pages/portal/UrlTracker';
 import AgentBuilder from '@/pages/portal/AgentBuilder';
 import PortalSettings from '@/pages/portal/PortalSettings';
 import AdminPortal from '@/pages/admin/AdminPortal';
+import DeliveryGuarantee from '@/pages/DeliveryGuarantee';
 import Dashboard from '@/pages/Dashboard';
 import StartHere from '@/pages/StartHere';
 import UrlScoreboard from '@/pages/UrlScoreboard';
@@ -122,6 +123,7 @@ const AuthenticatedApp = () => {
         <Route element={<Layout />}>
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/system" element={<AdminPortal />} />
+          <Route path="/delivery" element={<DeliveryGuarantee />} />
           <Route path="/start" element={<StartHere />} />
           <Route path="/scoreboard" element={<UrlScoreboard />} />
           <Route path="/ranking-progress" element={<RankingProgress />} />

@@ -85,7 +85,8 @@ export default async function (req: Request): Promise<Response> {
         const blocked = sheetRows.filter((r) => r.status === 'blocked').slice(0, 3);
         phase = 'unblock';
         action = `Unblocking ${blocked.length} rows with binding constraints`;
-        functionInvoked = 'FixEngine';
+        // FixEngine expects a single { url } — iterate, don't pass an array.
+        functionInvoked = '__fix_batch__';
         functionPayload = { urls: blocked.map((r) => r.url) };
       }
       // Priority 2: Open rows with high priority — deploy treatments
@@ -96,8 +97,9 @@ export default async function (req: Request): Promise<Response> {
           .slice(0, 5);
         phase = 'deploy';
         action = `Deploying treatments for ${open.length} high-priority open rows`;
+        // AreImplement expects { batch_size } and processes by client internally.
         functionInvoked = 'AreImplement';
-        functionPayload = { max_rows: open.length };
+        functionPayload = { batch_size: Math.min(open.length, 10) };
       }
       // Priority 3: New suggestions — generate more if we're running low
       else if (suggestions.length < 10) {
@@ -125,7 +127,21 @@ export default async function (req: Request): Promise<Response> {
       // ── 3. DEPLOY ──
       let functionResult = null;
       let deployError = null;
-      if (functionInvoked) {
+      if (functionInvoked === '__fix_batch__') {
+        // FixEngine expects a single { url } — iterate over the batch.
+        const urls: string[] = functionPayload.urls || [];
+        const fixResults: any[] = [];
+        for (const url of urls) {
+          try {
+            const res = await svc.functions.invoke('FixEngine', { url, max_attempts: 3 });
+            fixResults.push({ url, ok: true, data: res?.data || res });
+          } catch (e) {
+            fixResults.push({ url, ok: false, error: e.message });
+            if (!deployError) deployError = e.message;
+          }
+        }
+        functionResult = { fixed: fixResults.filter((r) => r.ok).length, errors: fixResults.filter((r) => !r.ok).length };
+      } else if (functionInvoked) {
         try {
           const res = await svc.functions.invoke(functionInvoked, functionPayload);
           functionResult = res?.data || res;
