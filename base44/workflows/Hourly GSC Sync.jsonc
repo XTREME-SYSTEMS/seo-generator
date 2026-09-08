@@ -1,0 +1,45 @@
+{
+  "description": "Pulls hourly Google Search Console ranking and click data into the system so the autonomous heartbeat has live evidence to measure performance improvements. Runs every hour on the hour.",
+  "name": "Hourly GSC Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "hourly_gsc_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "sync_gsc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SyncSearchConsole",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Sync Google Search Console Data",
+            "description": "Pulls hourly ranking, click, and impression data from Google Search Console into the system"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 * * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

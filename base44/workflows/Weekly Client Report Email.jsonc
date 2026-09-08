@@ -1,0 +1,45 @@
+{
+  "description": "Sends a personalized weekly performance summary to every client's contact email on file. Runs every Monday at 8 AM ET. Pulls per-client ranking progress, fixes applied, suggestions generated, and system health, then emails a formatted report.",
+  "name": "Weekly Client Report Email",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "weekly_client_report",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "send_reports": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SendClientReports",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Send Weekly Client Reports",
+            "description": "Generates and emails per-client weekly performance summaries to each client's contact email"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 8 * * 1",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

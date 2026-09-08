@@ -30,7 +30,7 @@ async function createCheckoutSession(body) {
     params.append(`line_items[${i + 1}][price]`, up);
     params.append(`line_items[${i + 1}][quantity]`, '1');
   });
-  params.append('success_url', `${APP_URL}/portal?status=success`);
+  params.append('success_url', `${APP_URL}/portal/onboarding?status=success`);
   params.append('cancel_url', `${APP_URL}/pricing?status=canceled`);
   params.append('metadata[base44_app_id]', appId);
   params.append('metadata[user_id]', userId || '');
@@ -140,6 +140,24 @@ async function validatePromoCode(code) {
   };
 }
 
+async function togglePromoCode(promoId, active) {
+  const params = new URLSearchParams();
+  params.append('active', String(active));
+  const res = await fetch(`https://api.stripe.com/v1/promotion_codes/${promoId}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${stripeSecretKey}`,
+      'Stripe-Version': '2025-10-29.clover',
+      'Idempotency-Key': crypto.randomUUID(),
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'Failed to toggle promo code');
+  return { id: data.id, active: data.active };
+}
+
 async function cancelSubscription(subscriptionId) {
   const res = await fetch(`https://api.stripe.com/v1/subscriptions/${subscriptionId}`, {
     method: 'DELETE',
@@ -175,6 +193,9 @@ serve(async (req) => {
         break;
       case 'validate-promo':
         result = await validatePromoCode(body.code);
+        break;
+      case 'toggle-promo':
+        result = await togglePromoCode(body.promoId, body.active);
         break;
       case 'cancel':
         result = await cancelSubscription(body.subscriptionId);

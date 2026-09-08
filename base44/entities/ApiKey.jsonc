@@ -5,6 +5,15 @@
     "label": {
       "type": "string"
     },
+    "level": {
+      "type": "string",
+      "enum": [
+        "read",
+        "write",
+        "admin"
+      ],
+      "default": "read"
+    },
     "key_prefix": {
       "type": "string",
       "description": "First 8 chars shown for identification"

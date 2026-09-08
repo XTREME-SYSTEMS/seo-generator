@@ -221,15 +221,37 @@ function Onboarding() {
           {STEPS[step].id === 'urls' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Your URLs</h2>
-              <p className="text-sm text-muted-foreground">Enter the URLs you want to rank on the first page of Google.</p>
-              {form.urls.map((url, i) => (
-                <div key={i} className="flex gap-2">
-                  <Input placeholder={`https://example.com/page-${i + 1}`} value={url} onChange={e => updateUrl(i, e.target.value)} className="border-border bg-white" />
-                  {i === form.urls.length - 1 && (
-                    <Button onClick={addUrl} variant="outline" className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10">Add</Button>
-                  )}
-                </div>
-              ))}
+              <p className="text-sm text-muted-foreground">Enter the URLs you want to rank on the first page of Google. You can add them one by one, or paste a bulk list below.</p>
+
+              {/* Bulk paste */}
+              <div className="rounded-lg border border-[#FFD700]/30 bg-[#FFD700]/[0.03] p-4">
+                <label className="mb-2 block text-sm font-medium text-[#B8860B]">Bulk Upload — Paste Multiple Domains</label>
+                <textarea
+                  placeholder={`Paste URLs or domains, one per line:\nhttps://example.com/services\nexample.com/blog\nhttps://example.com/contact\nexample.com/location`}
+                  rows={6}
+                  onChange={e => {
+                    const lines = e.target.value.split('\n').map(l => l.trim()).filter(Boolean);
+                    const normalized = lines.map(l => l.startsWith('http') ? l : `https://${l}`);
+                    update('urls', normalized);
+                  }}
+                  className="w-full rounded border border-border bg-white px-3 py-2 font-mono text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-[#FFD700]"
+                />
+                <p className="mt-1 text-xs text-muted-foreground">Each line becomes a tracked URL. Domains without https:// will be auto-prefixed.</p>
+              </div>
+
+              {/* Individual URL list */}
+              <div className="space-y-2">
+                <label className="block text-sm text-foreground/70">Individual URLs ({form.urls.filter(u => u.trim()).length} added)</label>
+                {form.urls.map((url, i) => (
+                  <div key={i} className="flex gap-2">
+                    <Input placeholder={`https://example.com/page-${i + 1}`} value={url} onChange={e => updateUrl(i, e.target.value)} className="border-border bg-white" />
+                    {i === form.urls.length - 1 && (
+                      <Button onClick={addUrl} variant="outline" className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10">Add</Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
               <div>
                 <label className="mb-1.5 block text-sm text-foreground/70">Target Keywords (comma separated)</label>
                 <Input placeholder="epoxy flooring, concrete polishing, ..." onChange={e => update('target_keywords', e.target.value.split(',').map(k => k.trim()).filter(Boolean))} className="border-border bg-white" />
