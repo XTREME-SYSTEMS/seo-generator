@@ -24,15 +24,22 @@ function AdminPortal() {
   const [generatedKey, setGeneratedKey] = useState(null);
   const [editingKey, setEditingKey] = useState(null);
   const [editingPromo, setEditingPromo] = useState(null);
+  const [vcStatus, setVcStatus] = useState(null);
+  const [vcForm, setVcForm] = useState({ endpoint: '', apiKey: '' });
+  const [vcSaving, setVcSaving] = useState(false);
+  const [vcTesting, setVcTesting] = useState(false);
+  const [vcMessage, setVcMessage] = useState(null);
 
   async function loadData() {
     try {
-      const keys = await base44.entities.ApiKey.list();
-      setApiKeys(keys);
+      const { data: keyData } = await base44.functions.invoke('ManageApiKey', { action: 'list' });
+      setApiKeys(keyData?.keys || []);
       const { data: promoData } = await base44.functions.invoke('StripeCheckout', { path: 'list-promos' });
       setPromoCodes(promoData || []);
       const subs = await base44.entities.Subscription.list();
       setSubscriptions(subs);
+      const { data: vcData } = await base44.functions.invoke('VisionCortexConnect', { action: 'status' });
+      setVcStatus(vcData);
     } catch (err) { console.error(err); }
   }
 
@@ -105,6 +112,44 @@ function AdminPortal() {
     navigator.clipboard.writeText(text);
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  // ── VISION CORTEX HANDLERS ──
+  const handleVcSave = async () => {
+    if (!vcForm.endpoint || !vcForm.apiKey) return;
+    setVcSaving(true);
+    setVcMessage(null);
+    try {
+      const { data } = await base44.functions.invoke('VisionCortexConnect', {
+        action: 'save', endpoint: vcForm.endpoint, apiKey: vcForm.apiKey,
+      });
+      setVcMessage({ type: data.connected ? 'success' : 'warn', text: data.detail || (data.connected ? 'Connected' : 'Saved but connection failed') });
+      loadData();
+    } catch (err) { setVcMessage({ type: 'error', text: err.message }); }
+    setVcSaving(false);
+  };
+
+  const handleVcTest = async () => {
+    if (!vcForm.endpoint || !vcForm.apiKey) return;
+    setVcTesting(true);
+    setVcMessage(null);
+    try {
+      const { data } = await base44.functions.invoke('VisionCortexConnect', {
+        action: 'test', endpoint: vcForm.endpoint, apiKey: vcForm.apiKey,
+      });
+      setVcMessage({ type: data.ok ? 'success' : 'error', text: data.detail });
+    } catch (err) { setVcMessage({ type: 'error', text: err.message }); }
+    setVcTesting(false);
+  };
+
+  const handleVcDisconnect = async () => {
+    if (!confirm('Disconnect Vision Cortex?')) return;
+    try {
+      await base44.functions.invoke('VisionCortexConnect', { action: 'disconnect' });
+      setVcForm({ endpoint: '', apiKey: '' });
+      setVcMessage({ type: 'success', text: 'Disconnected' });
+      loadData();
+    } catch (err) { setVcMessage({ type: 'error', text: err.message }); }
   };
 
   const activeSubs = subscriptions.filter(s => s.status === 'active');
@@ -267,7 +312,12 @@ function AdminPortal() {
                           <span className={`h-2 w-2 rounded-full ${key.status === 'active' ? 'bg-emerald-400' : 'bg-red-400'}`} />
                         </div>
                         <p className="mt-1 font-mono text-xs text-muted-foreground">{key.key_prefix}••••••••</p>
-                        <p className="mt-0.5 text-[10px] text-muted-foreground/60">Created {key.created_at ? new Date(key.created_at).toLocaleDateString() : '—'}{key.last_used_at ? ` · Last used ${new Date(key.last_used_at).toLocaleDateString()}` : ''}</p>
+                        <div className="mt-1 flex flex-wrap gap-1">
+                          {(key.scopes || []).map(s => (
+                            <span key={s} className="rounded bg-muted px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground">{s}</span>
+                          ))}
+                        </div>
+                        <p className="mt-1 text-[10px] text-muted-foreground/60">Created {key.created_at ? new Date(key.created_at).toLocaleDateString() : '—'}{key.last_used_at ? ` · Last used ${new Date(key.last_used_at).toLocaleDateString()}` : ''}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button onClick={() => copyToClipboard(key.key_prefix, key.id)} className="rounded p-1.5 text-muted-foreground hover:bg-muted" title="Copy prefix">
@@ -419,26 +469,64 @@ function AdminPortal() {
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
                 <Brain className="h-6 w-6 text-primary" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h2 className="font-heading text-lg font-semibold">Vision Cortex Brain Connection</h2>
                 <p className="text-sm text-muted-foreground">Connect your Vision Cortex brain to manage, operate, fix, heal, and sync this system.</p>
               </div>
+              <div className="flex items-center gap-2">
+                <span className={`h-2.5 w-2.5 rounded-full ${vcStatus?.connected ? 'bg-emerald-400' : 'bg-red-400'}`} />
+                <span className="text-xs font-medium text-muted-foreground">{vcStatus?.connected ? 'Connected' : 'Not connected'}</span>
+              </div>
             </div>
+
+            {vcMessage && (
+              <div className={`mb-4 rounded-lg border p-3 text-sm ${
+                vcMessage.type === 'success' ? 'border-emerald-300 bg-emerald-50 text-emerald-700' :
+                vcMessage.type === 'warn' ? 'border-amber-300 bg-amber-50 text-amber-700' :
+                'border-red-300 bg-red-50 text-red-700'
+              }`}>
+                {vcMessage.text}
+              </div>
+            )}
+
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium">Vision Cortex API Endpoint</label>
-                <Input placeholder="https://vision-cortex.base44.app/functions/api" className="font-mono text-sm" />
+                <Input
+                  value={vcForm.endpoint}
+                  onChange={e => setVcForm({ ...vcForm, endpoint: e.target.value })}
+                  placeholder="https://vision-cortex.base44.app/functions/api"
+                  className="font-mono text-sm"
+                />
               </div>
               <div>
                 <label className="mb-1.5 block text-sm font-medium">API Key</label>
-                <Input type="password" placeholder="••••••••••••" className="font-mono text-sm" />
+                <Input
+                  type="password"
+                  value={vcForm.apiKey}
+                  onChange={e => setVcForm({ ...vcForm, apiKey: e.target.value })}
+                  placeholder="xsk_••••••••••••"
+                  className="font-mono text-sm"
+                />
               </div>
-              <div className="flex items-center gap-2">
-                <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  <Power className="mr-2 h-4 w-4" /> Connect Vision Cortex
+              <div className="flex flex-wrap items-center gap-2">
+                <Button onClick={handleVcSave} disabled={vcSaving || !vcForm.endpoint || !vcForm.apiKey} className="bg-primary text-primary-foreground hover:bg-primary/90">
+                  {vcSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Power className="mr-2 h-4 w-4" />}
+                  {vcStatus?.connected ? 'Update Connection' : 'Connect Vision Cortex'}
                 </Button>
-                <span className="text-xs text-muted-foreground">Status: Not connected</span>
+                <Button onClick={handleVcTest} disabled={vcTesting || !vcForm.endpoint || !vcForm.apiKey} variant="outline">
+                  {vcTesting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Eye className="mr-2 h-4 w-4" />}
+                  Test Connection
+                </Button>
+                {vcStatus?.connected && (
+                  <Button onClick={handleVcDisconnect} variant="ghost" className="text-red-500 hover:bg-red-50">
+                    <Trash2 className="mr-2 h-4 w-4" /> Disconnect
+                  </Button>
+                )}
               </div>
+              {vcStatus?.connected && vcStatus?.last_sync_at && (
+                <p className="text-xs text-muted-foreground">Last synced: {new Date(vcStatus.last_sync_at).toLocaleString()}</p>
+              )}
             </div>
           </div>
         </div>
