@@ -2,8 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowUpRight, ShieldAlert, MapPin, Search, Lightbulb, Activity,
-  Building2, TrendingUp, Zap,
+  Building2, TrendingUp, Zap, LayoutDashboard,
 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/kit/PageHeader';
 import Panel from '@/components/kit/Panel';
 import Provenance from '@/components/kit/Provenance';
@@ -93,7 +94,16 @@ export default function Dashboard() {
         eyebrow="Command Center"
         title="SEO Generator"
         description="Your autonomous SEO engine — tracking rankings, discovering strategies, and planning sprints across all 50 states. Everything runs in the background; this dashboard shows you what's happening."
-        actions={<StatusPill tone="warn"><ShieldAlert className="mr-1.5 h-3 w-3" /> Shadow mode</StatusPill>}
+        actions={
+          <div className="flex items-center gap-3">
+            <Link to="/portal">
+              <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10">
+                <LayoutDashboard className="mr-1.5 h-4 w-4" /> Customer Portal
+              </Button>
+            </Link>
+            <StatusPill tone="warn"><ShieldAlert className="mr-1.5 h-3 w-3" /> Shadow mode</StatusPill>
+          </div>
+        }
       />
 
       {/* Stat tiles */}
