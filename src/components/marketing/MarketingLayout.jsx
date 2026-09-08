@@ -22,7 +22,6 @@ export default function MarketingLayout({ children }) {
             <Link to="/" className="text-sm text-muted-foreground hover:text-[#B8860B] transition-colors">Home</Link>
             <Link to="/pricing" className="text-sm text-muted-foreground hover:text-[#B8860B] transition-colors">Pricing</Link>
             <Link to="/services" className="text-sm text-muted-foreground hover:text-[#B8860B] transition-colors">Services</Link>
-            <Link to="/portal" className="text-sm text-muted-foreground hover:text-[#B8860B] transition-colors">Portal</Link>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/login" className="hidden sm:block">
@@ -42,7 +41,6 @@ export default function MarketingLayout({ children }) {
               <Link to="/" className="text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Home</Link>
               <Link to="/pricing" className="text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Pricing</Link>
               <Link to="/services" className="text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Services</Link>
-              <Link to="/portal" className="text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Portal</Link>
               <Link to="/login" className="text-sm text-muted-foreground" onClick={() => setMenuOpen(false)}>Sign In</Link>
             </div>
           </div>
@@ -58,7 +56,6 @@ export default function MarketingLayout({ children }) {
               <Link to="/" className="hover:text-[#B8860B]">Home</Link>
               <Link to="/pricing" className="hover:text-[#B8860B]">Pricing</Link>
               <Link to="/services" className="hover:text-[#B8860B]">Services</Link>
-              <Link to="/portal" className="hover:text-[#B8860B]">Customer Portal</Link>
               <Link to="/login" className="hover:text-[#B8860B]">Sign In</Link>
             </div>
             <p className="text-xs text-muted-foreground/60">© 2026 Xtreme SEO Optimizer. All rights reserved.</p>

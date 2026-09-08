@@ -22,10 +22,18 @@ function Pricing() {
     }
     setCheckingOut(planKey);
     try {
+      let userId = '';
+      let userEmail = '';
+      try {
+        const { data: user } = await base44.auth.me();
+        if (user) { userId = user.id; userEmail = user.email; }
+      } catch { /* not logged in — Stripe captures email at checkout */ }
       const { data } = await base44.functions.invoke('StripeCheckout', {
-        path: 'create-checkout',
+        action: 'create-checkout',
         priceId: STRIPE_PRICES[planKey],
         promoCode: promoValid?.promoCodeId || undefined,
+        userId,
+        userEmail,
       });
       if (data.url) window.location.href = data.url;
     } catch (err) {

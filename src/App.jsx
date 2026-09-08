@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import SubscriptionGate from '@/components/SubscriptionGate';
 import Layout from '@/components/shell/Layout';
 import Copilot from '@/components/Copilot';
 import Landing from '@/pages/marketing/Landing';
@@ -109,13 +110,15 @@ const AuthenticatedApp = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
 
-      {/* Customer Portal */}
+      {/* Customer Portal — requires active subscription */}
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route path="/portal" element={<CustomerPortal />} />
-        <Route path="/portal/onboarding" element={<Onboarding />} />
-        <Route path="/portal/urls" element={<UrlTracker />} />
-        <Route path="/portal/agents" element={<AgentBuilder />} />
-        <Route path="/portal/settings" element={<PortalSettings />} />
+        <Route element={<SubscriptionGate />}>
+          <Route path="/portal" element={<CustomerPortal />} />
+          <Route path="/portal/onboarding" element={<Onboarding />} />
+          <Route path="/portal/urls" element={<UrlTracker />} />
+          <Route path="/portal/agents" element={<AgentBuilder />} />
+          <Route path="/portal/settings" element={<PortalSettings />} />
+        </Route>
       </Route>
 
       {/* Admin Portal */}

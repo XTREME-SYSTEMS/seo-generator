@@ -127,13 +127,13 @@ function Onboarding() {
   const handleBack = () => step > 0 && setStep(step - 1);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white">
+    <div className="min-h-screen bg-white text-foreground">
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         {/* Header */}
         <div className="mb-8 text-center">
           <img src={LOGO_URL} alt="Xtreme SEO" className="mx-auto mb-4 h-16 w-auto" />
           <h1 className="font-heading text-2xl font-bold">Welcome to Xtreme SEO Optimizer</h1>
-          <p className="mt-1 text-sm text-white/50">Let's build your autonomous SEO system in a few steps.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Let's build your autonomous SEO system in a few steps.</p>
         </div>
 
         {/* Progress */}
@@ -141,62 +141,62 @@ function Onboarding() {
           {STEPS.map((s, i) => (
             <div key={s.id} className="flex flex-1 items-center">
               <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${
-                i <= step ? 'border-[#FFD700] bg-[#FFD700]/10' : 'border-white/10 bg-white/5'
+                i <= step ? 'border-[#FFD700] bg-[#FFD700]/10' : 'border-border bg-muted'
               }`}>
-                {i < step ? <CheckCircle2 className="h-5 w-5 text-[#FFD700]" /> : <s.icon className={`h-5 w-5 ${i === step ? 'text-[#FFD700]' : 'text-white/30'}`} />}
+                {i < step ? <CheckCircle2 className="h-5 w-5 text-[#B8860B]" /> : <s.icon className={`h-5 w-5 ${i === step ? 'text-[#B8860B]' : 'text-muted-foreground/40'}`} />}
               </div>
-              {i < STEPS.length - 1 && <div className={`h-0.5 flex-1 ${i < step ? 'bg-[#FFD700]' : 'bg-white/10'}`} />}
+              {i < STEPS.length - 1 && <div className={`h-0.5 flex-1 ${i < step ? 'bg-[#FFD700]' : 'bg-border'}`} />}
             </div>
           ))}
         </div>
 
         {/* Step Content */}
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+        <div className="rounded-xl border border-border bg-slate-50/50 p-6 sm:p-8">
           {STEPS[step].id === 'contact' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Contact Information</h2>
-              <p className="text-sm text-white/50">So we can reach you with updates and reports.</p>
-              <Input placeholder="Full Name" value={form.contact_name} onChange={e => update('contact_name', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
-              <Input type="email" placeholder="Email Address" value={form.contact_email} onChange={e => update('contact_email', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
-              <Input placeholder="Phone Number" value={form.contact_phone} onChange={e => update('contact_phone', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+              <p className="text-sm text-muted-foreground">So we can reach you with updates and reports.</p>
+              <Input placeholder="Full Name" value={form.contact_name} onChange={e => update('contact_name', e.target.value)} className="border-border bg-white" />
+              <Input type="email" placeholder="Email Address" value={form.contact_email} onChange={e => update('contact_email', e.target.value)} className="border-border bg-white" />
+              <Input placeholder="Phone Number" value={form.contact_phone} onChange={e => update('contact_phone', e.target.value)} className="border-border bg-white" />
             </div>
           )}
 
           {STEPS[step].id === 'business' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Business Details</h2>
-              <p className="text-sm text-white/50">Tell us about your business so we can tailor the system.</p>
-              <Input placeholder="Company Name" value={form.company_name} onChange={e => update('company_name', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+              <p className="text-sm text-muted-foreground">Tell us about your business so we can tailor the system.</p>
+              <Input placeholder="Company Name" value={form.company_name} onChange={e => update('company_name', e.target.value)} className="border-border bg-white" />
               <div className="grid grid-cols-2 gap-3">
-                <Input placeholder="City" value={form.location_city} onChange={e => update('location_city', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
-                <Input placeholder="State" value={form.location_state} onChange={e => update('location_state', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+                <Input placeholder="City" value={form.location_city} onChange={e => update('location_city', e.target.value)} className="border-border bg-white" />
+                <Input placeholder="State" value={form.location_state} onChange={e => update('location_state', e.target.value)} className="border-border bg-white" />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm text-white/70">Industry</label>
-                <select value={form.industry} onChange={e => update('industry', e.target.value)} className="w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white">
+                <label className="mb-1.5 block text-sm text-foreground/70">Industry</label>
+                <select value={form.industry} onChange={e => update('industry', e.target.value)} className="w-full rounded border border-border bg-white px-3 py-2 text-sm text-foreground">
                   <option value="">Select industry...</option>
                   {INDUSTRIES.map(ind => <option key={ind} value={ind}>{ind}</option>)}
                 </select>
               </div>
-              <Input placeholder="Sub-Industry (e.g. Decorative Concrete, Residential)" value={form.sub_industry} onChange={e => update('sub_industry', e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+              <Input placeholder="Sub-Industry (e.g. Decorative Concrete, Residential)" value={form.sub_industry} onChange={e => update('sub_industry', e.target.value)} className="border-border bg-white" />
             </div>
           )}
 
           {STEPS[step].id === 'urls' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Your URLs</h2>
-              <p className="text-sm text-white/50">Enter the URLs you want to rank on the first page of Google.</p>
+              <p className="text-sm text-muted-foreground">Enter the URLs you want to rank on the first page of Google.</p>
               {form.urls.map((url, i) => (
                 <div key={i} className="flex gap-2">
-                  <Input placeholder={`https://example.com/page-${i + 1}`} value={url} onChange={e => updateUrl(i, e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+                  <Input placeholder={`https://example.com/page-${i + 1}`} value={url} onChange={e => updateUrl(i, e.target.value)} className="border-border bg-white" />
                   {i === form.urls.length - 1 && (
-                    <Button onClick={addUrl} variant="outline" className="border-[#FFD700]/30 text-[#FFD700] hover:bg-[#FFD700]/10">Add</Button>
+                    <Button onClick={addUrl} variant="outline" className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10">Add</Button>
                   )}
                 </div>
               ))}
               <div>
-                <label className="mb-1.5 block text-sm text-white/70">Target Keywords (comma separated)</label>
-                <Input placeholder="epoxy flooring, concrete polishing, ..." onChange={e => update('target_keywords', e.target.value.split(',').map(k => k.trim()).filter(Boolean))} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+                <label className="mb-1.5 block text-sm text-foreground/70">Target Keywords (comma separated)</label>
+                <Input placeholder="epoxy flooring, concrete polishing, ..." onChange={e => update('target_keywords', e.target.value.split(',').map(k => k.trim()).filter(Boolean))} className="border-border bg-white" />
               </div>
             </div>
           )}
@@ -204,17 +204,17 @@ function Onboarding() {
           {STEPS[step].id === 'goals' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Your Goals</h2>
-              <p className="text-sm text-white/50">What do you want to achieve? The system will be built around your goals.</p>
+              <p className="text-sm text-muted-foreground">What do you want to achieve? The system will be built around your goals.</p>
               <textarea
                 placeholder="e.g. Get all my service pages to the first page of Google for my target keywords. Increase organic traffic by 200%. Generate more leads from organic search."
                 value={form.desired_results}
                 onChange={e => update('desired_results', e.target.value)}
                 rows={4}
-                className="w-full rounded border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30"
+                className="w-full rounded border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50"
               />
               <div>
-                <label className="mb-1.5 block text-sm text-white/70">Monthly Budget ($)</label>
-                <Input type="number" value={form.monthly_budget} onChange={e => update('monthly_budget', Number(e.target.value))} className="border-white/10 bg-white/5 text-white" />
+                <label className="mb-1.5 block text-sm text-foreground/70">Monthly Budget ($)</label>
+                <Input type="number" value={form.monthly_budget} onChange={e => update('monthly_budget', Number(e.target.value))} className="border-border bg-white" />
               </div>
             </div>
           )}
@@ -222,12 +222,12 @@ function Onboarding() {
           {STEPS[step].id === 'competitors' && (
             <div className="space-y-4">
               <h2 className="font-heading text-xl font-semibold">Competitor URLs</h2>
-              <p className="text-sm text-white/50">Enter your top competitors. The system will scrape and analyze them to build counter-strategies.</p>
+              <p className="text-sm text-muted-foreground">Enter your top competitors. The system will scrape and analyze them to build counter-strategies.</p>
               {form.competitor_urls.map((url, i) => (
                 <div key={i} className="flex gap-2">
-                  <Input placeholder={`https://competitor-${i + 1}.com`} value={url} onChange={e => updateCompetitor(i, e.target.value)} className="border-white/10 bg-white/5 text-white placeholder:text-white/30" />
+                  <Input placeholder={`https://competitor-${i + 1}.com`} value={url} onChange={e => updateCompetitor(i, e.target.value)} className="border-border bg-white" />
                   {i === form.competitor_urls.length - 1 && (
-                    <Button onClick={addCompetitor} variant="outline" className="border-[#FFD700]/30 text-[#FFD700] hover:bg-[#FFD700]/10">Add</Button>
+                    <Button onClick={addCompetitor} variant="outline" className="border-[#FFD700]/40 text-[#B8860B] hover:bg-[#FFD700]/10">Add</Button>
                   )}
                 </div>
               ))}
@@ -236,13 +236,13 @@ function Onboarding() {
 
           {STEPS[step].id === 'building' && (
             <div className="py-8 text-center">
-              <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-[#FFD700]" />
+              <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-[#B8860B]" />
               <h2 className="font-heading text-xl font-semibold">Building Your System...</h2>
-              <p className="mt-2 text-sm text-white/50">AI agents are being configured based on your answers.</p>
+              <p className="mt-2 text-sm text-muted-foreground">AI agents are being configured based on your answers.</p>
               <div className="mx-auto mt-6 max-w-sm space-y-2 text-left">
                 {['Creating agent council...', 'Configuring SEO strategies...', 'Setting up competitor intelligence...', 'Initializing autonomous loop...', 'Connecting to Google Search Console...'].map((msg, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs text-white/60">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-[#FFD700]" />
+                  <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#B8860B]" />
                     {msg}
                   </div>
                 ))}
@@ -253,7 +253,7 @@ function Onboarding() {
           {/* Navigation */}
           {step < STEPS.length - 1 && (
             <div className="mt-8 flex items-center justify-between">
-              <Button onClick={handleBack} disabled={step === 0} variant="ghost" className="text-white/50 hover:text-white">
+              <Button onClick={handleBack} disabled={step === 0} variant="ghost" className="text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="mr-2 h-4 w-4" /> Back
               </Button>
               <Button
