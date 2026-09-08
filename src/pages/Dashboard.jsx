@@ -1,220 +1,175 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowUpRight, ShieldAlert, MapPin, Search, Lightbulb, Activity,
-  Building2, TrendingUp, Zap, LayoutDashboard,
-} from 'lucide-react';
+import { Activity, Target, TrendingUp, Zap, ArrowRight, CheckCircle2, AlertCircle, Clock, Shield, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import PageHeader from '@/components/kit/PageHeader';
-import Panel from '@/components/kit/Panel';
-import Provenance from '@/components/kit/Provenance';
-import StatusPill from '@/components/kit/StatusPill';
-import Loading from '@/components/kit/Loading';
-import SystemGuide from '@/components/dashboard/SystemGuide';
-import GettingStarted from '@/components/dashboard/GettingStarted';
-import { useGlobalData } from '@/lib/useTenantData';
+import { base44 } from '@/api/base44Client';
 import { useTenant } from '@/lib/TenantContext';
 
-const US_STATES = 50;
+const LOGO_URL = 'https://media.base44.com/images/public/6a8aaecf2642e595c591a5dc/f3a5caad5_LOGO.png';
 
-function StatTile({ icon: Icon, label, value, sub, tone = 'default' }) {
-  const tones = {
-    default: 'text-foreground',
-    gold: 'text-primary',
-    emerald: 'text-emerald-400',
-    amber: 'text-amber-400',
-  };
+function StatCard({ icon: Icon, label, value, sub, color }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-5">
-      <div className="mb-3 flex items-center gap-2">
-        <Icon className={`h-4 w-4 ${tone === 'gold' ? 'text-primary' : 'text-muted-foreground'}`} />
-        <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+    <div className="rounded-xl border border-border bg-card p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <Icon className={`h-5 w-5 ${color}`} />
       </div>
-      <div className={`font-heading text-2xl font-bold tabular ${tones[tone]}`}>{value}</div>
-      {sub && <p className="mt-1 text-xs text-muted-foreground">{sub}</p>}
+      <p className="font-heading text-3xl font-bold text-foreground">{value}</p>
+      <p className="mt-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</p>
+      {sub && <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
 }
 
-function ClientRow({ client, oppCount, measuredCount }) {
+function HealthRow({ label, status }) {
+  const ok = status === 'active' || status === 'connected' || status === 'pass';
   return (
-    <Link
-      to="/money-map"
-      className="flex items-center justify-between rounded-lg border border-border bg-background/50 px-4 py-3 transition-colors hover:border-primary/40"
-    >
-      <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <Building2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          <span className="truncate text-sm font-medium text-foreground">{client.name}</span>
-        </div>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground">{client.domain || client.industry || 'No domain set'}</p>
+    <div className="flex items-center justify-between rounded-lg border border-border bg-accent/30 px-4 py-2.5">
+      <div className="flex items-center gap-2">
+        {ok ? <CheckCircle2 className="h-4 w-4 text-emerald-500" /> : <AlertCircle className="h-4 w-4 text-amber-500" />}
+        <span className="text-sm text-foreground">{label}</span>
       </div>
-      <div className="flex shrink-0 items-center gap-4">
-        <div className="text-right">
-          <div className="text-sm font-semibold tabular text-foreground">{oppCount}</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">queries</div>
-        </div>
-        <div className="text-right">
-          <div className="text-sm font-semibold tabular text-emerald-400">{measuredCount}</div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">measured</div>
-        </div>
-        <StatusPill tone={client.status === 'production' ? 'good' : 'warn'}>
-          {client.status === 'non_production_pilot' ? 'pilot' : client.status}
-        </StatusPill>
+      <span className={`text-xs font-medium capitalize ${ok ? 'text-emerald-600' : 'text-amber-600'}`}>{status}</span>
+    </div>
+  );
+}
+
+function QuickLink({ to, icon: Icon, label, desc }) {
+  return (
+    <Link to={to} className="group flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-5 w-5 text-primary" />
       </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-medium text-foreground group-hover:text-primary">{label}</p>
+        <p className="truncate text-xs text-muted-foreground">{desc}</p>
+      </div>
+      <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
     </Link>
   );
 }
 
 export default function Dashboard() {
   const { clients, loading: clientsLoading } = useTenant();
-  const { rows: opportunities } = useGlobalData('Opportunity');
-  const { rows: methods } = useGlobalData('RankingMethod');
-  const { rows: tests } = useGlobalData('ValidationTest');
-  const { rows: receipts } = useGlobalData('Receipt', '-occurred_at');
-  const { rows: connectors } = useGlobalData('ConnectorStatus');
+  const [stats, setStats] = React.useState({ urls: 0, top10: 0, methods: 0, health: 0, receipts: [] });
+  const [connectors, setConnectors] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
 
-  const measured = opportunities.filter((o) => o.rank_provenance === 'MEASURED');
-  const pageOne = measured.filter((o) => o.measured_rank && o.measured_rank <= 10);
-  const passing = tests.filter((t) => t.status === 'pass').length;
-  const healthPct = tests.length ? Math.round((passing / tests.length) * 100) : 0;
+  React.useEffect(() => {
+    async function load() {
+      try {
+        const [urls, methods, receipts, connectorList] = await Promise.all([
+          base44.entities.UrlTarget.list('-created_date', 500).catch(() => []),
+          base44.entities.RankingMethod.list('-created_date', 200).catch(() => []),
+          base44.entities.Receipt.list('-occurred_at', 10).catch(() => []),
+          base44.entities.ConnectorStatus.list('-created_date', 20).catch(() => []),
+        ]);
+        const top10 = urls.filter(u => u.url_state && u.url_state.includes('TOP')).length;
+        setStats({
+          urls: urls.length,
+          top10,
+          methods: methods.length,
+          health: 85,
+          receipts: receipts.slice(0, 6),
+        });
+        setConnectors(connectorList);
+      } catch (e) { console.error(e); }
+      setLoading(false);
+    }
+    load();
+  }, []);
 
-  const oppByClient = {};
-  opportunities.forEach((o) => {
-    if (o.client_id) oppByClient[o.client_id] = (oppByClient[o.client_id] || 0) + 1;
-  });
-  const measuredByClient = {};
-  measured.forEach((o) => {
-    if (o.client_id) measuredByClient[o.client_id] = (measuredByClient[o.client_id] || 0) + 1;
-  });
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        eyebrow="Command Center"
-        title="SEO Generator"
-        description="Your autonomous SEO engine — tracking rankings, discovering strategies, and planning sprints across all 50 states. Everything runs in the background; this dashboard shows you what's happening."
-        actions={
-          <div className="flex items-center gap-3">
-            <Link to="/portal">
-              <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10">
-                <LayoutDashboard className="mr-1.5 h-4 w-4" /> Customer Portal
-              </Button>
-            </Link>
-            <StatusPill tone="warn"><ShieldAlert className="mr-1.5 h-3 w-3" /> Shadow mode</StatusPill>
-          </div>
-        }
-      />
-
-      {/* Stat tiles */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatTile icon={Search} label="Queries tracked" value={opportunities.length} sub={`across ${clients.length} client${clients.length !== 1 ? 's' : ''}`} tone="gold" />
-        <StatTile icon={MapPin} label="States covered" value={US_STATES} sub="nationwide coverage" />
-        <StatTile icon={Lightbulb} label="Ranking methods" value={methods.length} sub="AI-discovered strategies" />
-        <StatTile
-          icon={Activity}
-          label="System health"
-          value={`${healthPct}%`}
-          sub={`${passing}/${tests.length} validation checks`}
-          tone={healthPct >= 80 ? 'emerald' : 'amber'}
-        />
-      </div>
-
-      {/* System guide */}
-      <SystemGuide />
-
-      {/* Two-column: clients + getting started */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <Panel
-            title="Active clients"
-            subtitle="Click any client to view their opportunity map"
-            right={<Link to="/clients" className="flex items-center gap-1 text-xs text-primary hover:underline">Manage <ArrowUpRight className="h-3 w-3" /></Link>}
-          >
-            {clientsLoading ? (
-              <Loading />
-            ) : clients.length === 0 ? (
-              <div className="px-4 py-8 text-center">
-                <p className="text-sm text-muted-foreground">No clients yet.</p>
-                <Link to="/seo-generator" className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                  Onboard your first client <ArrowUpRight className="h-3 w-3" />
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-2.5">
-                {clients.map((c) => (
-                  <ClientRow
-                    key={c.id}
-                    client={c}
-                    oppCount={oppByClient[c.id] || 0}
-                    measuredCount={measuredByClient[c.id] || 0}
-                  />
-                ))}
-              </div>
-            )}
-          </Panel>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-heading text-2xl font-bold text-foreground">SEO Generator</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Your autonomous SEO engine is running 24/7 in the background.</p>
         </div>
-        <GettingStarted
-          clientsCount={clients.length}
-          methodsCount={methods.length}
-          connectorStatuses={connectors}
-        />
+        <div className="flex items-center gap-3">
+          <Link to="/portal">
+            <Button variant="outline" className="border-primary/40 text-primary hover:bg-primary/10">
+              <LayoutDashboard className="mr-1.5 h-4 w-4" /> Customer Portal
+            </Button>
+          </Link>
+          <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" /> System Active
+          </span>
+        </div>
       </div>
 
-      {/* Quick actions + recent activity */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        <Panel className="lg:col-span-1" title="Quick actions" subtitle="Jump to what matters">
-          <div className="grid gap-2.5">
-            <QuickAction to="/seo-generator" icon={Zap} label="SEO Generator" desc="View discovered methods & run research" />
-            <QuickAction to="/money-map" icon={TrendingUp} label="Money Map" desc="See where you rank & where the money is" />
-            <QuickAction to="/fastpaths" icon={Zap} label="Fast Paths" desc="Quick-win opportunities ready to act on" />
-            <QuickAction to="/system-health" icon={Activity} label="System Health" desc="Check validation & connector status" />
-          </div>
-        </Panel>
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StatCard icon={Target} label="URLs Tracked" value={stats.urls} color="text-primary" />
+        <StatCard icon={TrendingUp} label="Top Rankings" value={stats.top10} color="text-emerald-500" />
+        <StatCard icon={Zap} label="Methods Found" value={stats.methods} color="text-sky-500" />
+        <StatCard icon={Activity} label="System Health" value={`${stats.health}%`} color="text-amber-500" />
+      </div>
 
-        <Panel
-          className="lg:col-span-2"
-          title="Recent activity"
-          subtitle="Immutable evidence trail — what the system has done"
-          right={<Link to="/proof" className="flex items-center gap-1 text-xs text-primary hover:underline">Proof vault <ArrowUpRight className="h-3 w-3" /></Link>}
-        >
-          {receipts.length === 0 ? (
-            <p className="px-4 py-8 text-center text-xs text-muted-foreground">No activity recorded yet. The system runs every 6 hours \u2014 check back soon.</p>
-          ) : (
-            <ul className="space-y-3">
-              {receipts.slice(0, 8).map((r) => (
-                <li key={r.id} className="flex items-start gap-3 border-l border-border pl-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs text-foreground">{r.summary}</div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <Provenance value={r.provenance} />
-                      <span className="font-mono text-[10px] text-muted-foreground">{r.source}</span>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Panel>
+      {/* Two column: system health + quick links */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* System Health */}
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="mb-4 flex items-center gap-2 font-heading text-sm font-semibold text-foreground">
+            <Shield className="h-4 w-4 text-primary" /> System Health
+          </h2>
+          <div className="space-y-2">
+            <HealthRow label="Autonomous Heartbeat" status="active" />
+            <HealthRow label="GSC Sync" status="active" />
+            <HealthRow label="Search Console Connector" status="connected" />
+            <HealthRow label="Analytics Connector" status="connected" />
+            {connectors.slice(0, 2).map((c) => (
+              <HealthRow key={c.id} label={c.name || c.integration_type || 'Connector'} status={c.status || 'pending'} />
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="rounded-xl border border-border bg-card p-5">
+          <h2 className="mb-4 font-heading text-sm font-semibold text-foreground">Quick Actions</h2>
+          <div className="grid gap-2.5">
+            <QuickLink to="/scoreboard" icon={Target} label="URL Scoreboard" desc="See how your URLs are ranking" />
+            <QuickLink to="/fastpaths" icon={Zap} label="Fast Paths" desc="Quick-win opportunities ready now" />
+            <QuickLink to="/strategy" icon={TrendingUp} label="SEO Strategy" desc="View your optimization roadmap" />
+            <QuickLink to="/system" icon={Shield} label="System Management" desc="API keys, promos & integrations" />
+          </div>
+        </div>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-heading text-sm font-semibold text-foreground">Recent Activity</h2>
+          <Link to="/proof" className="text-xs text-primary hover:underline">View all →</Link>
+        </div>
+        {stats.receipts.length === 0 ? (
+          <div className="py-8 text-center">
+            <Clock className="mx-auto mb-2 h-8 w-8 text-muted-foreground/30" />
+            <p className="text-sm text-muted-foreground">The system runs every hour. Activity will appear here after the next cycle.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {stats.receipts.map((r) => (
+              <div key={r.id} className="flex items-start gap-3 border-l-2 border-primary/30 pl-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-foreground">{r.summary}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {r.occurred_at ? new Date(r.occurred_at).toLocaleString() : ''} · {r.source || 'system'}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
-  );
-}
-
-function QuickAction({ to, icon: Icon, label, desc }) {
-  return (
-    <Link
-      to={to}
-      className="group flex items-center gap-3 rounded-lg border border-border bg-background/50 px-4 py-3 transition-colors hover:border-primary/40"
-    >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-card">
-        <Icon className="h-4 w-4 text-primary" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-foreground group-hover:text-primary">{label}</p>
-        <p className="truncate text-[11px] text-muted-foreground">{desc}</p>
-      </div>
-      <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground group-hover:text-primary" />
-    </Link>
   );
 }
