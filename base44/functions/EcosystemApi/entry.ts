@@ -94,6 +94,78 @@ export default async function (req) {
       return Response.json({ ok: true, result: syncRes });
     }
 
+    // --- audit scope: run site + technical SEO audits ---
+    if (action === 'run_audit') {
+      if (!scopes.includes('audit')) return Response.json({ error: 'scope "audit" required' }, { status: 403 });
+      let res = await base44.functions.invoke('SiteAudit', { url: body.url, depth: body.depth || 10 });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    if (action === 'run_technical_audit') {
+      if (!scopes.includes('audit')) return Response.json({ error: 'scope "audit" required' }, { status: 403 });
+      let res = await base44.functions.invoke('TechnicalSeoAudit', { url: body.url });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    // --- generate scope: content, sitemaps, copy variants ---
+    if (action === 'generate_content') {
+      if (!scopes.includes('generate')) return Response.json({ error: 'scope "generate" required' }, { status: 403 });
+      let res = await base44.functions.invoke('ContentGenerator', { url: body.url, topic: body.topic, keywords: body.keywords || [] });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    if (action === 'generate_sitemap') {
+      if (!scopes.includes('generate')) return Response.json({ error: 'scope "generate" required' }, { status: 403 });
+      let res = await base44.functions.invoke('GenerateSitemap', { domain: body.domain || body.url });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    if (action === 'generate_copy') {
+      if (!scopes.includes('generate')) return Response.json({ error: 'scope "generate" required' }, { status: 403 });
+      let res = await base44.functions.invoke('GenerateCopyVariants', { url: body.url, target_keyword: body.keyword });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    // --- deploy scope: index pinging, implement changes ---
+    if (action === 'index_now') {
+      if (!scopes.includes('deploy')) return Response.json({ error: 'scope "deploy" required' }, { status: 403 });
+      let res = await base44.functions.invoke('IndexNowPing', { urls: body.urls || (body.url ? [body.url] : []) });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    if (action === 'deploy_url') {
+      if (!scopes.includes('deploy')) return Response.json({ error: 'scope "deploy" required' }, { status: 403 });
+      let res = await base44.functions.invoke('AreImplement', { url: body.url, gap_id: body.gap_id, treatment: body.treatment });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
+    // --- monitor scope: rankings, score history, anomalies ---
+    if (action === 'get_rankings') {
+      if (!scopes.includes('monitor')) return Response.json({ error: 'scope "monitor" required' }, { status: 403 });
+      const measurements = await svc.entities.SerpMeasurement.filter({ url: body.url }, '-measured_at', 50);
+      return Response.json({ url: body.url, measurements });
+    }
+
+    if (action === 'get_score_history') {
+      if (!scopes.includes('monitor')) return Response.json({ error: 'scope "monitor" required' }, { status: 403 });
+      const snapshots = await svc.entities.UrlScoreSnapshot.filter({ url: body.url }, '-captured_at', 100);
+      return Response.json({ url: body.url, snapshots });
+    }
+
+    if (action === 'detect_anomalies') {
+      if (!scopes.includes('monitor')) return Response.json({ error: 'scope "monitor" required' }, { status: 403 });
+      let res = await base44.functions.invoke('AnomalyDetection', { url: body.url, client_id: body.client_id });
+      try { if (res && typeof res.json === 'function') res = await res.json(); } catch (_) {}
+      return Response.json({ ok: true, result: res });
+    }
+
     return Response.json({ error: `unknown action: ${action}` }, { status: 400 });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
