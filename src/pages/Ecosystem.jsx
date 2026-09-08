@@ -38,8 +38,8 @@ export default function Ecosystem() {
   async function loadKeys() {
     setLoading(true);
     try {
-      const res = await base44.functions.invoke('EcosystemApi', { action: 'list_keys' });
-      setKeys(res.keys || []);
+      const { data } = await base44.functions.invoke('EcosystemApi', { action: 'list_keys' });
+      setKeys(data?.keys || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -52,12 +52,13 @@ export default function Ecosystem() {
   async function createKey() {
     setCreating(true);
     try {
-      const res = await base44.functions.invoke('EcosystemApi', { action: 'create_key', label: label || 'Ecosystem Key', scopes });
-      setNewKey(res);
+      const { data } = await base44.functions.invoke('EcosystemApi', { action: 'create_key', label: label || 'Ecosystem Key', scopes });
+      setNewKey(data);
       setLabel('');
       await loadKeys();
     } catch (e) {
       console.error(e);
+      alert('Error creating key: ' + (e.message || e));
     } finally {
       setCreating(false);
     }
