@@ -5,6 +5,10 @@
     "user_id": {
       "type": "string"
     },
+    "client_id": {
+      "type": "string",
+      "description": "The generated Client project ID"
+    },
     "company_name": {
       "type": "string"
     },
@@ -33,6 +37,24 @@
     },
     "sub_industry": {
       "type": "string"
+    },
+    "service_area": {
+      "type": "string",
+      "enum": [
+        "local",
+        "regional",
+        "national",
+        "international"
+      ],
+      "default": "local"
+    },
+    "target_audience": {
+      "type": "string",
+      "description": "Who the business's customers are"
+    },
+    "main_services": {
+      "type": "string",
+      "description": "Primary products or services offered"
     },
     "urls": {
       "type": "array",

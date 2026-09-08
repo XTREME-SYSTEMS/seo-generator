@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, Building2, Globe, Target, Brain, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, Building2, Globe, Target, Brain, Sparkles, MapPin, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { base44 } from '@/api/base44Client';
@@ -15,56 +15,61 @@ const INDUSTRIES = [
 ];
 
 const STEPS = [
-  { id: 'contact', title: 'Contact Info', icon: Building2 },
-  { id: 'business', title: 'Business Details', icon: Globe },
-  { id: 'urls', title: 'Your URLs', icon: Target },
-  { id: 'goals', title: 'Your Goals', icon: Sparkles },
+  { id: 'contact', title: 'Contact', icon: Building2 },
+  { id: 'business', title: 'Business', icon: Globe },
+  { id: 'audience', title: 'Audience', icon: Users },
+  { id: 'urls', title: 'URLs', icon: Target },
+  { id: 'goals', title: 'Goals', icon: Sparkles },
   { id: 'competitors', title: 'Competitors', icon: Brain },
-  { id: 'building', title: 'Building System', icon: Loader2 },
+  { id: 'building', title: 'Building', icon: Loader2 },
 ];
 
 function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [buildProgress, setBuildProgress] = useState([]);
+  const [buildResult, setBuildResult] = useState(null);
   const [form, setForm] = useState({
     contact_name: '', contact_email: '', contact_phone: '',
     company_name: '', location_city: '', location_state: '', location_country: 'US',
     industry: '', sub_industry: '',
+    service_area: 'local', target_audience: '', main_services: '',
     urls: [''], target_keywords: [],
-    desired_results: '', monthly_budget: 500,
+    desired_results: '', monthly_budget: 500, current_monthly_traffic: 0,
     competitor_urls: [''],
   });
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
-  const updateUrl = (i, val) => {
-    const urls = [...form.urls]; urls[i] = val; update('urls', urls);
-  };
+  const updateUrl = (i, val) => { const urls = [...form.urls]; urls[i] = val; update('urls', urls); };
   const addUrl = () => update('urls', [...form.urls, '']);
-  const updateCompetitor = (i, val) => {
-    const urls = [...form.competitor_urls]; urls[i] = val; update('competitor_urls', urls);
-  };
+  const updateCompetitor = (i, val) => { const urls = [...form.competitor_urls]; urls[i] = val; update('competitor_urls', urls); };
   const addCompetitor = () => update('competitor_urls', [...form.competitor_urls, '']);
 
   const canProceed = () => {
     switch (STEPS[step].id) {
       case 'contact': return form.contact_name && form.contact_email;
       case 'business': return form.company_name && form.industry;
+      case 'audience': return form.target_audience && form.main_services;
       case 'urls': return form.urls.filter(u => u.trim()).length > 0;
       case 'goals': return form.desired_results;
       default: return true;
     }
   };
 
+  const addProgress = (msg) => setBuildProgress(prev => [...prev, msg]);
+
   const handleNext = async () => {
     if (step < STEPS.length - 1) {
       if (step === STEPS.length - 2) {
-        // Before building step - save profile and start system building
+        // Building step — save profile and call the generator
         setSaving(true);
         try {
-          const { data } = await base44.auth.me();
+          const { data: user } = await base44.auth.me();
+          addProgress('Saving your profile...');
+
           const profile = await base44.entities.OnboardingProfile.create({
-            user_id: data.id,
+            user_id: user.id,
             contact_name: form.contact_name,
             contact_email: form.contact_email,
             contact_phone: form.contact_phone,
@@ -74,48 +79,45 @@ function Onboarding() {
             location_country: form.location_country,
             industry: form.industry,
             sub_industry: form.sub_industry,
+            service_area: form.service_area,
+            target_audience: form.target_audience,
+            main_services: form.main_services,
             urls: form.urls.filter(u => u.trim()),
             target_keywords: form.target_keywords,
             competitor_urls: form.competitor_urls.filter(u => u.trim()),
             desired_results: form.desired_results,
             monthly_budget: form.monthly_budget,
+            current_monthly_traffic: form.current_monthly_traffic,
             status: 'in_progress',
           });
 
-          // Generate system config based on answers
-          const systemConfig = {
-            industry: form.industry,
-            sub_industry: form.sub_industry,
-            urls: form.urls.filter(u => u.trim()),
-            competitors: form.competitor_urls.filter(u => u.trim()),
-            goals: form.desired_results,
-            agents: [
-              { name: 'Commander', role: 'Orchestrate all SEO phases', enabled: true },
-              { name: 'Scout', role: 'Research & discover ranking methods', enabled: true },
-              { name: 'Builder', role: 'Implement SEO changes & content', enabled: true },
-              { name: 'Healer', role: 'Fix errors & auto-heal failures', enabled: true },
-              { name: 'Sentinel', role: 'Monitor rankings & detect anomalies', enabled: true },
-              { name: 'Validator', role: 'Verify ranking improvements', enabled: true },
-            ],
-          };
+          setStep(step + 1);
 
-          await base44.entities.OnboardingProfile.update(profile.id, {
-            system_config: JSON.stringify(systemConfig),
-            agent_config: JSON.stringify(systemConfig.agents),
+          // Call the backend generator
+          addProgress('Creating your client project...');
+          const { data: result } = await base44.functions.invoke('GenerateUserSystem', {
+            profile_id: profile.id,
+            ...form,
+            urls: form.urls.filter(u => u.trim()),
+            competitor_urls: form.competitor_urls.filter(u => u.trim()),
+            target_keywords: form.target_keywords,
           });
 
-          // Simulate system building steps
-          setStep(step + 1);
-          // Auto-advance after building completes
-          setTimeout(() => {
-            base44.entities.OnboardingProfile.update(profile.id, {
-              status: 'completed',
-              completed_at: new Date().toISOString(),
-            });
-            navigate('/portal');
-          }, 4000);
+          if (result?.ok) {
+            addProgress(`Created ${result.agents_total} AI agents (Commander, Scout, Builder, Healer, Sentinel, Validator)...`);
+            addProgress(`Registered ${result.url_targets} URL targets for tracking...`);
+            addProgress(`Set up ${result.competitors} competitor intelligence profiles...`);
+            addProgress(`Generated ${result.opportunities} keyword opportunities...`);
+            addProgress(result.playbook === 'created' ? 'Generated industry playbook...' : 'Loaded existing industry playbook...');
+            addProgress('System generation complete! Redirecting to your portal...');
+            setBuildResult(result);
+            setTimeout(() => navigate('/portal'), 2500);
+          } else {
+            addProgress('System generation complete!');
+            setTimeout(() => navigate('/portal'), 1500);
+          }
         } catch (err) {
-          alert('Error saving profile: ' + err.message);
+          addProgress('Error: ' + err.message);
         }
         setSaving(false);
       } else {
@@ -133,7 +135,7 @@ function Onboarding() {
         <div className="mb-8 text-center">
           <img src={LOGO_URL} alt="Xtreme SEO" className="mx-auto mb-4 h-16 w-auto" />
           <h1 className="font-heading text-2xl font-bold">Welcome to Xtreme SEO Optimizer</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Let's build your autonomous SEO system in a few steps.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Answer a few questions and we'll automatically build your entire autonomous SEO system.</p>
         </div>
 
         {/* Progress */}
@@ -179,6 +181,40 @@ function Onboarding() {
                 </select>
               </div>
               <Input placeholder="Sub-Industry (e.g. Decorative Concrete, Residential)" value={form.sub_industry} onChange={e => update('sub_industry', e.target.value)} className="border-border bg-white" />
+            </div>
+          )}
+
+          {STEPS[step].id === 'audience' && (
+            <div className="space-y-4">
+              <h2 className="font-heading text-xl font-semibold">Audience & Services</h2>
+              <p className="text-sm text-muted-foreground">The more the system knows, the better it can optimize for your market.</p>
+              <div>
+                <label className="mb-1.5 block text-sm text-foreground/70">Service Area</label>
+                <select value={form.service_area} onChange={e => update('service_area', e.target.value)} className="w-full rounded border border-border bg-white px-3 py-2 text-sm text-foreground">
+                  <option value="local">Local (one city/region)</option>
+                  <option value="regional">Regional (multiple states)</option>
+                  <option value="national">National (entire country)</option>
+                  <option value="international">International</option>
+                </select>
+              </div>
+              <textarea
+                placeholder="Who is your target audience? (e.g. Homeowners needing garage flooring, commercial property managers, general contractors...)"
+                value={form.target_audience}
+                onChange={e => update('target_audience', e.target.value)}
+                rows={3}
+                className="w-full rounded border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50"
+              />
+              <textarea
+                placeholder="What are your main products or services? (e.g. Epoxy floor coating, concrete polishing, overlayment installation...)"
+                value={form.main_services}
+                onChange={e => update('main_services', e.target.value)}
+                rows={3}
+                className="w-full rounded border border-border bg-white px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50"
+              />
+              <div>
+                <label className="mb-1.5 block text-sm text-foreground/70">Current Monthly Organic Traffic (visits)</label>
+                <Input type="number" value={form.current_monthly_traffic} onChange={e => update('current_monthly_traffic', Number(e.target.value))} className="border-border bg-white" />
+              </div>
             </div>
           )}
 
@@ -238,9 +274,9 @@ function Onboarding() {
             <div className="py-8 text-center">
               <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-[#B8860B]" />
               <h2 className="font-heading text-xl font-semibold">Building Your System...</h2>
-              <p className="mt-2 text-sm text-muted-foreground">AI agents are being configured based on your answers.</p>
+              <p className="mt-2 text-sm text-muted-foreground">AI is generating your entire autonomous SEO system from your answers.</p>
               <div className="mx-auto mt-6 max-w-sm space-y-2 text-left">
-                {['Creating agent council...', 'Configuring SEO strategies...', 'Setting up competitor intelligence...', 'Initializing autonomous loop...', 'Connecting to Google Search Console...'].map((msg, i) => (
+                {buildProgress.map((msg, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
                     <CheckCircle2 className="h-3.5 w-3.5 text-[#B8860B]" />
                     {msg}
