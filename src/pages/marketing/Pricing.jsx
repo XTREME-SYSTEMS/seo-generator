@@ -15,6 +15,41 @@ function Pricing() {
   const [promoChecking, setPromoChecking] = useState(false);
   const [checkingOut, setCheckingOut] = useState(null);
 
+  const handleFreeTrial = async () => {
+    setCheckingOut('free');
+    try {
+      const { data: user } = await base44.auth.me();
+      if (!user) {
+        window.location.href = '/register?returnTo=/portal/onboarding';
+        return;
+      }
+      // Check if they already have a subscription
+      const existing = await base44.entities.Subscription.filter({ user_id: user.id });
+      if (existing.length > 0 && (existing[0].status === 'active' || existing[0].status === 'trialing')) {
+        window.location.href = '/portal/onboarding';
+        return;
+      }
+      // Create a free trial subscription
+      const now = new Date();
+      const trialEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      await base44.entities.Subscription.create({
+        user_id: user.id,
+        customer_email: user.email,
+        plan: 'free',
+        status: 'trialing',
+        url_limit: 3,
+        urls_used: 0,
+        current_period_start: now.toISOString(),
+        current_period_end: trialEnd.toISOString(),
+        onboarding_completed: false,
+      });
+      window.location.href = '/portal/onboarding';
+    } catch (err) {
+      alert('Error starting trial: ' + err.message);
+    }
+    setCheckingOut(null);
+  };
+
   const handleCheckout = async (planKey) => {
     if (window.self !== window.top) {
       alert('Checkout works only from the published app. Please open the app in a new tab.');
@@ -100,17 +135,24 @@ function Pricing() {
           </div>
 
           {/* Pricing Tiers */}
-          <div className="grid gap-6 lg:grid-cols-4">
+          <div className="grid gap-6 lg:grid-cols-5">
             {Object.entries(PLAN_FEATURES).map(([key, plan]) => (
               <div
                 key={key}
                 className={`relative flex flex-col rounded-xl border p-6 ${
-                  key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.05]' : 'border-border bg-slate-50/50'
+                  key === 'professional' ? 'border-[#FFD700] bg-[#FFD700]/[0.05]' :
+                  key === 'free' ? 'border-emerald-400/50 bg-emerald-50/30' :
+                  'border-border bg-slate-50/50'
                 }`}
               >
                 {key === 'professional' && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#FFD700] px-4 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black">
                     Most Popular
+                  </div>
+                )}
+                {key === 'free' && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-emerald-500 px-4 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                    Free
                   </div>
                 )}
                 <h3 className="font-heading text-xl font-semibold text-foreground">{plan.name}</h3>
@@ -121,15 +163,25 @@ function Pricing() {
                 <p className="mt-1 text-xs text-muted-foreground">
                   {plan.url_limit >= 9999 ? 'Unlimited URLs' : `${plan.url_limit} URLs under optimization`}
                 </p>
-                <Button
-                  onClick={() => handleCheckout(key)}
-                  disabled={checkingOut === key}
-                  className={`mt-5 w-full ${
-                    key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-foreground text-background hover:bg-foreground/90'
-                  }`}
-                >
-                  {checkingOut === key ? <Loader2 className="h-4 w-4 animate-spin" /> : `Choose ${plan.name}`}
-                </Button>
+                {key === 'free' ? (
+                  <Button
+                    onClick={handleFreeTrial}
+                    disabled={checkingOut === 'free'}
+                    className="mt-5 w-full bg-emerald-600 text-white hover:bg-emerald-700"
+                  >
+                    {checkingOut === 'free' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Start Free Trial'}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => handleCheckout(key)}
+                    disabled={checkingOut === key}
+                    className={`mt-5 w-full ${
+                      key === 'professional' ? 'bg-[#FFD700] text-black hover:bg-[#FFD700]/90' : 'bg-foreground text-background hover:bg-foreground/90'
+                    }`}
+                  >
+                    {checkingOut === key ? <Loader2 className="h-4 w-4 animate-spin" /> : `Choose ${plan.name}`}
+                  </Button>
+                )}
                 <ul className="mt-6 flex-1 space-y-2.5">
                   {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">

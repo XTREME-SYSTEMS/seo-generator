@@ -18,6 +18,19 @@ export const STRIPE_UPGRADE_PRICES = {
 };
 
 export const PLAN_FEATURES = {
+  free: {
+    name: 'Free Trial',
+    price: 0,
+    url_limit: 3,
+    features: [
+      '3 URLs under autonomous optimization',
+      'Daily Google ranking tracking',
+      'Basic SEO audit & technical fixes',
+      'AI content generation (meta tags, schema)',
+      'Google Search Console integration',
+      '7-day trial — no credit card required',
+    ],
+  },
   starter: {
     name: 'Starter',
     price: 299,

@@ -19,12 +19,13 @@
     "plan": {
       "type": "string",
       "enum": [
+        "free",
         "starter",
         "professional",
         "elite",
         "enterprise"
       ],
-      "default": "starter"
+      "default": "free"
     },
     "status": {
       "type": "string",
