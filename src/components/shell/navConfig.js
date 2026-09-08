@@ -29,6 +29,7 @@ export const NAV_GROUPS = [
       { to: '/clients', label: 'Clients', icon: Building2 },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
       { to: '/system', label: 'System Management', icon: Settings },
+      { to: '/provisioning', label: 'Provisioning', icon: Plug },
       { to: '/settings', label: 'Settings', icon: Settings },
     ],
   },

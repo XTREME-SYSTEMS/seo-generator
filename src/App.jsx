@@ -68,6 +68,7 @@ import Connectors from '@/pages/Connectors';
 import SystemHealth from '@/pages/SystemHealth';
 import Admin from '@/pages/Admin';
 import Settings from '@/pages/Settings';
+import Provisioning from '@/pages/Provisioning';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -174,6 +175,7 @@ const AuthenticatedApp = () => {
           <Route path="/system-health" element={<SystemHealth />} />
           <Route path="/admin-config" element={<Admin />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/provisioning" element={<Provisioning />} />
         </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
