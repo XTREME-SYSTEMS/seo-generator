@@ -13,6 +13,8 @@ import Copilot from '@/components/Copilot';
 import Landing from '@/pages/marketing/Landing';
 import HomeRouter from '@/components/leadgen/HomeRouter';
 import CityLanding from '@/pages/leadgen/CityLanding';
+import XpsHome from '@/pages/xps/XpsHome';
+import XpsLocationLanding from '@/pages/xps/XpsLocationLanding';
 import PricingPage from '@/pages/marketing/Pricing';
 import Services from '@/pages/marketing/Services';
 import CustomerPortal from '@/pages/portal/CustomerPortal';
@@ -182,6 +184,10 @@ const AuthenticatedApp = () => {
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
       <Route path="/:state/:city" element={<CityLanding />} />
+
+      {/* Xtreme Polishing Systems — Store Location Pages */}
+      <Route path="/locations" element={<XpsHome />} />
+      <Route path="/locations/:slug" element={<XpsLocationLanding />} />
 
       <Route path="*" element={<PageNotFound />} />
     </Routes>

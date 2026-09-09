@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, Loader2, Phone } from 'lucide-react';
 
-export default function LeadForm({ city, state, services = [], compact = false }) {
+export default function LeadForm({ city, state, services = [], compact = false, title = 'Get Free Quotes Today', subtitle = 'No obligation • Up to 3 local pros • Fast response', buttonText = 'Get My Free Quotes' }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', service_category: '', message: '' });
   const [status, setStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
@@ -55,8 +55,8 @@ export default function LeadForm({ city, state, services = [], compact = false }
   return (
     <form onSubmit={handleSubmit} className={`bg-white border-2 border-yellow-400 rounded-xl ${compact ? 'p-4 shadow-lg' : 'p-6 shadow-xl'}`}>
       <div className="text-center mb-4">
-        <h3 className={`font-bold text-gray-900 ${compact ? 'text-lg' : 'text-xl'}`}>Get Free Quotes Today</h3>
-        <p className="text-sm text-gray-500 mt-1">No obligation • Up to 3 local pros • Fast response</p>
+        <h3 className={`font-bold text-gray-900 ${compact ? 'text-lg' : 'text-xl'}`}>{title}</h3>
+        <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
       </div>
       <div className="space-y-3">
         <input
@@ -107,7 +107,7 @@ export default function LeadForm({ city, state, services = [], compact = false }
           {status === 'loading' ? (
             <><Loader2 className="w-5 h-5 animate-spin" /> Submitting...</>
           ) : (
-            <><Phone className="w-5 h-5" /> Get My Free Quotes</>
+            <><Phone className="w-5 h-5" /> {buttonText}</>
           )}
         </button>
         {status === 'error' && (

@@ -123,6 +123,37 @@ export const LEAD_GEN_DOMAINS = {
     metaDescription: (city) => `Find top-rated movers in ${city.cityName}, ${city.stateName}. Get free moving quotes from licensed, insured local moving companies. Compare rates, no obligation.`,
     pageTitle: (city) => `Movers Near Me ${city.cityName}, ${city.stateCode} | Free Moving Quotes from Local Movers`,
   },
+
+  // === Xtreme Polishing Systems — real store locations (not lead-gen) ===
+  'xtremepolishingsystems.com': {
+    domainType: 'store_locations',
+    brandName: 'Xtreme Polishing',
+    brandAccent: 'Systems',
+    tagline: 'Premium Concrete & Epoxy Flooring Supplies, Equipment, and Training',
+    subtitle: 'Xtreme Polishing Systems supplies contractors with professional-grade concrete products, epoxy coatings, flooring machines, and decorative materials. 66+ locations across North America.',
+    heroBadge: '66+ Locations Nationwide',
+    services: [
+      { name: 'Concrete Polishing Supplies', slug: 'concrete-polishing-supplies', desc: 'Densifiers, grinders, polishing pads, burnishers' },
+      { name: 'Epoxy Coatings', slug: 'epoxy-coatings', desc: 'Epoxy, polyurea, polyaspartic, primers, topcoats' },
+      { name: 'Flooring Machines', slug: 'flooring-machines', desc: 'Grinders, scrubbers, burnishers, vacuums' },
+      { name: 'Decorative Concrete', slug: 'decorative-concrete', desc: 'Stains, dyes, sealers, overlays, metallics' },
+      { name: 'Surface Preparation', slug: 'surface-preparation', desc: 'Shot blasting, scarifying, tooling, diamonds' },
+      { name: 'Janitorial Equipment', slug: 'janitorial-equipment', desc: 'Floor scrubbers, extractors, chemicals' },
+      { name: 'Training & Certification', slug: 'training-certification', desc: 'Hands-on contractor training and certification' },
+      { name: 'Contractor Support', slug: 'contractor-support', desc: 'Product selection, technical support, quotes' },
+      { name: 'Distribution & Logistics', slug: 'distribution-logistics', desc: 'Bulk ordering, fast delivery, inventory' },
+      { name: 'Tooling & Accessories', slug: 'tooling-accessories', desc: 'Diamond tooling, blades, cups, brushes' },
+    ],
+    generateFaqs: (city) => [
+      { q: `Where is the Xtreme Polishing Systems location in ${city.cityName}, ${city.stateCode}?`, a: `Our ${city.cityName}, ${city.stateCode} location serves contractors throughout ${city.stateName}. Visit our supply center for premium concrete products, epoxy coatings, and flooring machines.` },
+      { q: `What products are available at XPS ${city.cityName}?`, a: `The ${city.cityName} location carries concrete polishing supplies, epoxy coatings, flooring machines, decorative concrete materials, surface preparation tools, and diamond tooling.` },
+      { q: `Does XPS ${city.cityName} offer contractor training?`, a: `Select XPS locations offer hands-on training and certification classes for concrete polishing, epoxy application, and surface preparation. Contact the ${city.cityName} location for training schedules.` },
+      { q: `Can I buy epoxy coatings at the ${city.cityName} store?`, a: `Yes. The ${city.cityName} XPS supply center stocks epoxy coatings, polyurea, polyaspartic resins, concrete densifiers, polishing pads, and all the supplies contractors need.` },
+      { q: `What areas does the XPS ${city.cityName} location serve?`, a: `Our ${city.cityName}, ${city.stateCode} location serves contractors throughout ${city.stateName} and surrounding regions with fast pickup, delivery, and expert support.` },
+    ],
+    metaDescription: (city) => `Xtreme Polishing Systems in ${city.cityName}, ${city.stateName}. Premium concrete products, epoxy coatings, flooring machines, and contractor training. Find a supply center near you.`,
+    pageTitle: (city) => `Xtreme Polishing Systems ${city.cityName}, ${city.stateCode} | Concrete & Epoxy Supplies`,
+  },
 };
 
 // Domain aliases (www. + alternate spellings)
@@ -133,6 +164,9 @@ const DOMAIN_ALIASES = {
   'www.lawyersnearme.com': 'lawyersnearme.com',
   'www.insurancequotesnearme.com': 'insurancequotesnearme.com',
   'www.moversnearme.com': 'moversnearme.com',
+  'www.xtremepolishingsystems.com': 'xtremepolishingsystems.com',
+  'locations.xtremepolishingsystems.com': 'xtremepolishingsystems.com',
+  'www.locations.xtremepolishingsystems.com': 'xtremepolishingsystems.com',
 };
 
 export function getDomainConfig(hostname) {
