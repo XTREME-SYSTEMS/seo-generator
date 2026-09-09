@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { STATES, CITIES_BY_STATE, SERVICE_CATEGORIES } from '@/lib/leadGenCities';
+import { STATES, CITIES_BY_STATE } from '@/lib/leadGenCities';
 import LeadForm from '@/components/leadgen/LeadForm';
 import LeadGenLayout from '@/components/leadgen/LeadGenLayout';
 import { Search, Zap, CheckCircle2, MapPin, ArrowRight } from 'lucide-react';
 
-export default function LeadGenHome() {
+export default function LeadGenHome({ config }) {
+  if (!config) return null;
+  const brandFull = `${config.brandName} ${config.brandAccent}`;
+
   return (
     <LeadGenLayout>
       {/* Hero */}
@@ -14,12 +17,10 @@ export default function LeadGenHome() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4">
-                Get Free Quotes from Local Pros Near You
+                {config.tagline}
               </h1>
               <p className="text-lg text-gray-600 mb-6">
-                Lead Gen Near You connects homeowners and businesses with top-rated, verified local service
-                providers across {STATES.length} states and {Object.values(CITIES_BY_STATE).flat().length}+ cities.
-                Get up to 3 free quotes — no obligation, fast response.
+                {config.subtitle} We cover {STATES.length} states and {Object.values(CITIES_BY_STATE).flat().length}+ cities.
               </p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-700 mb-6">
                 <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> 100% Free</span>
@@ -32,7 +33,7 @@ export default function LeadGenHome() {
               </a>
             </div>
             <div id="lead-form">
-              <LeadForm />
+              <LeadForm services={config.services} />
             </div>
           </div>
         </div>
@@ -73,7 +74,7 @@ export default function LeadGenHome() {
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">Services We Connect You With</h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {SERVICE_CATEGORIES.map((s) => (
+            {config.services.map((s) => (
               <div key={s.slug} className="bg-white border border-gray-200 rounded-lg p-4 hover:border-yellow-400 transition-colors">
                 <h3 className="font-bold text-gray-900 mb-1">{s.name}</h3>
                 <p className="text-sm text-gray-500">{s.desc}</p>

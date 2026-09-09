@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getCity, getNearbyCities, isValidState, generateFaqs, SERVICE_CATEGORIES, STATES, CITIES_BY_STATE } from '@/lib/leadGenCities';
+import { getCity, getNearbyCities, isValidState, STATES, CITIES_BY_STATE } from '@/lib/leadGenCities';
+import { getDomainConfig, LEAD_GEN_DOMAINS } from '@/lib/leadGenDomains';
 import LeadForm from '@/components/leadgen/LeadForm';
 import LeadGenLayout from '@/components/leadgen/LeadGenLayout';
 import { MapPin, CheckCircle2, ArrowRight, ChevronDown, Search, Zap, Shield, Clock } from 'lucide-react';
@@ -11,28 +12,29 @@ export default function CityLanding() {
   const citySlug = (cityParam || '').toLowerCase();
 
   const city = getCity(stateCode, citySlug);
+  const config = getDomainConfig(window.location.hostname) || LEAD_GEN_DOMAINS['leadgennearyou.com'];
+
+  const brandFull = `${config.brandName} ${config.brandAccent}`;
 
   useEffect(() => {
-    if (!city) return;
+    if (!city || !config) return;
     const origin = window.location.origin;
     const canonical = `${origin}${city.cleanRoute}`;
-    document.title = `Lead Gen Near Me ${city.cityName}, ${city.stateCode} | Free Local Lead Quotes`;
-    setMeta('description', `Find top-rated local service providers in ${city.cityName}, ${city.stateName}. Get free instant quotes, compare pros, and connect with leads near you. No obligation, fast response.`);
+    document.title = config.pageTitle(city);
+    setMeta('description', config.metaDescription(city));
     setMeta('robots', 'index, follow');
     setCanonical(canonical);
 
-    // JSON-LD: LocalBusiness
     const bizSchema = {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      "name": `Lead Gen Near You ${city.cityName}`,
-      "description": `Free lead generation service connecting ${city.cityName}, ${city.stateCode} residents with top-rated local service providers. Get free quotes for home improvement, HVAC, plumbing, roofing, and more.`,
+      "name": `${brandFull} ${city.cityName}`,
+      "description": config.metaDescription(city),
       "areaServed": { "@type": "City", "name": city.cityName, "addressRegion": city.stateCode },
       "url": canonical,
       "telephone": "+1-800-555-0000",
     };
-    // JSON-LD: FAQPage
-    const faqs = generateFaqs(city);
+    const faqs = config.generateFaqs(city);
     const faqSchema = {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -42,7 +44,6 @@ export default function CityLanding() {
         "acceptedAnswer": { "@type": "Answer", "text": f.a }
       }))
     };
-    // JSON-LD: BreadcrumbList
     const breadcrumbSchema = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -61,7 +62,7 @@ export default function CityLanding() {
       removeJsonLd('leadgen-faq');
       removeJsonLd('leadgen-breadcrumb');
     };
-  }, [city?.route]);
+  }, [city?.route, config?.brandName]);
 
   if (!city || !isValidState(stateCode)) {
     return (
@@ -77,7 +78,7 @@ export default function CityLanding() {
     );
   }
 
-  const faqs = generateFaqs(city);
+  const faqs = config.generateFaqs(city);
   const nearbyCities = getNearbyCities(stateCode, city.route, 8);
 
   return (
@@ -95,11 +96,10 @@ export default function CityLanding() {
                 <span className="text-gray-900 font-medium">{city.cityName}</span>
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-                Lead Gen Near You in {city.cityName}, {city.stateCode}
+                {config.tagline.replace('Near You', `in ${city.cityName}, ${city.stateCode}`)}
               </h1>
               <p className="text-lg text-gray-600 mb-6">
-                Get free quotes from top-rated local service providers in {city.cityName}, {city.stateName}.
-                Compare up to 3 pros, no obligation, fast response.
+                {config.subtitle}
               </p>
               <div className="flex flex-wrap gap-4 text-sm text-gray-700">
                 <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> 100% Free</span>
@@ -109,7 +109,7 @@ export default function CityLanding() {
               </div>
             </div>
             <div>
-              <LeadForm city={city.cityName} state={city.stateCode} />
+              <LeadForm city={city.cityName} state={city.stateCode} services={config.services} />
             </div>
           </div>
         </div>
@@ -119,17 +119,17 @@ export default function CityLanding() {
       <section className="py-12 px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Find Local Service Providers in {city.cityName}, {city.stateCode}
+            {config.brandName} {config.brandAccent} in {city.cityName}, {city.stateCode}
           </h2>
           <div className="prose prose-lg max-w-none text-gray-600">
             <p>
-              Looking for reliable local contractors and service providers in {city.cityName}, {city.stateName}?
-              Lead Gen Near You connects homeowners and businesses in {city.cityName} with verified, top-rated
-              professionals for any project — from home improvement and flooring to HVAC, plumbing, roofing, and more.
+              Looking for reliable local providers in {city.cityName}, {city.stateName}?
+              {brandFull} connects homeowners and businesses in {city.cityName} with verified, top-rated
+              professionals for any project.
             </p>
             <p>
-              Our {city.cityName} lead generation network includes licensed and insured contractors who serve
-              {city.stateName} and the surrounding areas. Whether you need a quick repair or a major renovation,
+              Our {city.cityName} network includes licensed and insured professionals who serve
+              {city.stateName} and the surrounding areas. Whether you need a quick fix or a major project,
               we'll match you with up to 3 qualified local pros who can get the job done right.
             </p>
             <p>
@@ -171,14 +171,14 @@ export default function CityLanding() {
         </div>
       </section>
 
-      {/* Service Categories */}
+      {/* Services */}
       <section className="py-12 px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
             Services Available in {city.cityName}, {city.stateCode}
           </h2>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {SERVICE_CATEGORIES.map((s) => (
+            {config.services.map((s) => (
               <div key={s.slug} className="bg-white border border-gray-200 rounded-lg p-4 hover:border-yellow-400 transition-colors">
                 <h3 className="font-bold text-gray-900 mb-1">{s.name}</h3>
                 <p className="text-sm text-gray-500">{s.desc}</p>
@@ -197,7 +197,7 @@ export default function CityLanding() {
               <Shield className="w-6 h-6 text-yellow-500 flex-shrink-0 mt-1" />
               <div>
                 <h3 className="font-bold text-gray-900 text-sm">Verified Pros Only</h3>
-                <p className="text-sm text-gray-600">Every {city.cityName} contractor is licensed, insured, and background-checked.</p>
+                <p className="text-sm text-gray-600">Every {city.cityName} provider is licensed, insured, and background-checked.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">

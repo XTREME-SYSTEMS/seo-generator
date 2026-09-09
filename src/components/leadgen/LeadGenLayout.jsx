@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { getDomainConfig } from '@/lib/leadGenDomains';
 
-// Shared layout for LeadGenNearYou.com pages
+// Shared layout for lead-gen domains — branding adapts per domain
 export default function LeadGenLayout({ children }) {
+  const config = getDomainConfig(typeof window !== 'undefined' ? window.location.hostname : '');
+  const brandName = config?.brandName || 'Lead Gen';
+  const brandAccent = config?.brandAccent || 'Near You';
+
   return (
     <div id="top" className="min-h-screen bg-white flex flex-col">
       {/* Header */}
@@ -10,7 +15,7 @@ export default function LeadGenLayout({ children }) {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-xl font-bold text-gray-900">
-              Lead Gen<span className="text-yellow-500"> Near You</span>
+              {brandName}<span className="text-yellow-500"> {brandAccent}</span>
             </span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
@@ -36,9 +41,9 @@ export default function LeadGenLayout({ children }) {
           <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-6">
             <div>
               <span className="text-xl font-bold text-white">
-                Lead Gen<span className="text-yellow-400"> Near You</span>
+                {brandName}<span className="text-yellow-400"> {brandAccent}</span>
               </span>
-              <p className="text-sm mt-2 max-w-xs">Free lead generation service connecting homeowners with top-rated local service providers across the United States.</p>
+              <p className="text-sm mt-2 max-w-xs">Free service connecting you with top-rated local providers across the United States.</p>
             </div>
             <div className="flex flex-col gap-2 text-sm">
               <Link to="/" className="hover:text-yellow-400">Home</Link>
@@ -48,7 +53,7 @@ export default function LeadGenLayout({ children }) {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-4 text-xs text-gray-500">
-            <p>© {new Date().getFullYear()} Lead Gen Near You. All rights reserved. Connecting homeowners with local service providers nationwide.</p>
+            <p>© {new Date().getFullYear()} {brandName} {brandAccent}. All rights reserved. Connecting you with local providers nationwide.</p>
           </div>
         </div>
       </footer>

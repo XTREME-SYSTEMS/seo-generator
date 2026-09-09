@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { SERVICE_CATEGORIES } from '@/lib/leadGenCities';
 import { CheckCircle2, Loader2, Phone } from 'lucide-react';
 
-export default function LeadForm({ city, state, compact = false }) {
+export default function LeadForm({ city, state, services = [], compact = false }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', service_category: '', message: '' });
-  const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [status, setStatus] = useState('idle');
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e) => {
@@ -89,7 +88,7 @@ export default function LeadForm({ city, state, compact = false }) {
           className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white"
         >
           <option value="">Select Service Needed</option>
-          {SERVICE_CATEGORIES.map((s) => (
+          {services.map((s) => (
             <option key={s.slug} value={s.name}>{s.name}</option>
           ))}
         </select>

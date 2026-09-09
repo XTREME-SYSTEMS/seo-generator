@@ -1,13 +1,14 @@
 import React from 'react';
 import Landing from '@/pages/marketing/Landing';
 import LeadGenHome from '@/pages/leadgen/LeadGenHome';
+import { getDomainConfig } from '@/lib/leadGenDomains';
 
-// Domain-aware home router — renders LeadGenHome for lead-gen domains, Landing for everything else
+// Domain-aware home router — renders the correct lead-gen site per domain, Landing for everything else
 export default function HomeRouter() {
   const hostname = typeof window !== 'undefined' ? window.location.hostname : '';
-  const leadGenDomains = ['leadgennearyou.com', 'www.leadgennearyou.com', 'leadgennearme.com', 'www.leadgennearme.com'];
-  if (leadGenDomains.includes(hostname)) {
-    return <LeadGenHome />;
+  const config = getDomainConfig(hostname);
+  if (config) {
+    return <LeadGenHome config={config} />;
   }
   return <Landing />;
 }
