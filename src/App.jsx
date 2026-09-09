@@ -11,6 +11,8 @@ import SubscriptionGate from '@/components/SubscriptionGate';
 import Layout from '@/components/shell/Layout';
 import Copilot from '@/components/Copilot';
 import Landing from '@/pages/marketing/Landing';
+import HomeRouter from '@/components/leadgen/HomeRouter';
+import CityLanding from '@/pages/leadgen/CityLanding';
 import PricingPage from '@/pages/marketing/Pricing';
 import Services from '@/pages/marketing/Services';
 import CustomerPortal from '@/pages/portal/CustomerPortal';
@@ -101,7 +103,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       {/* Public Marketing Pages */}
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<HomeRouter />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/services" element={<Services />} />
 
@@ -178,6 +180,9 @@ const AuthenticatedApp = () => {
           <Route path="/provisioning" element={<Provisioning />} />
         </Route>
       </Route>
+      {/* LeadGenNearYou.com — Programmatic City Pages */}
+      <Route path="/:state/:city" element={<CityLanding />} />
+
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
