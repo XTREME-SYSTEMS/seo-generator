@@ -1,0 +1,42 @@
+{
+  "description": "Auto-generates an IndustryPlaybook when a new niche is added to the Mass Production Queue",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "industry_playbook_generator",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "generate_playbook": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "GenerateIndustryPlaybook",
+            "args": {
+              "niche": "${ .trigger.data.niche }",
+              "sub_industry": "${ .trigger.data.sub_industry }",
+              "mass_production_queue_id": "${ .trigger.entity_id }"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Generate industry playbook",
+            "description": "AI-generates SEO/AEO playbook for the new niche"
+          }
+        }
+      }
+    ]
+  },
+  "name": "Industry Playbook Generator",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "entity",
+      "events": [
+        "create"
+      ],
+      "entity_name": "MassProductionQueue"
+    }
+  }
+}
