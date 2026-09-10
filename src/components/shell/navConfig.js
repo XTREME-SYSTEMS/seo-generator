@@ -1,6 +1,6 @@
 import {
   Home, Activity, Target, TrendingUp, Gauge, Compass,
-  Building2, Plug, Settings, CalendarDays, DollarSign,
+  Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
 } from 'lucide-react';
 
 // Simplified nav — only what the admin needs to see at a high level.
@@ -10,6 +10,7 @@ export const NAV_GROUPS = [
     label: 'Overview',
     items: [
       { to: '/admin', label: 'Executive', icon: Home },
+      { to: '/core-strategy', label: 'Core Strategy', icon: Briefcase },
       { to: '/daily', label: 'Daily Results', icon: CalendarDays },
       { to: '/system-health', label: 'System Health', icon: Activity },
     ],

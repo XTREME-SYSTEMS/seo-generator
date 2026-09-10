@@ -74,6 +74,7 @@ import Admin from '@/pages/Admin';
 import Settings from '@/pages/Settings';
 import Provisioning from '@/pages/Provisioning';
 import StrategicURLFinder from '@/pages/StrategicURLFinder';
+import CoreStrategy from '@/pages/CoreStrategy';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -182,6 +183,7 @@ const AuthenticatedApp = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/provisioning" element={<Provisioning />} />
           <Route path="/strategic-urls" element={<StrategicURLFinder />} />
+          <Route path="/core-strategy" element={<CoreStrategy />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
