@@ -17,6 +17,7 @@ export const NAV_GROUPS = [
       { to: '/agi-swarm', label: 'AGI Swarm', icon: Bot },
       { to: '/daily', label: 'Daily Results', icon: CalendarDays },
       { to: '/system-health', label: 'System Health', icon: Activity },
+      { to: '/fallback', label: 'Fallback Infra', icon: Activity },
     ],
   },
   {
