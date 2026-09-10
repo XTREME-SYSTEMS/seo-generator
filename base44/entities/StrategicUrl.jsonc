@@ -1,0 +1,135 @@
+{
+  "name": "StrategicUrl",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "description": "The domain or URL pattern being evaluated (e.g. emergencyplumbernearyou.com)"
+    },
+    "niche": {
+      "type": "string",
+      "description": "The niche/industry this URL targets (e.g. plumbing, water damage, locksmith)"
+    },
+    "keyword_category": {
+      "type": "string",
+      "enum": [
+        "emergency",
+        "near_you",
+        "near_me",
+        "service",
+        "local",
+        "commercial"
+      ],
+      "default": "near_you"
+    },
+    "primary_keyword": {
+      "type": "string"
+    },
+    "secondary_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "search_volume_estimate": {
+      "type": "number",
+      "description": "Estimated monthly search volume"
+    },
+    "competition_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium"
+    },
+    "cpc_estimate": {
+      "type": "number",
+      "description": "Estimated cost per click in USD (commercial intent indicator)"
+    },
+    "lead_gen_potential_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Higher = more lead-gen revenue potential"
+    },
+    "estimated_monthly_leads": {
+      "type": "number",
+      "default": 0
+    },
+    "estimated_lead_value": {
+      "type": "number",
+      "default": 0,
+      "description": "Value per lead in USD"
+    },
+    "estimated_monthly_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "estimated_site_value": {
+      "type": "number",
+      "default": 0,
+      "description": "What the finished, ranked site is worth to a buyer"
+    },
+    "target_buyer_industry": {
+      "type": "string",
+      "description": "Who would buy this site (e.g. HVAC companies, restoration franchises)"
+    },
+    "programmatic_pages_potential": {
+      "type": "number",
+      "default": 0,
+      "description": "How many city/service pages can be generated"
+    },
+    "google_first_page_difficulty": {
+      "type": "number",
+      "default": 50,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "discovered",
+        "evaluated",
+        "generating",
+        "live",
+        "for_sale",
+        "sold"
+      ],
+      "default": "discovered"
+    },
+    "landing_pages_generated": {
+      "type": "number",
+      "default": 0
+    },
+    "gsc_property": {
+      "type": "string",
+      "description": "Linked Google Search Console property"
+    },
+    "sitemap_submitted": {
+      "type": "boolean",
+      "default": false
+    },
+    "seo_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "aeo_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Why this URL is strategic and high-value"
+    }
+  },
+  "required": [
+    "url"
+  ]
+}

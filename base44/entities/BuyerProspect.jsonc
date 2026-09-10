@@ -1,0 +1,78 @@
+{
+  "name": "BuyerProspect",
+  "type": "object",
+  "properties": {
+    "strategic_url_id": {
+      "type": "string",
+      "description": "Link to the StrategicUrl this prospect wants to buy"
+    },
+    "strategic_url": {
+      "type": "string",
+      "description": "Denormalized URL string for display"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string",
+      "format": "email"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "reason_to_buy": {
+      "type": "string",
+      "description": "Why this company would want to acquire this URL/site"
+    },
+    "estimated_budget": {
+      "type": "number",
+      "description": "Estimated acquisition budget in USD"
+    },
+    "pitch_status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "pitched",
+        "negotiating",
+        "won",
+        "lost"
+      ],
+      "default": "identified"
+    },
+    "pitch_document": {
+      "type": "string",
+      "description": "Generated sales pitch in markdown"
+    },
+    "price_evaluation": {
+      "type": "number",
+      "description": "Estimated asking price for the site"
+    },
+    "roi_projection": {
+      "type": "string",
+      "description": "ROI projection summary for the buyer"
+    },
+    "stats_summary": {
+      "type": "string",
+      "description": "Key stats backing the valuation"
+    },
+    "pitch_generated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "company_name"
+  ]
+}
