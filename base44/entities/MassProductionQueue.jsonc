@@ -1,0 +1,131 @@
+{
+  "name": "MassProductionQueue",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string",
+      "description": "The industry/niche this site targets (e.g. plumbing, water damage, locksmith)"
+    },
+    "url_pattern": {
+      "type": "string",
+      "description": "Domain pattern to build (e.g. plumbingnearme.com)"
+    },
+    "keyword_category": {
+      "type": "string",
+      "enum": [
+        "emergency",
+        "near_you",
+        "near_me",
+        "service",
+        "local",
+        "commercial"
+      ],
+      "default": "near_you"
+    },
+    "primary_keyword": {
+      "type": "string"
+    },
+    "target_cities_count": {
+      "type": "number",
+      "default": 450,
+      "description": "How many city pages to generate"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "generating",
+        "deploying",
+        "live",
+        "monitoring",
+        "optimizing",
+        "paused"
+      ],
+      "default": "queued"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "high"
+    },
+    "estimated_monthly_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "lead_value": {
+      "type": "number",
+      "default": 0,
+      "description": "Value per lead in USD"
+    },
+    "estimated_monthly_leads": {
+      "type": "number",
+      "default": 0
+    },
+    "ga_property_id": {
+      "type": "string",
+      "description": "Google Analytics 4 property ID for traffic tracking"
+    },
+    "ga_connected": {
+      "type": "boolean",
+      "default": false
+    },
+    "social_accounts_created": {
+      "type": "boolean",
+      "default": "false"
+    },
+    "social_content_count": {
+      "type": "number",
+      "default": 0
+    },
+    "seo_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "aeo_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "autonomous_swarm_active": {
+      "type": "boolean",
+      "default": "false"
+    },
+    "daily_traffic": {
+      "type": "number",
+      "default": 0,
+      "description": "Sessions in last 24h from GA"
+    },
+    "total_traffic_30d": {
+      "type": "number",
+      "default": 0
+    },
+    "estimator_usage_today": {
+      "type": "number",
+      "default": 0,
+      "description": "How many people used the lead form/estimator today"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "launched_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "niche",
+    "url_pattern"
+  ]
+}
