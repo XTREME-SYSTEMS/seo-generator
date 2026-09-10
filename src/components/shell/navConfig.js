@@ -1,6 +1,7 @@
 import {
   Home, Activity, Target, TrendingUp, Gauge, Compass,
   Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
+  BarChart3, Rocket, Bot,
 } from 'lucide-react';
 
 // Simplified nav — only what the admin needs to see at a high level.
@@ -11,6 +12,9 @@ export const NAV_GROUPS = [
     items: [
       { to: '/admin', label: 'Executive', icon: Home },
       { to: '/core-strategy', label: 'Core Strategy', icon: Briefcase },
+      { to: '/analytics-dashboard', label: 'Analytics', icon: BarChart3 },
+      { to: '/mass-production', label: 'Mass Production', icon: Rocket },
+      { to: '/agi-swarm', label: 'AGI Swarm', icon: Bot },
       { to: '/daily', label: 'Daily Results', icon: CalendarDays },
       { to: '/system-health', label: 'System Health', icon: Activity },
     ],
