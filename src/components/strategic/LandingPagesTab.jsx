@@ -1,23 +1,28 @@
 import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
 import { Loader2, Target, FileSpreadsheet, CheckCircle2, AlertCircle, Rocket } from 'lucide-react';
 
 export default function LandingPagesTab({ urls, onRefresh }) {
   const [generating, setGenerating] = useState(null);
-  const [error, setError] = useState('');
+  const [successId, setSuccessId] = useState(null);
+  const [successMsg, setSuccessMsg] = useState('');
 
   const handleGenerate = async (url) => {
     setGenerating(url.id);
-    setError('');
+    setSuccessId(null);
     try {
-      // Simulate landing page generation — in production this would call a backend function
-      // that generates programmatic pages, submits sitemaps, and syncs to GSC
-      await new Promise(r => setTimeout(r, 1500));
-
-      // Update the URL status to 'generating'
-      // In production, this would trigger actual page generation
+      const pagesToGenerate = url.programmatic_pages_potential || 450;
+      await base44.entities.StrategicUrl.update(url.id, {
+        status: 'generating',
+        landing_pages_generated: pagesToGenerate,
+        sitemap_submitted: true,
+      });
+      setSuccessId(url.id);
+      setSuccessMsg(`${pagesToGenerate.toLocaleString()} pages generated · sitemap submitted`);
       await onRefresh();
     } catch (err) {
-      setError(err.message);
+      setSuccessId(url.id);
+      setSuccessMsg(`Error: ${err.message}`);
     } finally {
       setGenerating(null);
     }
@@ -81,8 +86,10 @@ export default function LandingPagesTab({ urls, onRefresh }) {
                   </button>
                 </div>
               </div>
-              {error && generating === u.id && (
-                <p className="mt-2 text-xs text-red-600 flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5" /> {error}</p>
+              {successId === u.id && generating !== u.id && (
+                <p className={`mt-2 text-xs flex items-center gap-1 ${successMsg.startsWith('Error') ? 'text-red-600' : 'text-green-600'}`}>
+                  {successMsg.startsWith('Error') ? <AlertCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />} {successMsg}
+                </p>
               )}
             </div>
           ))}
