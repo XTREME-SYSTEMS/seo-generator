@@ -1,0 +1,373 @@
+{
+  "auth": "oauth",
+  "tools": {
+    "functions": [
+      {
+        "name": "sync_search_console",
+        "title": "Sync Google Search Console",
+        "description": "Pulls latest indexing state, impressions, clicks, and ranking positions from Google Search Console for tracked URLs. Call when you need current SEO performance data or to refresh GSC metrics.",
+        "handler": "SyncSearchConsole",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "Operation to perform: 'sync' (default, syncs tracked URLs), 'sync_one' (sync a single URL), 'list_sites' (list GSC properties), 'register_urls' (add new URLs to track)."
+            },
+            "url_target_id": {
+              "type": "string",
+              "description": "Required when action is 'sync_one' — the ID of the UrlTarget to sync."
+            },
+            "limit": {
+              "type": "number",
+              "description": "Max URLs to sync in one batch. Defaults to 25."
+            },
+            "days": {
+              "type": "number",
+              "description": "Number of days of hourly data to pull. Defaults to 2."
+            },
+            "gsc_property": {
+              "type": "string",
+              "description": "Required when action is 'register_urls' — the GSC property string (e.g. sc-domain:example.com)."
+            },
+            "urls": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Required when action is 'register_urls' — array of URLs to register for tracking."
+            },
+            "client_id": {
+              "type": "string",
+              "description": "Optional client ID when registering URLs."
+            }
+          }
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "check_gsc_verification",
+        "title": "Check GSC Property Verification",
+        "description": "Checks verification status of all Google Search Console properties, identifies unverified or missing domains, and generates DNS TXT verification instructions. Call when you need to verify domain ownership in GSC.",
+        "handler": "GscVerificationMonitor",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "Operation: 'check_all' (default, checks all domains), 'attempt_verification' (re-adds missing properties to GSC), 'submit_sitemaps' (submits sitemaps for verified properties)."
+            }
+          }
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "generate_ai_response",
+        "title": "Generate AI Response via Vercel Gateway",
+        "description": "Generates an AI/LLM response using the Vercel AI Gateway (OpenAI models), bypassing Base44 integration credits. Call when you need AI text generation, analysis, or structured data extraction.",
+        "handler": "VercelAIGateway",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "prompt": {
+              "type": "string",
+              "description": "The prompt to send to the AI model."
+            },
+            "model": {
+              "type": "string",
+              "description": "Model identifier, e.g. 'openai/gpt-4o-mini'. Defaults to 'openai/gpt-4o-mini'."
+            },
+            "system_prompt": {
+              "type": "string",
+              "description": "Optional system prompt to set the AI's role or behavior."
+            },
+            "response_json_schema": {
+              "type": "object",
+              "description": "Optional JSON schema if you want a structured JSON response. The root must be an object type."
+            },
+            "max_tokens": {
+              "type": "number",
+              "description": "Maximum tokens in the response. Defaults to 4096."
+            },
+            "temperature": {
+              "type": "number",
+              "description": "Sampling temperature 0-2. Defaults to 0.7."
+            }
+          },
+          "required": ["prompt"]
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "send_email_direct",
+        "title": "Send Email via Gmail",
+        "description": "Sends an email through the Gmail OAuth connector, bypassing Base44 SendEmail credits. Call when you need to send notifications, reports, or outreach emails.",
+        "handler": "DirectEmailSender",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "string",
+              "description": "Recipient email address."
+            },
+            "subject": {
+              "type": "string",
+              "description": "Email subject line."
+            },
+            "html": {
+              "type": "string",
+              "description": "HTML body of the email. Provide either html or text (or both for multipart)."
+            },
+            "text": {
+              "type": "string",
+              "description": "Plain text body of the email. Provide either text or html (or both for multipart)."
+            },
+            "from_name": {
+              "type": "string",
+              "description": "Optional sender display name. Defaults to 'SEO Generator'."
+            }
+          },
+          "required": ["to", "subject"]
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "discover_strategic_urls",
+        "title": "Discover Strategic URL Opportunities",
+        "description": "Finds and evaluates high-value URL patterns for lead-generation site building using AI and web research. Scores each URL on search volume, CPC, lead value, and estimated site value. Call when researching new niche opportunities.",
+        "handler": "DiscoverStrategicUrls",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "niche": {
+              "type": "string",
+              "description": "The industry/niche to analyze (e.g. plumbing, water damage, locksmith)."
+            },
+            "location_type": {
+              "type": "string",
+              "description": "URL intent category: 'emergency', 'near_you', 'near_me', 'service', 'local', 'commercial'. Defaults to 'near_you'."
+            }
+          },
+          "required": ["niche"]
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "generate_sales_pitch",
+        "title": "Generate Sales Pitch for URL Buyer",
+        "description": "Creates a full sales pitch document for selling a strategic URL/website to a potential buyer, including price evaluation and ROI projections. Call when pitching a site to a buyer prospect.",
+        "handler": "GenerateSalesPitch",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "buyer_prospect_id": {
+              "type": "string",
+              "description": "ID of an existing BuyerProspect to generate a pitch for. If provided, loads the prospect and its strategic URL."
+            },
+            "strategic_url_id": {
+              "type": "string",
+              "description": "ID of a StrategicUrl to pitch. Required if buyer_prospect_id is not provided."
+            },
+            "company_name": {
+              "type": "string",
+              "description": "Name of the target buyer company. Used when creating a new prospect."
+            },
+            "domain": {
+              "type": "string",
+              "description": "Domain of the target buyer company."
+            },
+            "industry": {
+              "type": "string",
+              "description": "Industry of the target buyer."
+            }
+          }
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "audit_site",
+        "title": "Full Site Audit",
+        "description": "Runs a comprehensive site audit across 8 axes (Technical, Content, Structure, SEO, AEO, Conversion, Security, Authority) and returns a prioritized remediation plan. Call when you need a full SEO+AEO health check of a URL.",
+        "handler": "SiteAudit",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The full URL to audit (must include http:// or https://)."
+            }
+          },
+          "required": ["url"]
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "scrape_url",
+        "title": "Scrape URL and Extract Data",
+        "description": "Scrapes a URL and extracts all structured data: SEO metadata, JSON-LD schema, content headings, links, images, contact info, and technical signals. Call when you need to analyze a page's content and structure.",
+        "handler": "ScrapeUrl",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The full URL to scrape (must include http:// or https://)."
+            }
+          },
+          "required": ["url"]
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "capture_lead",
+        "title": "Capture a Lead",
+        "description": "Creates a Lead record from a form submission. No authentication required — designed for public lead forms. Call when a user submits their contact info for a service quote.",
+        "handler": "CaptureLead",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Full name of the lead."
+            },
+            "email": {
+              "type": "string",
+              "description": "Email address of the lead."
+            },
+            "phone": {
+              "type": "string",
+              "description": "Phone number of the lead."
+            },
+            "service_category": {
+              "type": "string",
+              "description": "Type of service the lead is interested in."
+            },
+            "message": {
+              "type": "string",
+              "description": "Additional message or project details from the lead."
+            },
+            "city": {
+              "type": "string",
+              "description": "City where the lead is located."
+            },
+            "state": {
+              "type": "string",
+              "description": "State where the lead is located."
+            },
+            "source_domain": {
+              "type": "string",
+              "description": "Domain that captured the lead."
+            },
+            "source_route": {
+              "type": "string",
+              "description": "Route/path that captured the lead."
+            }
+          },
+          "required": ["name", "email"]
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "generate_seo_content",
+        "title": "Generate SEO Content",
+        "description": "Generates optimized on-page content (meta title, meta description, H1, schema markup, opening paragraph, FAQ) for tracked URLs based on their target queries. Call when you need AI-generated content for SEO pages.",
+        "handler": "ContentGenerator",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Specific URL to generate content for. If omitted, generates for the top priority URLs."
+            },
+            "limit": {
+              "type": "number",
+              "description": "Max URLs to generate content for when url is omitted. Defaults to 10."
+            }
+          }
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      },
+      {
+        "name": "technical_seo_audit",
+        "title": "Technical SEO Audit",
+        "description": "Scans a URL for technical SEO issues: title, meta, canonical, OG tags, JSON-LD schema, H1s, image alt text, internal links, word count, robots.txt, sitemap.xml. Returns a score and prioritized issue list. Call for a focused technical SEO check.",
+        "handler": "TechnicalSeoAudit",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The full URL to audit (must include http:// or https://)."
+            }
+          },
+          "required": ["url"]
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "search_console_operations",
+        "title": "Google Search Console Operations",
+        "description": "Performs GSC operations: list sites, inspect a URL's indexing status, submit sitemaps, query search analytics. Call when you need direct GSC API access for a specific property.",
+        "handler": "SearchConsoleIndex",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "description": "Operation: 'list_sites', 'inspect', 'submit_sitemap', 'submit_all_sitemaps', 'search_analytics'."
+            },
+            "url": {
+              "type": "string",
+              "description": "Required for 'inspect' — the URL to inspect."
+            },
+            "site_url": {
+              "type": "string",
+              "description": "Required for 'inspect', 'submit_sitemap', 'search_analytics' — the GSC property URL (e.g. sc-domain:example.com)."
+            },
+            "sitemap_url": {
+              "type": "string",
+              "description": "Required for 'submit_sitemap' — the sitemap URL to submit."
+            },
+            "start_date": {
+              "type": "string",
+              "description": "For 'search_analytics' — start date in YYYY-MM-DD format."
+            },
+            "end_date": {
+              "type": "string",
+              "description": "For 'search_analytics' — end date in YYYY-MM-DD format."
+            },
+            "dimensions": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "For 'search_analytics' — dimensions to group by (e.g. ['query']). Defaults to ['query']."
+            }
+          }
+        },
+        "annotations": { "read_only_hint": true, "destructive_hint": false, "idempotent_hint": true }
+      },
+      {
+        "name": "generate_industry_playbook",
+        "title": "Generate Industry Playbook",
+        "description": "Generates a comprehensive SEO/AEO industry playbook with competitor benchmarks, content gaps, authority gaps, and surface wins. Call when onboarding a new client or entering a new industry vertical.",
+        "handler": "GenerateIndustryPlaybook",
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "industry": {
+              "type": "string",
+              "description": "The industry to analyze (e.g. plumbing, HVAC, water damage restoration)."
+            },
+            "sub_industry": {
+              "type": "string",
+              "description": "Optional sub-industry specialization (e.g. emergency plumbing, commercial HVAC)."
+            },
+            "client_id": {
+              "type": "string",
+              "description": "Optional client ID to associate the playbook with."
+            }
+          },
+          "required": ["industry"]
+        },
+        "annotations": { "read_only_hint": false, "destructive_hint": false, "idempotent_hint": false }
+      }
+    ]
+  }
+}
