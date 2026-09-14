@@ -76,6 +76,7 @@ import Admin from '@/pages/Admin';
 import Settings from '@/pages/Settings';
 import Provisioning from '@/pages/Provisioning';
 import StrategicURLFinder from '@/pages/StrategicURLFinder';
+import MissionControl from '@/pages/MissionControl';
 import CoreStrategy from '@/pages/CoreStrategy';
 import AnalyticsDashboard from '@/pages/AnalyticsDashboard';
 import MassProduction from '@/pages/MassProduction';
@@ -142,6 +143,7 @@ const AuthenticatedApp = () => {
       <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
         <Route element={<Layout />}>
           <Route path="/admin" element={<Dashboard />} />
+          <Route path="/mission-control" element={<MissionControl />} />
           <Route path="/system" element={<AdminPortal />} />
           <Route path="/delivery" element={<DeliveryGuarantee />} />
           <Route path="/start" element={<StartHere />} />

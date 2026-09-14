@@ -106,6 +106,22 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Mission Control Banner */}
+      <Link to="/mission-control" className="block rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/10 to-transparent p-5 hover:border-primary transition-colors group">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
+              <Zap className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="font-heading text-lg font-bold text-foreground">Mission Control — #1 Command Center</p>
+              <p className="text-sm text-muted-foreground">Strategic URL Discovery → Mass Production → Core Strategy → AGI Swarm. Start here.</p>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+        </div>
+      </Link>
+
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatCard icon={Target} label="URLs Tracked" value={stats.urls} color="text-primary" />
