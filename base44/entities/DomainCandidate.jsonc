@@ -40,6 +40,10 @@
     "purchase_gated": {
       "type": "boolean",
       "default": true
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
     }
   },
   "required": [

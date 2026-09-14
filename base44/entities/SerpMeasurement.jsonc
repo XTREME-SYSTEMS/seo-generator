@@ -49,6 +49,10 @@
     },
     "evidence_uri": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
     }
   },
   "required": [

@@ -17,6 +17,8 @@ import XpsHome from '@/pages/xps/XpsHome';
 import XpsLocationLanding from '@/pages/xps/XpsLocationLanding';
 import PricingPage from '@/pages/marketing/Pricing';
 import Services from '@/pages/marketing/Services';
+import About from '@/pages/marketing/About';
+import Contact from '@/pages/marketing/Contact';
 import CustomerPortal from '@/pages/portal/CustomerPortal';
 import Onboarding from '@/pages/portal/Onboarding';
 import UrlTracker from '@/pages/portal/UrlTracker';
@@ -115,6 +117,8 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<HomeRouter />} />
       <Route path="/pricing" element={<PricingPage />} />
       <Route path="/services" element={<Services />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* Auth */}
       <Route path="/login" element={<Login />} />

@@ -36,6 +36,10 @@
     },
     "diff_from_previous": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
     }
   },
   "required": [

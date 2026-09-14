@@ -35,6 +35,10 @@
     "depth": {
       "type": "number",
       "default": 1
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
     }
   },
   "required": [

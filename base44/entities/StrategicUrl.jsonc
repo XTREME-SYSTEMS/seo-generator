@@ -127,6 +127,10 @@
     "rationale": {
       "type": "string",
       "description": "Why this URL is strategic and high-value"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
     }
   },
   "required": [
