@@ -1,0 +1,57 @@
+{
+  "name": "GeneratedPage",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string"
+    },
+    "url_pattern": {
+      "type": "string",
+      "description": "The strategic URL pattern this page belongs to"
+    },
+    "strategic_url_id": {
+      "type": "string",
+      "description": "Reference to the StrategicUrl record"
+    },
+    "page_title": {
+      "type": "string"
+    },
+    "page_type": {
+      "type": "string",
+      "enum": [
+        "landing",
+        "service",
+        "city",
+        "faq",
+        "about",
+        "contact"
+      ],
+      "default": "landing"
+    },
+    "html_url": {
+      "type": "string",
+      "description": "Public URL to the generated HTML file"
+    },
+    "meta_description": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "generated",
+        "previewed",
+        "deployed",
+        "archived"
+      ],
+      "default": "generated"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche",
+    "page_title"
+  ]
+}
