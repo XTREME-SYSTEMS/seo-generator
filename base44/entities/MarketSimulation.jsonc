@@ -1,0 +1,130 @@
+{
+  "name": "MarketSimulation",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string"
+    },
+    "url_pattern": {
+      "type": "string"
+    },
+    "timeframe": {
+      "type": "string",
+      "enum": [
+        "1_week",
+        "1_month",
+        "3_month",
+        "6_month",
+        "9_month",
+        "12_month",
+        "2_year",
+        "3_year",
+        "5_year",
+        "10_year"
+      ]
+    },
+    "starting_pages": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_pages": {
+      "type": "number",
+      "default": 0
+    },
+    "starting_traffic": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_traffic": {
+      "type": "number",
+      "default": 0
+    },
+    "starting_leads": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_leads": {
+      "type": "number",
+      "default": 0
+    },
+    "starting_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "starting_cost": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_cost": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_profit": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_keyword_count": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_backlinks": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_domain_authority": {
+      "type": "number",
+      "default": 0
+    },
+    "projected_ranking_keywords": {
+      "type": "number",
+      "default": 0
+    },
+    "growth_assumptions": {
+      "type": "string",
+      "description": "Key assumptions driving the projection"
+    },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mitigation_strategies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence_level": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "key_metrics": {
+      "type": "string",
+      "description": "Summary of key projected metrics"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche",
+    "timeframe"
+  ]
+}

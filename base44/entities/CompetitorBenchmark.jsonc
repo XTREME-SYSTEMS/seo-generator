@@ -1,0 +1,125 @@
+{
+  "name": "CompetitorBenchmark",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string",
+      "description": "Industry/niche being benchmarked"
+    },
+    "competitor_url": {
+      "type": "string",
+      "description": "URL of the competitor"
+    },
+    "competitor_name": {
+      "type": "string"
+    },
+    "rank": {
+      "type": "number",
+      "description": "1, 2, or 3 - ranking among top 3"
+    },
+    "business_model": {
+      "type": "string",
+      "description": "How they make money"
+    },
+    "revenue_model": {
+      "type": "string"
+    },
+    "estimated_revenue": {
+      "type": "string"
+    },
+    "target_audience": {
+      "type": "string"
+    },
+    "value_proposition": {
+      "type": "string"
+    },
+    "design_strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "key_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "weaknesses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "keywords_ranked_for": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "estimated_monthly_traffic": {
+      "type": "number",
+      "default": 0
+    },
+    "backlink_count": {
+      "type": "number",
+      "default": 0
+    },
+    "domain_authority": {
+      "type": "number",
+      "default": 0
+    },
+    "pages_indexed": {
+      "type": "number",
+      "default": 0
+    },
+    "site_structure": {
+      "type": "string",
+      "description": "Analysis of their site architecture"
+    },
+    "content_strategy": {
+      "type": "string"
+    },
+    "pricing_strategy": {
+      "type": "string"
+    },
+    "customer_reviews_summary": {
+      "type": "string"
+    },
+    "social_presence": {
+      "type": "string"
+    },
+    "technology_stack": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "superiority_strategy": {
+      "type": "string",
+      "description": "How we can beat them"
+    },
+    "scraped_content_summary": {
+      "type": "string",
+      "description": "Summary of scraped site content"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "discovered",
+        "analyzed",
+        "scraped",
+        "benchmarked"
+      ],
+      "default": "discovered"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche",
+    "competitor_url"
+  ]
+}

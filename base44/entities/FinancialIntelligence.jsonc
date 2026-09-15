@@ -1,0 +1,108 @@
+{
+  "name": "FinancialIntelligence",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string"
+    },
+    "url_pattern": {
+      "type": "string",
+      "description": "The URL pattern being analyzed"
+    },
+    "market_size_tam": {
+      "type": "string",
+      "description": "Total Addressable Market"
+    },
+    "market_size_sam": {
+      "type": "string",
+      "description": "Serviceable Addressable Market"
+    },
+    "market_size_som": {
+      "type": "string",
+      "description": "Serviceable Obtainable Market"
+    },
+    "avg_cpc": {
+      "type": "number",
+      "description": "Average cost per click in this niche"
+    },
+    "avg_lead_value": {
+      "type": "number",
+      "description": "Average value per lead"
+    },
+    "avg_customer_ltv": {
+      "type": "number",
+      "description": "Average customer lifetime value"
+    },
+    "estimated_cac": {
+      "type": "number",
+      "description": "Customer acquisition cost"
+    },
+    "gross_margin_pct": {
+      "type": "number",
+      "description": "Expected gross margin %"
+    },
+    "monthly_search_volume": {
+      "type": "number"
+    },
+    "estimated_monthly_leads": {
+      "type": "number"
+    },
+    "estimated_monthly_revenue": {
+      "type": "number"
+    },
+    "estimated_monthly_cost": {
+      "type": "number"
+    },
+    "estimated_monthly_profit": {
+      "type": "number"
+    },
+    "break_even_months": {
+      "type": "number"
+    },
+    "roi_percentage": {
+      "type": "number"
+    },
+    "payback_months": {
+      "type": "number"
+    },
+    "competitor_revenue_data": {
+      "type": "string",
+      "description": "Revenue data from top competitors"
+    },
+    "pricing_benchmarks": {
+      "type": "string"
+    },
+    "cost_structure": {
+      "type": "string",
+      "description": "Fixed vs variable costs breakdown"
+    },
+    "revenue_streams": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unit_economics": {
+      "type": "string"
+    },
+    "financial_risks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "opportunity_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche"
+  ]
+}

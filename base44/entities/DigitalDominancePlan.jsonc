@@ -1,0 +1,116 @@
+{
+  "name": "DigitalDominancePlan",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string"
+    },
+    "url_pattern": {
+      "type": "string"
+    },
+    "total_target_cities": {
+      "type": "number",
+      "default": 0
+    },
+    "total_target_pages": {
+      "type": "number",
+      "default": 0
+    },
+    "target_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All keywords to target"
+    },
+    "long_tail_keywords": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "competitor_keywords_to_steal": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "backlink_targets": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sites to get backlinks from"
+    },
+    "blog_target_sites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Sites to write guest blogs for"
+    },
+    "directory_submissions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "social_platforms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "schema_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Schema.org types to implement"
+    },
+    "content_calendar": {
+      "type": "string",
+      "description": "Content production schedule"
+    },
+    "internal_linking_strategy": {
+      "type": "string"
+    },
+    "topical_authority_map": {
+      "type": "string",
+      "description": "Topic clusters to build authority in"
+    },
+    "google_guidelines_compliance": {
+      "type": "string",
+      "description": "How the plan complies with Google guidelines"
+    },
+    "indexing_strategy": {
+      "type": "string"
+    },
+    "aeo_optimization": {
+      "type": "string",
+      "description": "AI Engine Optimization strategy"
+    },
+    "local_seo_strategy": {
+      "type": "string"
+    },
+    "conversion_optimization": {
+      "type": "string"
+    },
+    "estimated_timeline": {
+      "type": "string"
+    },
+    "dominance_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche"
+  ]
+}

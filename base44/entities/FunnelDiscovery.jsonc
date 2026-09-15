@@ -1,0 +1,114 @@
+{
+  "name": "FunnelDiscovery",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "funnel_type": {
+      "type": "string",
+      "enum": [
+        "lead_gen",
+        "ecommerce",
+        "appointment",
+        "quote",
+        "subscription",
+        "marketplace"
+      ],
+      "default": "lead_gen"
+    },
+    "top_funnel_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Top 3 highest-converting URLs in this niche"
+    },
+    "funnel_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "conversion_rate": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "entry_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "lead_magnet_ideas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cta_variations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "landing_page_structure": {
+      "type": "string"
+    },
+    "form_fields_recommended": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "trust_signals": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "urgency_triggers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "follow_up_sequence": {
+      "type": "string"
+    },
+    "estimated_conversion_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "benchmark_conversion_rate": {
+      "type": "number",
+      "default": 0
+    },
+    "superiority_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche"
+  ]
+}

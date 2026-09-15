@@ -3,6 +3,7 @@ import {
   Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
   BarChart3, Rocket, Bot, Zap, Boxes,
 } from 'lucide-react';
+// Rocket already imported above
 
 // Simplified nav — only what the admin needs to see at a high level.
 // All other pages remain accessible via direct URL or in-page links.
@@ -10,6 +11,7 @@ export const NAV_GROUPS = [
   {
     label: 'Overview',
     items: [
+      { to: '/end-to-end', label: 'End-to-End Generator', icon: Rocket },
       { to: '/universal-generator', label: 'Universal Generator', icon: Boxes },
       { to: '/mission-control', label: 'Mission Control', icon: Zap },
       { to: '/admin', label: 'Executive', icon: Home },
