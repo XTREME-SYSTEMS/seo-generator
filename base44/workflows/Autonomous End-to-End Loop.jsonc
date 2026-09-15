@@ -1,0 +1,47 @@
+{
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "interval",
+      "cron_expression": null,
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": 30,
+      "interval_unit": "minutes",
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "name": "Autonomous End-to-End Loop",
+  "description": "Purely programmatic loop \u2014 picks the next unprocessed niche+step and runs one pipeline step per cycle. Processes all 30 niches x 8 steps autonomously.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "autonomous_e2e_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_step": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "EndToEndGenerator",
+            "args": {
+              "mode": "autonomous"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Run autonomous pipeline step",
+            "description": "Picks next unprocessed niche+step automatically"
+          }
+        }
+      }
+    ]
+  }
+}

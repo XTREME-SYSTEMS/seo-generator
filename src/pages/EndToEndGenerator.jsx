@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Search, Target, TrendingUp, DollarSign, BarChart3, Zap, Palette, Smartphone, Filter, Rocket, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
+import AutonomousLoopStatus from '@/components/e2e/AutonomousLoopStatus';
 
 const PIPELINE_STEPS = [
   { id: 'discover_urls', label: 'URL Discovery', icon: Search, desc: 'Google Trends + highest-search businesses, services & products' },
@@ -97,6 +98,9 @@ export default function EndToEndGenerator() {
           </div>
         </div>
       </div>
+
+      {/* Autonomous Loop Status */}
+      <AutonomousLoopStatus />
 
       {/* Input Controls */}
       <div className="bg-card border border-border rounded-xl p-5 mb-6">

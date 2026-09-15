@@ -19,15 +19,62 @@ const STEPS = [
   'pwa_template', 'funnel_discovery'
 ];
 
+const NICHE_LIST = [
+  'plumbing', 'water damage restoration', 'locksmith', 'towing', 'roofing',
+  'HVAC', 'electrical', 'pest control', 'tree service', 'junk removal',
+  'concrete polishing', 'epoxy flooring', 'garage door repair', 'fence installation',
+  'landscaping', 'solar installation', 'waterproofing', 'mold remediation',
+  'emergency dentist', 'emergency vet', 'emergency plumber', 'fire damage restoration',
+  'carpet cleaning', 'air duct cleaning', 'chimney sweep', 'gutter cleaning',
+  'window replacement', 'siding contractor', 'deck builder', 'paver installation',
+];
+
+async function isStepCompleted(base44, niche, step) {
+  try {
+    switch (step) {
+      case 'discover_urls': { const r = await base44.asServiceRole.entities.StrategicUrl.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      case 'benchmark_competitors': { const r = await base44.asServiceRole.entities.CompetitorBenchmark.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      case 'financial_intelligence': { const r = await base44.asServiceRole.entities.FinancialIntelligence.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      case 'market_simulation': { const r = await base44.asServiceRole.entities.MarketSimulation.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      case 'digital_dominance': { const r = await base44.asServiceRole.entities.DigitalDominancePlan.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      case 'brand_system': { const r = await base44.asServiceRole.entities.Receipt.filter({ source: 'EndToEndGenerator' }, '-created_date', 200); return r.some(x => x.summary && x.summary.includes('brand_system') && x.summary.includes(niche)); }
+      case 'pwa_template': { const r = await base44.asServiceRole.entities.PwaTemplate.filter({ industry: niche }, '-created_date', 1); return r.length > 0; }
+      case 'funnel_discovery': { const r = await base44.asServiceRole.entities.FunnelDiscovery.filter({ niche }, '-created_date', 1); return r.length > 0; }
+      default: return false;
+    }
+  } catch { return false; }
+}
+
+async function findNextToProcess(base44) {
+  for (const niche of NICHE_LIST) {
+    for (const step of STEPS) {
+      const completed = await isStepCompleted(base44, niche, step);
+      if (!completed) return { niche, step };
+    }
+  }
+  return { niche: null, step: null };
+}
+
 export default async function(req) {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me().catch(() => null);
-    if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
-
     const body = await req.json().catch(() => ({}));
-    const { niche, step = 'full_pipeline', params = {} } = body;
-    if (!niche) return Response.json({ error: 'niche is required' }, { status: 400 });
+    const { mode } = body;
+    let { niche, step = 'full_pipeline', params = {} } = body;
+
+    // Autonomous mode: skip auth, pick next niche+step automatically
+    if (mode === 'autonomous') {
+      const next = await findNextToProcess(base44);
+      if (!next.niche) {
+        return Response.json({ status: 'all_processed', message: 'All niches fully processed' });
+      }
+      niche = next.niche;
+      step = next.step;
+    } else {
+      const user = await base44.auth.me().catch(() => null);
+      if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+      if (!niche) return Response.json({ error: 'niche is required' }, { status: 400 });
+    }
 
     const results = {};
 
@@ -772,7 +819,7 @@ Return as JSON object with all fields above.`,
       proof_level: 1
     });
 
-    return Response.json({ step, niche, results });
+    return Response.json({ step, niche, results, mode: mode || 'manual' });
   } catch (error) {
     console.error('EndToEndGenerator error:', error);
     return Response.json({ error: error.message }, { status: 500 });
