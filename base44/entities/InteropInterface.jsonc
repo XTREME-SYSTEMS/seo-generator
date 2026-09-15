@@ -1,0 +1,39 @@
+{
+  "name": "InteropInterface",
+  "type": "object",
+  "properties": {
+    "interface": {
+      "type": "string",
+      "description": "e.g. OpenAPI, MCP, A2A"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "reference_target": {
+      "type": "string",
+      "description": "e.g. OpenAPI 3.1.x, MCP 2026-07-28 adapter"
+    },
+    "internal_mapping": {
+      "type": "string"
+    },
+    "validation": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "planned",
+        "deprecated"
+      ],
+      "default": "planned"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "interface"
+  ]
+}

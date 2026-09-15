@@ -1,0 +1,51 @@
+{
+  "name": "ValidationScore",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "Validation domain e.g. Drive root canonical name, Core artifacts installed"
+    },
+    "weight": {
+      "type": "number",
+      "default": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "PENDING",
+        "FAIL",
+        "BLOCKED",
+        "N/A"
+      ],
+      "default": "PENDING"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Proof of PASS or reason for FAIL"
+    },
+    "earned_score": {
+      "type": "number",
+      "default": 0
+    },
+    "blocking_reason": {
+      "type": "string"
+    },
+    "remediation": {
+      "type": "string",
+      "description": "How to move from PENDING/FAIL to PASS"
+    },
+    "last_checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "domain"
+  ]
+}

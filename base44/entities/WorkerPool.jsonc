@@ -1,0 +1,41 @@
+{
+  "name": "WorkerPool",
+  "type": "object",
+  "properties": {
+    "worker_type": {
+      "type": "string",
+      "description": "e.g. validation, browser, coding, research, data"
+    },
+    "core_capabilities": {
+      "type": "string"
+    },
+    "typical_provider": {
+      "type": "string",
+      "description": "e.g. Railway/K8s, sandbox/agent"
+    },
+    "isolation_scaling": {
+      "type": "string",
+      "description": "e.g. reserved critical pool, browser resource bulkhead"
+    },
+    "mandatory_conformance": {
+      "type": "string",
+      "description": "What conformance proof is required to be ACTIVE"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "planned",
+        "deprecated"
+      ],
+      "default": "planned"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "worker_type"
+  ]
+}

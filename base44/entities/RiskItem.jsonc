@@ -1,0 +1,64 @@
+{
+  "name": "RiskItem",
+  "type": "object",
+  "properties": {
+    "risk": {
+      "type": "string",
+      "description": "Risk description"
+    },
+    "likelihood": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "default": "Medium"
+    },
+    "impact": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High",
+        "Critical"
+      ],
+      "default": "Medium"
+    },
+    "control": {
+      "type": "string",
+      "description": "How the risk is controlled/mitigated"
+    },
+    "detection": {
+      "type": "string",
+      "description": "How the risk is detected"
+    },
+    "residual": {
+      "type": "string",
+      "enum": [
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "default": "Medium"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "mitigated",
+        "accepted",
+        "resolved",
+        "monitoring"
+      ],
+      "default": "identified"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "risk"
+  ]
+}

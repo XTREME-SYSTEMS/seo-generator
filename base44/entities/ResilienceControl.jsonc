@@ -1,0 +1,42 @@
+{
+  "name": "ResilienceControl",
+  "type": "object",
+  "properties": {
+    "control": {
+      "type": "string",
+      "description": "e.g. Atomic leases, Idempotency, Visibility timeout"
+    },
+    "failure_addressed": {
+      "type": "string"
+    },
+    "mechanism": {
+      "type": "string",
+      "description": "How the control works"
+    },
+    "validation": {
+      "type": "string",
+      "description": "How to test the control works"
+    },
+    "config_variables": {
+      "type": "string",
+      "description": "Config keys that control this"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "implemented",
+        "planned",
+        "verified",
+        "deprecated"
+      ],
+      "default": "planned"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "control"
+  ]
+}

@@ -1,0 +1,158 @@
+{
+  "name": "BusinessConcept",
+  "type": "object",
+  "properties": {
+    "concept_id": {
+      "type": "string",
+      "description": "e.g. BC-001"
+    },
+    "name": {
+      "type": "string"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "sub_industry": {
+      "type": "string"
+    },
+    "customer": {
+      "type": "string",
+      "description": "Target customer"
+    },
+    "problem": {
+      "type": "string"
+    },
+    "pain": {
+      "type": "string"
+    },
+    "current_alternative": {
+      "type": "string"
+    },
+    "solution": {
+      "type": "string"
+    },
+    "website_model": {
+      "type": "string"
+    },
+    "app_model": {
+      "type": "string"
+    },
+    "data_model": {
+      "type": "string"
+    },
+    "ai_model": {
+      "type": "string"
+    },
+    "agents": {
+      "type": "string"
+    },
+    "workflows": {
+      "type": "string"
+    },
+    "source_data": {
+      "type": "string"
+    },
+    "lead_system": {
+      "type": "string"
+    },
+    "monetization": {
+      "type": "string"
+    },
+    "price_range": {
+      "type": "string",
+      "description": "e.g. $50-$500/lead or $500-$5k/mo"
+    },
+    "cogs_pct": {
+      "type": "number",
+      "description": "Modeled COGS as percentage"
+    },
+    "gross_margin": {
+      "type": "number"
+    },
+    "cac": {
+      "type": "string"
+    },
+    "ltv": {
+      "type": "string"
+    },
+    "time_to_revenue": {
+      "type": "string"
+    },
+    "tam": {
+      "type": "string"
+    },
+    "sam": {
+      "type": "string"
+    },
+    "som": {
+      "type": "string"
+    },
+    "competition": {
+      "type": "string"
+    },
+    "differentiation": {
+      "type": "string"
+    },
+    "moat": {
+      "type": "string"
+    },
+    "automation_pct": {
+      "type": "number",
+      "description": "0-100, how much can be automated"
+    },
+    "human_gates": {
+      "type": "string"
+    },
+    "stack": {
+      "type": "string"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "compliance": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "recommendation": {
+      "type": "string",
+      "enum": [
+        "QUICK_WIN",
+        "PILOT",
+        "RESEARCH",
+        "HOLD",
+        "DEPRECATED"
+      ],
+      "default": "RESEARCH"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "modeled",
+        "piloting",
+        "validated",
+        "live",
+        "archived"
+      ],
+      "default": "modeled"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

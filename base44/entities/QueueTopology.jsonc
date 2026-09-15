@@ -1,0 +1,41 @@
+{
+  "name": "QueueTopology",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "e.g. Discovery, Validation, Repair, Deploy, Monitor"
+    },
+    "logical_queue": {
+      "type": "string",
+      "description": "e.g. signal_ingest, opportunity_enrich, repair_jobs"
+    },
+    "typical_job_types": {
+      "type": "string"
+    },
+    "priority": {
+      "type": "string",
+      "description": "e.g. low/isolated, normal, high/critical"
+    },
+    "dlq_recovery": {
+      "type": "string",
+      "description": "Dead letter queue and recovery strategy"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "planned",
+        "deprecated"
+      ],
+      "default": "planned"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "logical_queue"
+  ]
+}

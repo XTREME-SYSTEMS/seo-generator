@@ -1,0 +1,40 @@
+{
+  "name": "EmailRegistry",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string",
+      "default": "Gmail"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "automation_role": {
+      "type": "string",
+      "description": "e.g. alerts, reports, approvals, research"
+    },
+    "allowed_autonomous_actions": {
+      "type": "string",
+      "description": "e.g. read/search/draft"
+    },
+    "protected_actions": {
+      "type": "string",
+      "description": "e.g. send externally unless explicitly approved"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "email"
+  ]
+}

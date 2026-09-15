@@ -1,0 +1,56 @@
+{
+  "name": "ArtifactManifest",
+  "type": "object",
+  "properties": {
+    "artifact": {
+      "type": "string",
+      "description": "Name of the artifact"
+    },
+    "category": {
+      "type": "string",
+      "description": "e.g. Business Strategy, Architecture, Registry, Generator, Validation"
+    },
+    "drive_destination": {
+      "type": "string",
+      "description": "Google Drive folder destination"
+    },
+    "required": {
+      "type": "boolean",
+      "default": true
+    },
+    "version": {
+      "type": "string",
+      "default": "1.0"
+    },
+    "validation_rule": {
+      "type": "string",
+      "description": "How to validate this artifact is correctly installed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING_IMPORT",
+        "IMPORTED",
+        "VERIFIED",
+        "FAILED",
+        "N/A"
+      ],
+      "default": "PENDING_IMPORT"
+    },
+    "drive_url": {
+      "type": "string",
+      "description": "URL to the artifact in Drive, once imported"
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "SHA hash for integrity verification"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "artifact"
+  ]
+}

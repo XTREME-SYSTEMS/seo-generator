@@ -82,6 +82,7 @@ import AnalyticsDashboard from '@/pages/AnalyticsDashboard';
 import MassProduction from '@/pages/MassProduction';
 import AgiSwarm from '@/pages/AgiSwarm';
 import FallbackInfrastructure from '@/pages/FallbackInfrastructure';
+import UniversalGenerator from '@/pages/UniversalGenerator';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -200,6 +201,7 @@ const AuthenticatedApp = () => {
           <Route path="/mass-production" element={<MassProduction />} />
           <Route path="/agi-swarm" element={<AgiSwarm />} />
           <Route path="/fallback" element={<FallbackInfrastructure />} />
+          <Route path="/universal-generator" element={<UniversalGenerator />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

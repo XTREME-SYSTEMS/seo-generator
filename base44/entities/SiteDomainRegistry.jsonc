@@ -1,0 +1,67 @@
+{
+  "name": "SiteDomainRegistry",
+  "type": "object",
+  "properties": {
+    "asset": {
+      "type": "string",
+      "description": "Domain name e.g. epoxyquotenearme.com"
+    },
+    "type": {
+      "type": "string",
+      "description": "e.g. Lead funnel, Network brand, Data marketplace"
+    },
+    "mission": {
+      "type": "string"
+    },
+    "target_customer": {
+      "type": "string"
+    },
+    "primary_intent": {
+      "type": "string"
+    },
+    "canonical_url": {
+      "type": "string"
+    },
+    "analytics_status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "CONNECTED",
+        "FAILED"
+      ],
+      "default": "PENDING"
+    },
+    "gsc_status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "VERIFIED",
+        "UNVERIFIED",
+        "FAILED"
+      ],
+      "default": "PENDING"
+    },
+    "lifecycle": {
+      "type": "string",
+      "enum": [
+        "PILOT",
+        "PLANNED",
+        "ACTIVE_BUILD",
+        "LIVE",
+        "PAUSED",
+        "ARCHIVED"
+      ],
+      "default": "PLANNED"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "asset"
+  ]
+}

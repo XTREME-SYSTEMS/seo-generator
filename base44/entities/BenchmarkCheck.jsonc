@@ -1,0 +1,68 @@
+{
+  "name": "BenchmarkCheck",
+  "type": "object",
+  "properties": {
+    "benchmark_id": {
+      "type": "string",
+      "description": "e.g. SRC-001, ARCH-001, SEC-001"
+    },
+    "source": {
+      "type": "string",
+      "description": "Where this check originated (Generator Workbook, Universal Extension, etc.)"
+    },
+    "family": {
+      "type": "string",
+      "description": "e.g. Source Truth, Architecture, Security, SEO/AEO, Data Quality"
+    },
+    "check": {
+      "type": "string",
+      "description": "The check description"
+    },
+    "mandatory": {
+      "type": "boolean",
+      "default": true
+    },
+    "evidence_required": {
+      "type": "boolean",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "PASS",
+        "FAIL",
+        "N/A",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "failure_rule": {
+      "type": "string",
+      "description": "What happens when this check fails"
+    },
+    "evidence_url": {
+      "type": "string",
+      "description": "Link to evidence proving PASS"
+    },
+    "last_run_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "gate": {
+      "type": "string",
+      "description": "Release gate this check belongs to"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "benchmark_id",
+    "check"
+  ]
+}

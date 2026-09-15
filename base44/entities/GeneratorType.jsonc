@@ -1,0 +1,59 @@
+{
+  "name": "GeneratorType",
+  "type": "object",
+  "properties": {
+    "family": {
+      "type": "string",
+      "description": "e.g. Text, Data, Code, Design, Business, Research, Media, System"
+    },
+    "pattern": {
+      "type": "string",
+      "description": "e.g. Idea, Planner, Analyzer, Builder, Optimizer"
+    },
+    "generator_type": {
+      "type": "string",
+      "description": "Full name e.g. Text Idea Generator"
+    },
+    "typical_inputs": {
+      "type": "string"
+    },
+    "how_it_works": {
+      "type": "string"
+    },
+    "typical_output": {
+      "type": "string"
+    },
+    "primary_user": {
+      "type": "string",
+      "description": "e.g. business/creator/professional"
+    },
+    "feasibility_2026": {
+      "type": "string",
+      "description": "Technologically feasible now, near-term, future"
+    },
+    "evidence_type": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "planned",
+        "experimental",
+        "deprecated"
+      ],
+      "default": "available"
+    },
+    "mapped_function": {
+      "type": "string",
+      "description": "Base44 function implementing this generator, if any"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "generator_type"
+  ]
+}

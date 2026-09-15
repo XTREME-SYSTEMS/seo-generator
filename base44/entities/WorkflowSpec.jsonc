@@ -1,0 +1,116 @@
+{
+  "name": "WorkflowSpec",
+  "type": "object",
+  "properties": {
+    "workflow_id": {
+      "type": "string",
+      "description": "e.g. WF-001"
+    },
+    "name": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "trigger": {
+      "type": "string",
+      "description": "Cron, event-driven, webhook, etc."
+    },
+    "state_machine": {
+      "type": "string",
+      "description": "State machine description"
+    },
+    "input_schema": {
+      "type": "string",
+      "description": "JSON schema for inputs"
+    },
+    "steps": {
+      "type": "string",
+      "description": "Pipeline stages"
+    },
+    "agent": {
+      "type": "string",
+      "description": "Which agent handles this"
+    },
+    "deterministic_service": {
+      "type": "string"
+    },
+    "connector": {
+      "type": "string"
+    },
+    "data_source": {
+      "type": "string"
+    },
+    "db_entity": {
+      "type": "string",
+      "description": "Which entity stores results"
+    },
+    "expected_latency": {
+      "type": "string"
+    },
+    "expected_cost": {
+      "type": "string"
+    },
+    "retry_behavior": {
+      "type": "string"
+    },
+    "idempotency_key": {
+      "type": "string"
+    },
+    "timeout": {
+      "type": "string"
+    },
+    "dead_letter": {
+      "type": "string",
+      "description": "DLQ strategy"
+    },
+    "observability": {
+      "type": "string"
+    },
+    "success_criteria": {
+      "type": "string"
+    },
+    "failure_criteria": {
+      "type": "string"
+    },
+    "recovery": {
+      "type": "string"
+    },
+    "human_gate": {
+      "type": "string",
+      "description": "When human approval is required"
+    },
+    "receipt_format": {
+      "type": "string"
+    },
+    "rollback": {
+      "type": "string"
+    },
+    "kpi": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "specified",
+        "implemented",
+        "active",
+        "paused",
+        "deprecated"
+      ],
+      "default": "specified"
+    },
+    "mapped_function": {
+      "type": "string",
+      "description": "Name of the Base44 backend function implementing this spec, if any"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "workflow_id",
+    "name"
+  ]
+}

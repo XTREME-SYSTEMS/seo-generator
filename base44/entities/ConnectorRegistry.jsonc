@@ -1,0 +1,61 @@
+{
+  "name": "ConnectorRegistry",
+  "type": "object",
+  "properties": {
+    "connector": {
+      "type": "string",
+      "description": "e.g. Google Drive, Gmail, Calendar, GSC Wizard"
+    },
+    "category": {
+      "type": "string",
+      "description": "e.g. Workspace, SEO, Data, Communication"
+    },
+    "auth_pattern": {
+      "type": "string"
+    },
+    "read_access": {
+      "type": "string",
+      "enum": [
+        "YES",
+        "NO",
+        "LIMITED"
+      ],
+      "default": "YES"
+    },
+    "write_access": {
+      "type": "string",
+      "enum": [
+        "YES",
+        "NO",
+        "LIMITED"
+      ],
+      "default": "NO"
+    },
+    "required_scopes": {
+      "type": "string"
+    },
+    "health_check": {
+      "type": "string"
+    },
+    "fallback": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "authorized",
+        "pending",
+        "failed",
+        "not_needed"
+      ],
+      "default": "pending"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "connector"
+  ]
+}

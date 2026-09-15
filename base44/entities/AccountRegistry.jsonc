@@ -1,0 +1,45 @@
+{
+  "name": "AccountRegistry",
+  "type": "object",
+  "properties": {
+    "platform": {
+      "type": "string",
+      "description": "e.g. Supabase, Vercel, Railway, GitHub, Google Drive"
+    },
+    "account_workspace": {
+      "type": "string"
+    },
+    "identifier": {
+      "type": "string",
+      "description": "Project ID, team ID, org name, folder ID"
+    },
+    "role": {
+      "type": "string",
+      "description": "What this account is used for"
+    },
+    "connection_state": {
+      "type": "string",
+      "enum": [
+        "VERIFIED",
+        "PENDING",
+        "FAILED",
+        "UNKNOWN"
+      ],
+      "default": "PENDING"
+    },
+    "write_state": {
+      "type": "string",
+      "description": "e.g. READ/WRITE VERIFIED, READ VERIFIED"
+    },
+    "evidence": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "platform"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "name": "DeploymentProfile",
+  "type": "object",
+  "properties": {
+    "profile_name": {
+      "type": "string",
+      "description": "e.g. XTREME Default, Portable Local, Enterprise K8s"
+    },
+    "orchestrator": {
+      "type": "string"
+    },
+    "state_queue": {
+      "type": "string"
+    },
+    "workers": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "artifacts_collaboration": {
+      "type": "string"
+    },
+    "use_case": {
+      "type": "string"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "profile_name"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "name": "SystemVariable",
+  "type": "object",
+  "properties": {
+    "variable_key": {
+      "type": "string",
+      "description": "e.g. system.id, system.archetype, ai.gateway, growth.asset_wave_size"
+    },
+    "group": {
+      "type": "string",
+      "enum": [
+        "identity",
+        "classification",
+        "runtime",
+        "ai",
+        "ui",
+        "growth",
+        "economic",
+        "interop"
+      ],
+      "default": "identity"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "string",
+        "enum",
+        "number",
+        "boolean",
+        "array",
+        "object"
+      ],
+      "default": "string"
+    },
+    "default_value": {
+      "type": "string"
+    },
+    "allowed_values": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "impact_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What areas a change to this variable affects"
+    },
+    "recalibration_actions": {
+      "type": "string",
+      "description": "What happens when this variable changes"
+    },
+    "requires_approval": {
+      "type": "boolean",
+      "default": false
+    },
+    "sensitivity": {
+      "type": "string",
+      "enum": [
+        "normal",
+        "elevated",
+        "critical"
+      ],
+      "default": "normal"
+    },
+    "resolved_value": {
+      "type": "string",
+      "description": "Current resolved value from source priority"
+    },
+    "resolved_source": {
+      "type": "string",
+      "description": "Where the resolved value came from"
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "is_assumption": {
+      "type": "boolean",
+      "default": false
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "variable_key"
+  ]
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Target, TrendingUp, Zap, ArrowRight, CheckCircle2, AlertCircle, Clock, Shield, LayoutDashboard } from 'lucide-react';
+import { Activity, Target, TrendingUp, Zap, ArrowRight, CheckCircle2, AlertCircle, Clock, Shield, LayoutDashboard, Boxes } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { useTenant } from '@/lib/TenantContext';
@@ -105,6 +105,22 @@ export default function Dashboard() {
           </span>
         </div>
       </div>
+
+      {/* Universal Generator Banner */}
+      <Link to="/universal-generator" className="block rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/10 to-transparent p-5 hover:border-primary transition-colors group">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary">
+              <Boxes className="h-6 w-6 text-primary-foreground" />
+            </div>
+            <div>
+              <p className="font-heading text-lg font-bold text-foreground">XTREME Universal Generator — System Factory</p>
+              <p className="text-sm text-muted-foreground">Benchmark Constitution · Variable Registry · Forensic Audit · Business Concepts · Workflow Specs · Architecture Registries</p>
+            </div>
+          </div>
+          <ArrowRight className="h-5 w-5 text-primary group-hover:translate-x-1 transition-transform" />
+        </div>
+      </Link>
 
       {/* Mission Control Banner */}
       <Link to="/mission-control" className="block rounded-xl border-2 border-primary/40 bg-gradient-to-r from-primary/10 to-transparent p-5 hover:border-primary transition-colors group">

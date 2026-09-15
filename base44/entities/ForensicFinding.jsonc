@@ -1,0 +1,63 @@
+{
+  "name": "ForensicFinding",
+  "type": "object",
+  "properties": {
+    "finding_id": {
+      "type": "string",
+      "description": "e.g. F-001"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "default": "P2"
+    },
+    "finding": {
+      "type": "string",
+      "description": "What the defect is"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "How it was discovered"
+    },
+    "required_correction": {
+      "type": "string",
+      "description": "What must be done to fix it"
+    },
+    "universal_rule": {
+      "type": "string",
+      "description": "The general principle this finding establishes"
+    },
+    "fix_status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "fixed",
+        "wont_fix",
+        "verified"
+      ],
+      "default": "open"
+    },
+    "fix_approach": {
+      "type": "string",
+      "description": "How the fix was or will be implemented"
+    },
+    "fixed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "finding_id",
+    "finding"
+  ]
+}
