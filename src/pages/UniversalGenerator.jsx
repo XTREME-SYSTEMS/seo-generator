@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Shield, Gauge, AlertTriangle, CheckCircle2, XCircle, Clock, Zap, Database, FileText, Layers, Server, Cpu, Boxes, Workflow, AlertOctagon } from 'lucide-react';
+import { Loader2, Shield, Gauge, AlertTriangle, CheckCircle2, XCircle, Clock, Zap, Database, FileText, Layers, Server, Cpu, Boxes, Workflow, AlertOctagon, Network } from 'lucide-react';
+import ValidationMeshTab from '@/components/universal/ValidationMeshTab';
 
 const TABS = [
   { id: 'overview', label: 'Overview', icon: Gauge },
+  { id: 'validation-mesh', label: 'Validation Mesh', icon: Network },
   { id: 'benchmarks', label: 'Benchmark Constitution', icon: Shield },
   { id: 'forensics', label: 'Forensic Audit', icon: AlertOctagon },
   { id: 'variables', label: 'System Variables', icon: Cpu },
@@ -103,6 +105,7 @@ export default function UniversalGenerator() {
 
       {/* Tab Content */}
       {activeTab === 'overview' && <OverviewTab data={data} benchmarkStats={benchmarkStats} forensicStats={forensicStats} validationStats={validationStats} />}
+      {activeTab === 'validation-mesh' && <ValidationMeshTab />}
       {activeTab === 'benchmarks' && <BenchmarkTab benchmarks={data.benchmarks || []} stats={benchmarkStats} />}
       {activeTab === 'forensics' && <ForensicsTab forensics={data.forensics || []} stats={forensicStats} />}
       {activeTab === 'variables' && <VariablesTab variables={data.variables || []} />}
