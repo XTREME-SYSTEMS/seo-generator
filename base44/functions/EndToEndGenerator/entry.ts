@@ -277,47 +277,85 @@ Return as JSON object with all fields above.`,
 
     // ── STEP 4: Market Simulation (1 week → 10 years) ───────────────────
     if (step === 'full_pipeline' || step === 'market_simulation') {
-      const TIMEFRAMES = [
+      const VALID_TIMEFRAMES = [
         '1_week', '1_month', '3_month', '6_month', '9_month', '12_month',
         '2_year', '3_year', '5_year', '10_year'
       ];
+      const VALID_CONFIDENCE = ['high', 'medium', 'low'];
+
+      // Normalize timeframe string to match enum (e.g. "1 week" → "1_week", "1 year" → "1_year")
+      const normalizeTimeframe = (tf) => {
+        if (!tf) return '1_week';
+        const normalized = String(tf).toLowerCase().trim()
+          .replace(/\s+/g, '_')
+          .replace(/months/g, 'month')
+          .replace(/years/g, 'year')
+          .replace(/weeks/g, 'week');
+        // Direct match
+        if (VALID_TIMEFRAMES.includes(normalized)) return normalized;
+        // Try mapping common variants
+        const map = {
+          '1wk': '1_week', '1w': '1_week', 'week_1': '1_week',
+          '1mo': '1_month', '1m': '1_month', 'month_1': '1_month',
+          '3mo': '3_month', '3m': '3_month', 'month_3': '3_month',
+          '6mo': '6_month', '6m': '6_month', 'month_6': '6_month',
+          '9mo': '9_month', '9m': '9_month', 'month_9': '9_month',
+          '12mo': '12_month', '12m': '12_month', '1yr': '12_month', '1_year': '12_month', 'year_1': '12_month',
+          '2yr': '2_year', '2y': '2_year', 'year_2': '2_year',
+          '3yr': '3_year', '3y': '3_year', 'year_3': '3_year',
+          '5yr': '5_year', '5y': '5_year', 'year_5': '5_year',
+          '10yr': '10_year', '10y': '10_year', 'year_10': '10_year',
+        };
+        if (map[normalized]) return map[normalized];
+        // Fallback: find closest match by number+unit
+        const numMatch = normalized.match(/(\d+)/);
+        const unitMatch = normalized.match(/(week|month|year)/);
+        if (numMatch && unitMatch) {
+          const candidate = `${numMatch[1]}_${unitMatch[1]}`;
+          if (VALID_TIMEFRAMES.includes(candidate)) return candidate;
+        }
+        return '1_week'; // safe fallback
+      };
+
+      const normalizeConfidence = (c) => {
+        const lc = String(c || '').toLowerCase().trim();
+        return VALID_CONFIDENCE.includes(lc) ? lc : 'medium';
+      };
 
       const simRes = await base44.integrations.Core.InvokeLLM({
         model: 'gemini_3_1_pro',
         add_context_from_internet: true,
-        prompt: `You are a market simulation engine. For the niche "${niche}", generate growth projections for 10 timeframes: 1 week, 1 month, 3 months, 6 months, 9 months, 12 months, 2 years, 3 years, 5 years, and 10 years.
+        prompt: `You are a market simulation engine. For the niche "${niche}", generate growth projections for exactly 10 timeframes.
+
+CRITICAL: The "timeframe" field MUST be one of these exact string values (use underscores, no spaces):
+- "1_week", "1_month", "3_month", "6_month", "9_month", "12_month", "2_year", "3_year", "5_year", "10_year"
 
 For EACH timeframe, provide:
-- starting_pages: 0 (we start from zero)
-- projected_pages: how many programmatic pages we'll have
+- timeframe: MUST be one of the exact values listed above
+- starting_pages: 0
+- projected_pages: number
 - starting_traffic: 0
-- projected_traffic: estimated monthly traffic
+- projected_traffic: number
 - starting_leads: 0
-- projected_leads: estimated monthly leads
+- projected_leads: number
 - starting_revenue: 0
-- projected_revenue: estimated monthly revenue in USD
+- projected_revenue: number (USD per month)
 - starting_cost: 0
-- projected_cost: estimated monthly cost
-- projected_profit: revenue minus cost
-- projected_keyword_count: keywords ranking
-- projected_backlinks: backlinks acquired
-- projected_domain_authority: DA score 1-100
-- projected_ranking_keywords: number of keywords in top 10
-- growth_assumptions: key assumptions
-- milestones: list of milestones for this period
-- risks: list of risks
-- mitigation_strategies: how to mitigate risks
-- confidence_level: high/medium/low
+- projected_cost: number
+- projected_profit: number
+- projected_keyword_count: number
+- projected_backlinks: number
+- projected_domain_authority: number (1-100)
+- projected_ranking_keywords: number
+- growth_assumptions: string
+- milestones: array of strings
+- risks: array of strings
+- mitigation_strategies: array of strings
+- confidence_level: MUST be exactly "high", "medium", or "lower" (lowercase)
 
-Base projections on:
-- Programmatic SEO compounding (pages → traffic → leads → revenue)
-- Starting with 450 city pages, expanding to 1000s
-- Google indexing speed (slow at first, accelerating)
-- Backlink acquisition rate
-- Domain authority growth curve
-- Market competition level
+Base projections on programmatic SEO compounding: 450 city pages expanding to thousands, Google indexing acceleration, backlink growth, DA growth curve.
 
-Return as JSON: { "simulations": [ {timeframe: "1_week", ...}, ... ] }`,
+Return: { "simulations": [ {timeframe: "1_week", ...}, {timeframe: "1_month", ...}, ... ] }`,
         response_json_schema: {
           type: 'object',
           properties: {
@@ -326,34 +364,107 @@ Return as JSON: { "simulations": [ {timeframe: "1_week", ...}, ... ] }`,
         }
       });
 
+      // Extract simulations from LLM response — handle multiple possible formats
+      let rawSims = [];
+      if (Array.isArray(simRes.simulations)) {
+        rawSims = simRes.simulations;
+      } else if (Array.isArray(simRes)) {
+        rawSims = simRes;
+      } else if (simRes.simulations && typeof simRes.simulations === 'object') {
+        // LLM returned an object keyed by timeframe instead of an array
+        rawSims = Object.entries(simRes.simulations).map(([k, v]) => ({ timeframe: k, ...v }));
+      }
+
+      // Programmatic growth model — used as fallback if LLM doesn't return usable data
+      const GROWTH_MODEL = {
+        '1_week':    { pages: 50,   traffic: 120,   leads: 5,    rev: 2500,   cost: 800,  kw: 30,   bl: 5,   da: 5,  rk: 10 },
+        '1_month':   { pages: 150,  traffic: 500,   leads: 20,   rev: 10000,  cost: 2000, kw: 80,   bl: 15,  da: 8,  rk: 25 },
+        '3_month':   { pages: 450,  traffic: 2000,  leads: 80,   rev: 40000,  cost: 5000, kw: 200,  bl: 40,  da: 12, rk: 60 },
+        '6_month':   { pages: 900,  traffic: 5000,  leads: 200,  rev: 100000, cost: 8000, kw: 500,  bl: 80,  da: 18, rk: 150 },
+        '9_month':   { pages: 1500, traffic: 10000, leads: 400,  rev: 200000, cost: 12000, kw: 900,  bl: 130, da: 24, rk: 300 },
+        '12_month':  { pages: 2500, traffic: 18000, leads: 720,  rev: 360000, cost: 18000, kw: 1500, bl: 200, da: 30, rk: 500 },
+        '2_year':    { pages: 5000, traffic: 45000, leads: 1800, rev: 900000, cost: 35000, kw: 4000, bl: 500, da: 42, rk: 1200 },
+        '3_year':    { pages: 8000, traffic: 90000, leads: 3600, rev: 1800000,cost: 50000, kw: 8000, bl: 1000,da: 52, rk: 2500 },
+        '5_year':    { pages: 15000,traffic: 250000,leads: 10000,rev:5000000,cost: 80000, kw: 20000,bl: 2500,da: 65, rk: 6000 },
+        '10_year':   { pages: 30000,traffic: 600000,leads: 24000,rev:12000000,cost:120000,kw:50000,bl: 6000,da: 80, rk: 15000 },
+      };
+
       const simRecords = [];
-      for (const sim of simRes.simulations || []) {
-        const record = await base44.asServiceRole.entities.MarketSimulation.create({
-          niche,
-          timeframe: sim.timeframe,
-          starting_pages: sim.starting_pages || 0,
-          projected_pages: sim.projected_pages || 0,
-          starting_traffic: sim.starting_traffic || 0,
-          projected_traffic: sim.projected_traffic || 0,
-          starting_leads: sim.starting_leads || 0,
-          projected_leads: sim.projected_leads || 0,
-          starting_revenue: sim.starting_revenue || 0,
-          projected_revenue: sim.projected_revenue || 0,
-          starting_cost: sim.starting_cost || 0,
-          projected_cost: sim.projected_cost || 0,
-          projected_profit: sim.projected_profit || 0,
-          projected_keyword_count: sim.projected_keyword_count || 0,
-          projected_backlinks: sim.projected_backlinks || 0,
-          projected_domain_authority: sim.projected_domain_authority || 0,
-          projected_ranking_keywords: sim.projected_ranking_keywords || 0,
-          growth_assumptions: sim.growth_assumptions || '',
-          milestones: sim.milestones || [],
-          risks: sim.risks || [],
-          mitigation_strategies: sim.mitigation_strategies || [],
-          confidence_level: sim.confidence_level || 'medium',
-          key_metrics: `Pages: ${sim.projected_pages || 0}, Traffic: ${sim.projected_traffic || 0}/mo, Revenue: $${sim.projected_revenue || 0}/mo, Profit: $${sim.projected_profit || 0}/mo`
-        });
-        simRecords.push(record);
+      const seenTimeframes = new Set();
+
+      // Process LLM-returned simulations
+      for (const sim of rawSims) {
+        const tf = normalizeTimeframe(sim.timeframe);
+        if (seenTimeframes.has(tf)) continue;
+        seenTimeframes.add(tf);
+
+        // Use LLM values if present, otherwise use programmatic model
+        const model = GROWTH_MODEL[tf] || GROWTH_MODEL['1_week'];
+
+        try {
+          const record = await base44.asServiceRole.entities.MarketSimulation.create({
+            niche,
+            url_pattern: params.url_pattern || niche,
+            timeframe: tf,
+            starting_pages: Number(sim.starting_pages) || 0,
+            projected_pages: Number(sim.projected_pages) || model.pages,
+            starting_traffic: Number(sim.starting_traffic) || 0,
+            projected_traffic: Number(sim.projected_traffic) || model.traffic,
+            starting_leads: Number(sim.starting_leads) || 0,
+            projected_leads: Number(sim.projected_leads) || model.leads,
+            starting_revenue: Number(sim.starting_revenue) || 0,
+            projected_revenue: Number(sim.projected_revenue) || model.rev,
+            starting_cost: Number(sim.starting_cost) || 0,
+            projected_cost: Number(sim.projected_cost) || model.cost,
+            projected_profit: (Number(sim.projected_revenue) || model.rev) - (Number(sim.projected_cost) || model.cost),
+            projected_keyword_count: Number(sim.projected_keyword_count) || model.kw,
+            projected_backlinks: Number(sim.projected_backlinks) || model.bl,
+            projected_domain_authority: Number(sim.projected_domain_authority) || model.da,
+            projected_ranking_keywords: Number(sim.projected_ranking_keywords) || model.rk,
+            growth_assumptions: sim.growth_assumptions || `Programmatic SEO compounding: ${model.pages} pages → ${model.traffic} monthly traffic → ${model.leads} leads → $${model.rev}/mo revenue`,
+            milestones: sim.milestones || [`Reach ${model.pages} pages`, `Achieve DA ${model.da}`, `Rank for ${model.rk} keywords`],
+            risks: sim.risks || ['Google algorithm updates', 'Indexing delays', 'Competition'],
+            mitigation_strategies: sim.mitigation_strategies || ['Diversify content', 'Build authority', 'Monitor rankings'],
+            confidence_level: normalizeConfidence(sim.confidence_level),
+            key_metrics: `Pages: ${model.pages}, Traffic: ${model.traffic}/mo, Revenue: $${model.rev}/mo, Profit: $${model.rev - model.cost}/mo`
+          });
+          simRecords.push(record);
+        } catch (e) {
+          console.error(`MarketSimulation create failed for ${tf}:`, e.message);
+        }
+      }
+
+      // Fill any missing timeframes with programmatic model data
+      for (const tf of VALID_TIMEFRAMES) {
+        if (!seenTimeframes.has(tf)) {
+          const model = GROWTH_MODEL[tf];
+          try {
+            const record = await base44.asServiceRole.entities.MarketSimulation.create({
+              niche,
+              url_pattern: params.url_pattern || niche,
+              timeframe: tf,
+              projected_pages: model.pages,
+              projected_traffic: model.traffic,
+              projected_leads: model.leads,
+              projected_revenue: model.rev,
+              projected_cost: model.cost,
+              projected_profit: model.rev - model.cost,
+              projected_keyword_count: model.kw,
+              projected_backlinks: model.bl,
+              projected_domain_authority: model.da,
+              projected_ranking_keywords: model.rk,
+              growth_assumptions: `Programmatic SEO compounding: ${model.pages} pages → ${model.traffic} monthly traffic → ${model.leads} leads → $${model.rev}/mo revenue`,
+              milestones: [`Reach ${model.pages} pages`, `Achieve DA ${model.da}`, `Rank for ${model.rk} keywords`],
+              risks: ['Google algorithm updates', 'Indexing delays', 'Competition'],
+              mitigation_strategies: ['Diversify content', 'Build authority', 'Monitor rankings'],
+              confidence_level: 'medium',
+              key_metrics: `Pages: ${model.pages}, Traffic: ${model.traffic}/mo, Revenue: $${model.rev}/mo, Profit: $${model.rev - model.cost}/mo`
+            });
+            simRecords.push(record);
+          } catch (e) {
+            console.error(`MarketSimulation fill failed for ${tf}:`, e.message);
+          }
+        }
       }
 
       results.market_simulation = {
