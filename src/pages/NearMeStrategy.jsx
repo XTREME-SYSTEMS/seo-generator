@@ -3,6 +3,7 @@ import { Zap, Search, BarChart3, Crown, Target, TrendingUp, Globe, MapPin, Dolla
 import UrlGeneratorTab from '@/components/nearme/UrlGeneratorTab';
 import SearchToolTab from '@/components/nearme/SearchToolTab';
 import SimulationGeneratorTab from '@/components/nearme/SimulationGeneratorTab';
+import StrategyGenerator from '@/components/nearme/StrategyGenerator';
 
 const TABS = [
   { id: 'strategy', label: 'Strategy Overview', icon: Crown },
@@ -69,6 +70,9 @@ export default function NearMeStrategy() {
 function StrategyOverview({ onNavigate }) {
   return (
     <div className="space-y-6">
+      {/* Dream Statement & Strategy Generator */}
+      <StrategyGenerator onNavigate={onNavigate} />
+
       {/* Strategy Summary */}
       <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-lg p-6">
         <h2 className="font-heading text-lg font-semibold text-foreground mb-3">The NearMe.com Playbook</h2>
