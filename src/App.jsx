@@ -87,6 +87,7 @@ import EndToEndGenerator from '@/pages/EndToEndGenerator';
 import NearMeUrlFinder from '@/pages/NearMeUrlFinder';
 import NearMeStrategy from '@/pages/NearMeStrategy';
 import Base44Apps from '@/pages/Base44Apps';
+import GeneratorHub from '@/pages/GeneratorHub';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -210,6 +211,7 @@ const AuthenticatedApp = () => {
           <Route path="/nearme-finder" element={<NearMeUrlFinder />} />
           <Route path="/nearme-strategy" element={<NearMeStrategy />} />
           <Route path="/base44-apps" element={<Base44Apps />} />
+          <Route path="/generator-hub" element={<GeneratorHub />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

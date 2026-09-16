@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Bot, Zap, TrendingUp, Eye } from 'lucide-react';
-import { GeneratorShell, TextBlock, TagList } from './WealthGenerator';
+import { GeneratorShell } from './IdeaGenerator';
+import { TextBlock, TagList } from './WealthGenerator';
 
 export default function AICompanyFollower() {
   const [prompt, setPrompt] = useState('');

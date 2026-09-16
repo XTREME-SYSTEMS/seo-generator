@@ -101,10 +101,10 @@ Return as JSON array.`,
 
     // Record receipt
     await base44.asServiceRole.entities.Receipt.create({
-      action: 'scan_submission_targets',
-      status: 'success',
-      details: `Scanned ${niche}: found ${created.length} submission targets`,
-      proof_level: '1',
+      kind: 'ingestion',
+      summary: `Scanned ${niche}: found ${created.length} submission targets`,
+      detail: `Niche: ${niche}, Targets: ${created.length}`,
+      provenance: 'MEASURED',
     });
 
     return Response.json({

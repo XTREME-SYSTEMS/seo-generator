@@ -109,10 +109,10 @@ export default async function(req) {
     }
 
     await base44.asServiceRole.entities.Receipt.create({
-      action: 'ingest_compliance_requirements',
-      status: 'success',
-      details: `Scraped requirements from ${url}: ${created.length} requirements found`,
-      proof_level: '1',
+      kind: 'ingestion',
+      summary: `Scraped requirements from ${url}: ${created.length} found`,
+      detail: `URL: ${url}, Requirements: ${created.length}`,
+      provenance: 'MEASURED',
     });
 
     return Response.json({

@@ -129,10 +129,10 @@ export default async function(req) {
     });
 
     await base44.asServiceRole.entities.Receipt.create({
-      action: 'batch_submit_to_sites',
-      status: 'success',
-      details: `Batch submission: ${submitted} submitted, ${failed} failed out of ${targets.length} targets`,
-      proof_level: '1',
+      kind: 'ingestion',
+      summary: `Batch submission: ${submitted} submitted, ${failed} failed of ${targets.length}`,
+      detail: `Job: ${job.id}, Submitted: ${submitted}, Failed: ${failed}`,
+      provenance: 'MEASURED',
     });
 
     return Response.json({

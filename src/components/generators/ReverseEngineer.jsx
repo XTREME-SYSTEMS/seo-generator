@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, RefreshCw } from 'lucide-react';
-import { GeneratorShell, TextBlock, TagList } from './WealthGenerator';
+import { GeneratorShell } from './IdeaGenerator';
+import { TextBlock, TagList } from './WealthGenerator';
 
 export default function ReverseEngineer() {
   const [prompt, setPrompt] = useState('');
