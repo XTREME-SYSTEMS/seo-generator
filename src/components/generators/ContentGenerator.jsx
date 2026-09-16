@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, FileText, Sparkles } from 'lucide-react';
-import { GeneratorShell } from './IdeaGenerator';
+import GeneratorShell from './GeneratorShell';
 
 const PLATFORMS = ['google', 'facebook', 'instagram', 'tiktok', 'youtube', 'twitter', 'linkedin', 'pinterest', 'reddit', 'all'];
 

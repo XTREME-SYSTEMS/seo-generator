@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, FileText } from 'lucide-react';
-import { GeneratorShell } from './IdeaGenerator';
+import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
 
 const DOC_TYPES = ['business_plan', 'pitch_deck', 'sop', 'proposal', 'contract', 'privacy_policy', 'terms_of_service', 'press_release', 'case_study', 'whitepaper', 'technical_spec', 'marketing_brief'];

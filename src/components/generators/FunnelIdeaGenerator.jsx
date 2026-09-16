@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Filter } from 'lucide-react';
-import { GeneratorShell } from './IdeaGenerator';
+import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
 
 export default function FunnelIdeaGenerator() {

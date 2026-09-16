@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, DollarSign } from 'lucide-react';
-import { GeneratorShell } from './IdeaGenerator';
+import GeneratorShell from './GeneratorShell';
 
 export default function WealthGenerator() {
   const [prompt, setPrompt] = useState('');

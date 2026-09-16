@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Loader2, LayoutTemplate, Code, Copy, Check } from 'lucide-react';
-import { GeneratorShell } from './IdeaGenerator';
+import GeneratorShell from './GeneratorShell';
 
 export default function ProgrammaticSiteGenerator() {
   const [prompt, setPrompt] = useState('');
