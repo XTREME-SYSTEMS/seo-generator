@@ -8,7 +8,7 @@
       "cron_expression": null,
       "one_time_date": null,
       "timezone": "UTC",
-      "interval_value": 30,
+      "interval_value": 5,
       "interval_unit": "minutes",
       "interval_anchor": null,
       "ends_type": "never",
@@ -17,7 +17,7 @@
     }
   },
   "name": "Autonomous End-to-End Loop",
-  "description": "Purely programmatic loop \u2014 picks the next unprocessed niche+step and runs one pipeline step per cycle. Processes all 30 niches x 8 steps autonomously.",
+  "description": "Purely programmatic loop \u2014 picks the next unprocessed niche+step and runs THREE pipeline steps per cycle (5-minute interval). Processes all 30 niches x 8 steps = 240 total steps autonomously in ~6 hours.",
   "definition": {
     "document": {
       "dsl": "1.0.0",
@@ -27,7 +27,39 @@
     },
     "do": [
       {
-        "run_step": {
+        "run_step_1": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "EndToEndGenerator",
+            "args": {
+              "mode": "autonomous"
+            }
+          },
+          "then": "run_step_2",
+          "x-base44": {
+            "title": "Run autonomous pipeline step 1",
+            "description": "Picks next unprocessed niche+step automatically"
+          }
+        }
+      },
+      {
+        "run_step_2": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "EndToEndGenerator",
+            "args": {
+              "mode": "autonomous"
+            }
+          },
+          "then": "run_step_3",
+          "x-base44": {
+            "title": "Run autonomous pipeline step 2",
+            "description": "Picks next unprocessed niche+step automatically"
+          }
+        }
+      },
+      {
+        "run_step_3": {
           "call": "invoke_backend_function",
           "with": {
             "function_name": "EndToEndGenerator",
@@ -37,7 +69,7 @@
           },
           "then": "end",
           "x-base44": {
-            "title": "Run autonomous pipeline step",
+            "title": "Run autonomous pipeline step 3",
             "description": "Picks next unprocessed niche+step automatically"
           }
         }
