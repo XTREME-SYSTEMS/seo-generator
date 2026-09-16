@@ -10,6 +10,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import SubscriptionGate from '@/components/SubscriptionGate';
 import Layout from '@/components/shell/Layout';
 import Copilot from '@/components/Copilot';
+import AiAssistOverlay from '@/components/AiAssistOverlay';
 import Landing from '@/pages/marketing/Landing';
 import HomeRouter from '@/components/leadgen/HomeRouter';
 import CityLanding from '@/pages/leadgen/CityLanding';
@@ -238,6 +239,7 @@ function App() {
         </Router>
         <Toaster />
         <Copilot />
+        <AiAssistOverlay />
       </QueryClientProvider>
     </AuthProvider>
   )
