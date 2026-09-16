@@ -23,6 +23,7 @@ export default function CloneGallery() {
   const [activeNiche, setActiveNiche] = useState('all');
   const [view, setView] = useState('gallery');
   const [lightbox, setLightbox] = useState(null);
+  const [lightboxMode, setLightboxMode] = useState('screenshot');
 
   useEffect(() => {
     loadTemplates();
@@ -183,7 +184,7 @@ export default function CloneGallery() {
                 </button>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                {items.map(t => <CloneCard key={t.id} template={t} onZoom={setLightbox} />)}
+                {items.map(t => <CloneCard key={t.id} template={t} onZoom={setLightbox} onOpenLive={(tpl) => { setLightboxMode('live'); setLightbox(tpl); }} />)}
               </div>
             </div>
           ))}
@@ -192,13 +193,18 @@ export default function CloneGallery() {
 
       {/* Lightbox */}
       {lightbox && (
-        <Lightbox template={lightbox} onClose={() => setLightbox(null)} />
+        <Lightbox
+          template={lightbox}
+          mode={lightboxMode}
+          onModeChange={setLightboxMode}
+          onClose={() => { setLightbox(null); setLightboxMode('screenshot'); }}
+        />
       )}
     </div>
   );
 }
 
-function CloneCard({ template, onZoom }) {
+function CloneCard({ template, onZoom, onOpenLive }) {
   const [showDetails, setShowDetails] = useState(false);
   const isFailed = template.status === 'failed';
   const parity = template.visual_parity_score || 0;
@@ -270,9 +276,12 @@ function CloneCard({ template, onZoom }) {
         {/* Actions */}
         <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border">
           {!isFailed && template.html_file_url && (
-            <a href={template.html_file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+            <button
+              onClick={() => onOpenLive(template)}
+              className="text-xs text-blue-600 hover:underline flex items-center gap-1"
+            >
               <Maximize2 className="w-3 h-3" /> Full Screen
-            </a>
+            </button>
           )}
           {!isFailed && template.source_url && (
             <a href={template.source_url} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
@@ -389,7 +398,7 @@ function StatCard({ label, value, icon: Icon, color }) {
   );
 }
 
-function Lightbox({ template, onClose }) {
+function Lightbox({ template, mode, onModeChange, onClose }) {
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
@@ -400,55 +409,68 @@ function Lightbox({ template, onClose }) {
     };
   }, [onClose]);
 
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4"
-      onClick={onClose}
-    >
-      {/* Close button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-colors z-10"
-      >
-        <X className="w-6 h-6" />
-      </button>
+  const hasLive = !!template.html_file_url;
+  const hasScreenshot = !!template.screenshot_url;
 
-      {/* Header info */}
-      <div className="absolute top-4 left-4 right-16 flex items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-2">
-          {template.rank > 0 && <span className="bg-yellow-400 text-gray-900 text-sm font-bold px-2.5 py-0.5 rounded-full">#{template.rank}</span>}
-          <h2 className="text-white font-bold text-lg">{template.site_name}</h2>
-          {template.rating && <span className="text-yellow-400 flex items-center gap-0.5 text-sm"><Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />{template.rating}</span>}
+  return (
+    <div className="fixed inset-0 z-50 bg-black/90 flex flex-col" onClick={onClose}>
+      {/* Top bar */}
+      <div className="flex items-center justify-between gap-3 px-4 py-3 bg-black/80" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 min-w-0">
+          {template.rank > 0 && <span className="bg-yellow-400 text-gray-900 text-sm font-bold px-2.5 py-0.5 rounded-full shrink-0">#{template.rank}</span>}
+          <h2 className="text-white font-bold text-sm md:text-lg truncate">{template.site_name}</h2>
+          {template.rating && <span className="text-yellow-400 flex items-center gap-0.5 text-sm shrink-0"><Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />{template.rating}</span>}
+          {template.visual_parity_score > 0 && <span className="text-white/60 text-xs shrink-0 hidden md:block">{template.visual_parity_score}% parity</span>}
         </div>
-        <span className="text-white/60 text-sm hidden md:block">{template.source_url}</span>
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Mode toggle */}
+          {hasLive && hasScreenshot && (
+            <div className="flex bg-white/10 rounded-lg p-0.5">
+              <button
+                onClick={() => onModeChange('screenshot')}
+                className={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${mode === 'screenshot' ? 'bg-yellow-400 text-gray-900' : 'text-white hover:bg-white/10'}`}
+              >
+                Screenshot
+              </button>
+              <button
+                onClick={() => onModeChange('live')}
+                className={`text-xs px-3 py-1.5 rounded-md font-medium transition-colors ${mode === 'live' ? 'bg-yellow-400 text-gray-900' : 'text-white hover:bg-white/10'}`}
+              >
+                Live Site
+              </button>
+            </div>
+          )}
+          {template.source_url && (
+            <a href={template.source_url} target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 text-xs transition-colors">
+              <ExternalLink className="w-3.5 h-3.5" /> Original
+            </a>
+          )}
+          <button
+            onClick={onClose}
+            className="bg-white/10 hover:bg-white/20 text-white rounded-lg p-2 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      {/* Full screenshot */}
-      <div className="max-w-[95vw] max-h-[80vh] overflow-auto rounded-lg" onClick={(e) => e.stopPropagation()}>
-        {template.screenshot_url && (
+      {/* Content area — single scroll container */}
+      <div className="flex-1 overflow-hidden flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+        {mode === 'live' && hasLive ? (
+          <iframe
+            src={template.html_file_url}
+            title={template.site_name}
+            className="w-full h-full max-w-[1400px] mx-auto rounded-lg bg-white"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          />
+        ) : hasScreenshot ? (
           <img
             src={template.screenshot_url}
             alt={template.site_name}
-            className="max-w-full h-auto"
-            style={{ maxHeight: '80vh' }}
+            className="max-w-full max-h-full h-auto object-contain rounded-lg"
           />
-        )}
-      </div>
-
-      {/* Footer actions */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
-        {template.html_file_url && (
-          <a href={template.html_file_url} target="_blank" rel="noopener noreferrer" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors">
-            <Maximize2 className="w-4 h-4" /> Open Cloned Site Full Screen
-          </a>
-        )}
-        {template.source_url && (
-          <a href={template.source_url} target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors">
-            <ExternalLink className="w-4 h-4" /> View Original
-          </a>
-        )}
-        {template.visual_parity_score > 0 && (
-          <span className="bg-white/10 text-white text-sm px-3 py-2 rounded-lg font-medium">{template.visual_parity_score}% visual parity</span>
+        ) : (
+          <p className="text-white/60">No preview available</p>
         )}
       </div>
     </div>
