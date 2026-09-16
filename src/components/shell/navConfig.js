@@ -1,7 +1,7 @@
 import {
   Home, Activity, Target, TrendingUp, Gauge, Compass,
   Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
-  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe,
+  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe, Crown,
 } from 'lucide-react';
 // Rocket already imported above
 
@@ -38,6 +38,7 @@ export const NAV_GROUPS = [
     items: [
       { to: '/clients', label: 'Clients', icon: Building2 },
       { to: '/strategic-urls', label: 'Strategic URL Finder', icon: DollarSign },
+      { to: '/nearme-strategy', label: 'NearMe Strategy', icon: Crown },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
