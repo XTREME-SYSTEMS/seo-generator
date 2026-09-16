@@ -50,7 +50,8 @@ export default async function(req) {
     const clients = await base44.asServiceRole.entities.Client.list();
     results.push({ suite: 'v2_contracts', name: 'pilot_clients_seeded', requirement: 'At least one pilot client exists', status: clients.length > 0 ? 'pass' : 'fail', detail: `${clients.length} clients`, last_run_at: now });
 
-    // Write all validation results
+    // Upsert validation results — delete old records first so the score reflects the latest run, not historical duplicates
+    await base44.asServiceRole.entities.ValidationTest.deleteMany({});
     await base44.asServiceRole.entities.ValidationTest.bulkCreate(results);
 
     const pass = results.filter((r) => r.status === 'pass').length;
