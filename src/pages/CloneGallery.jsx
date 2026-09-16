@@ -59,7 +59,9 @@ export default function CloneGallery() {
       ? Math.round(templates.filter(t => t.status === 'cloned' || t.status === 'validated').reduce((s, t) => s + (t.visual_parity_score || 0), 0) / cloned)
       : 0;
     const nichesCovered = new Set(templates.map(t => t.niche)).size;
-    return { total: templates.length, cloned, failed, avgParity, nichesCovered };
+    const selfContained = templates.filter(t => t.is_self_contained).length;
+    const totalAssets = templates.reduce((s, t) => s + (t.assets_rehosted || 0), 0);
+    return { total: templates.length, cloned, failed, avgParity, nichesCovered, selfContained, totalAssets };
   }, [templates]);
 
   async function cloneNiche(niche) {
@@ -128,12 +130,13 @@ export default function CloneGallery() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <StatCard label="Total Clones" value={stats.total} icon={Layers} color="text-blue-600" />
         <StatCard label="Successfully Cloned" value={stats.cloned} icon={CheckCircle2} color="text-green-600" />
         <StatCard label="Failed" value={stats.failed} icon={XCircle} color="text-red-600" />
         <StatCard label="Avg Visual Parity" value={`${stats.avgParity}%`} icon={Shield} color="text-yellow-600" />
-        <StatCard label="Niches Covered" value={`${stats.nichesCovered}/30`} icon={Globe} color="text-purple-600" />
+        <StatCard label="Self-Contained" value={stats.selfContained} icon={Shield} color="text-green-600" />
+        <StatCard label="Assets Re-Hosted" value={stats.totalAssets} icon={Layers} color="text-blue-600" />
       </div>
 
       {/* Progress */}
@@ -275,6 +278,12 @@ function CloneCard({ template, onZoom, onOpenLive, onReclone, recloning }) {
             {parity}% parity
           </div>
         )}
+        {/* Self-contained badge */}
+        {!isFailed && template.is_self_contained && (
+          <div className="absolute bottom-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+            <Shield className="w-3 h-3" /> Self-Contained
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -371,6 +380,24 @@ function CloneCard({ template, onZoom, onOpenLive, onReclone, recloning }) {
                       <span className="text-muted-foreground">Links: <strong className="text-foreground">{tokens.linkCount || 0}</strong></span>
                       <span className="text-muted-foreground">Forms: <strong className="text-foreground">{tokens.formCount || 0}</strong></span>
                     </div>
+                    {/* Deterministic stats */}
+                    <div className="flex flex-wrap gap-1.5 pt-1.5 border-t border-border">
+                      {template.assets_rehosted > 0 && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-blue-100 text-blue-700 flex items-center gap-1">
+                          <Shield className="w-3 h-3" /> {template.assets_rehosted} assets re-hosted
+                        </span>
+                      )}
+                      {template.css_inlined && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-purple-100 text-purple-700">
+                          CSS inlined
+                        </span>
+                      )}
+                      {template.is_self_contained && (
+                        <span className="text-xs px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-bold">
+                          Self-Contained
+                        </span>
+                      )}
+                    </div>
                   </>
                 );
               } catch { return null; }
@@ -465,6 +492,8 @@ function Lightbox({ template, mode, onModeChange, onClose }) {
           <h2 className="text-white font-bold text-sm md:text-lg truncate">{template.site_name}</h2>
           {template.rating && <span className="text-yellow-400 flex items-center gap-0.5 text-sm shrink-0"><Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />{template.rating}</span>}
           {template.visual_parity_score > 0 && <span className="text-white/60 text-xs shrink-0 hidden md:block">{template.visual_parity_score}% parity</span>}
+          {template.is_self_contained && <span className="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shrink-0 hidden md:flex items-center gap-1"><Shield className="w-3 h-3" /> Self-Contained</span>}
+          {template.assets_rehosted > 0 && <span className="text-white/60 text-xs shrink-0 hidden lg:block">{template.assets_rehosted} assets</span>}
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {/* Mode toggle */}

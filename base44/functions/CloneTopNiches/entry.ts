@@ -69,6 +69,7 @@ export default async function(req: Request): Promise<Response> {
           const clone = await cloneSite(base44, engineUrl, apiKey, {
             niche: currentNiche,
             site: {
+              niche: currentNiche,
               url: site.url,
               name: site.name || site.url,
               rating: site.rating || '',
