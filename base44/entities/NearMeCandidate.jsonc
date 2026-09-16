@@ -1,0 +1,113 @@
+{
+  "name": "NearMeCandidate",
+  "type": "object",
+  "properties": {
+    "domain": {
+      "type": "string",
+      "description": "Full domain e.g. plumbersnearme.com"
+    },
+    "niche": {
+      "type": "string",
+      "description": "The service/product prefix e.g. plumbing, roofing"
+    },
+    "naics_sector": {
+      "type": "string",
+      "description": "NAICS sector name"
+    },
+    "naics_code": {
+      "type": "string",
+      "description": "NAICS sector code"
+    },
+    "pattern_type": {
+      "type": "string",
+      "enum": [
+        "nearme",
+        "near",
+        "nearyou",
+        "phrase"
+      ],
+      "default": "nearme"
+    },
+    "availability_status": {
+      "type": "string",
+      "enum": [
+        "unchecked",
+        "available",
+        "unavailable",
+        "premium",
+        "error"
+      ],
+      "default": "unchecked"
+    },
+    "availability_source": {
+      "type": "string",
+      "enum": [
+        "vercel",
+        "godaddy",
+        "both",
+        "none"
+      ],
+      "default": "none"
+    },
+    "registration_price": {
+      "type": "number",
+      "default": 0,
+      "description": "Registration price in USD"
+    },
+    "demand_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Merged demand score 0-100"
+    },
+    "search_volume_estimate": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated monthly search volume"
+    },
+    "cpc_estimate": {
+      "type": "number",
+      "default": 0,
+      "description": "Estimated cost per click in USD"
+    },
+    "top_search_terms": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ai_trend_summary": {
+      "type": "string",
+      "description": "LLM research digest on search demand and trends"
+    },
+    "autocomplete_suggestions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Real-time Google autocomplete suggestions"
+    },
+    "commercial_intent": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "domain"
+  ]
+}

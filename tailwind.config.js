@@ -43,6 +43,16 @@ module.exports = {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
+  			nearme: {
+  				DEFAULT: 'hsl(var(--nearme-bg))',
+  				bg: 'hsl(var(--nearme-bg))',
+  				card: 'hsl(var(--nearme-card))',
+  				border: 'hsl(var(--nearme-border))',
+  				text: 'hsl(var(--nearme-text))',
+  				muted: 'hsl(var(--nearme-muted))',
+  				gold: 'hsl(var(--nearme-gold))',
+  				green: 'hsl(var(--nearme-green))',
+  			},
   			chart: {
   				'1': 'hsl(var(--chart-1))',
   				'2': 'hsl(var(--chart-2))',
@@ -62,6 +72,7 @@ module.exports = {
   			}
   		},
   		fontFamily: {
+  			nearme: ['Cinzel', 'serif'],
   			heading: ['var(--font-heading)'],
   			body: ['var(--font-body)'],
   			display: ['var(--font-display)'],
