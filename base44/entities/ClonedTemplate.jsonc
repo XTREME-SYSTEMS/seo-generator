@@ -28,7 +28,7 @@
     },
     "html_file_url": {
       "type": "string",
-      "description": "Public URL to the cloned HTML file"
+      "description": "Public URL to the deterministic self-contained HTML file"
     },
     "design_tokens": {
       "type": "string",
@@ -39,7 +39,22 @@
       "default": 0,
       "minimum": 0,
       "maximum": 100,
-      "description": "How closely the clone matches the original (0-99)"
+      "description": "Deterministic parity score based on actual asset re-hosting"
+    },
+    "assets_rehosted": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of assets (images, fonts) re-hosted to our storage"
+    },
+    "is_self_contained": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if >=80% of assets were re-hosted (clone works without original site)"
+    },
+    "css_inlined": {
+      "type": "boolean",
+      "default": false,
+      "description": "True if external CSS was inlined into the HTML"
     },
     "strengths": {
       "type": "array",
