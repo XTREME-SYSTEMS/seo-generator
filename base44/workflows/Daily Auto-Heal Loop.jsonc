@@ -1,0 +1,87 @@
+{
+  "description": "Daily autonomous auto-heal, auto-fix, auto-harden, auto-optimize loop. Runs every day at 4 AM ET \u2014 fixes broken pages, heals errors, hardens security, and optimizes internal linking. This is the mandatory daily self-healing loop.",
+  "name": "Daily Auto-Heal Loop",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_auto_heal_loop",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "fix_engine": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "FixEngine",
+            "args": {}
+          },
+          "then": "auto_heal",
+          "x-base44": {
+            "title": "Auto-Fix",
+            "description": "Find and fix all detected issues"
+          }
+        }
+      },
+      {
+        "auto_heal": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "AutoHealingEscalation",
+            "args": {}
+          },
+          "then": "harden",
+          "x-base44": {
+            "title": "Auto-Heal",
+            "description": "Heal broken pages, redirects, and errors"
+          }
+        }
+      },
+      {
+        "harden": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SecurityScan",
+            "args": {}
+          },
+          "then": "optimize",
+          "x-base44": {
+            "title": "Auto-Harden",
+            "description": "Security hardening scan"
+          }
+        }
+      },
+      {
+        "optimize": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "InternalLinkOptimizer",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Auto-Optimize",
+            "description": "Optimize internal linking and SEO structure"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 4 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}

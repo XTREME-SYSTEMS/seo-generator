@@ -92,6 +92,11 @@ import GeneratorHub from '@/pages/GeneratorHub';
 import AssetPerformance from '@/pages/AssetPerformance';
 import AlphaPrime from '@/pages/AlphaPrime';
 import SystemAudit from '@/pages/SystemAudit';
+import TestScore from '@/pages/TestScore';
+import SelfReflection from '@/pages/SelfReflection';
+import UniversalRegistry from '@/pages/UniversalRegistry';
+import ForensicAudit from '@/pages/ForensicAudit';
+import AutonomousPipeline from '@/pages/AutonomousPipeline';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -219,6 +224,11 @@ const AuthenticatedApp = () => {
           <Route path="/asset-performance" element={<AssetPerformance />} />
           <Route path="/alpha-prime" element={<AlphaPrime />} />
           <Route path="/system-audit" element={<SystemAudit />} />
+          <Route path="/test-score" element={<TestScore />} />
+          <Route path="/self-reflection" element={<SelfReflection />} />
+          <Route path="/universal-registry" element={<UniversalRegistry />} />
+          <Route path="/forensic-audit" element={<ForensicAudit />} />
+          <Route path="/autonomous-pipeline" element={<AutonomousPipeline />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
