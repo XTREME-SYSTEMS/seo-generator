@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Search, Loader2, Zap, TrendingUp, DollarSign, Download, Rocket, CheckCircle2, Sparkles } from 'lucide-react';
+import { Search, Loader2, Zap, TrendingUp, DollarSign, Download, CheckCircle2, Sparkles } from 'lucide-react';
 import NearMeTable from '@/components/nearme/NearMeTable';
 
 const TABS = [
@@ -151,27 +151,27 @@ export default function NearMeUrlFinder() {
   };
 
   return (
-    <div className="min-h-screen bg-nearme-bg text-nearme-text">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="p-6 max-w-[1600px] mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-nearme-gold/10 border border-nearme-gold/20 flex items-center justify-center">
-              <Search className="w-5 h-5 text-nearme-gold" />
+            <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+              <Search className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h1 className="font-nearme text-2xl font-semibold text-nearme-text">NearMe Intelligence</h1>
-              <p className="text-xs text-nearme-muted">Batch URL discovery, availability checking & search demand intelligence</p>
+              <h1 className="font-heading text-2xl font-semibold text-foreground">NearMe Intelligence</h1>
+              <p className="text-xs text-muted-foreground">Batch URL discovery, availability checking & search demand intelligence</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {progress && running && (
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-nearme-card border border-nearme-border text-xs">
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-nearme-gold" />
-                <span className="text-nearme-muted">{progress.label}...</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border text-xs">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                <span className="text-muted-foreground">{progress.label}...</span>
               </div>
             )}
-            <button onClick={handleExport} disabled={!filtered.length} className="text-xs px-3 py-1.5 rounded-lg bg-nearme-card border border-nearme-border text-nearme-text hover:border-nearme-gold/30 disabled:opacity-40 flex items-center gap-1.5">
+            <button onClick={handleExport} disabled={!filtered.length} className="text-xs px-3 py-1.5 rounded-lg bg-card border border-border text-foreground hover:border-primary/30 disabled:opacity-40 flex items-center gap-1.5">
               <Download className="w-3.5 h-3.5" /> Export
             </button>
           </div>
@@ -194,7 +194,7 @@ export default function NearMeUrlFinder() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-4 border-b border-nearme-border">
+        <div className="flex gap-1 mb-4 border-b border-border">
           {TABS.map(tab => {
             const Icon = tab.icon;
             return (
@@ -202,7 +202,7 @@ export default function NearMeUrlFinder() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === tab.id ? 'border-nearme-gold text-nearme-text' : 'border-transparent text-nearme-muted hover:text-nearme-text'
+                  activeTab === tab.id ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -219,28 +219,28 @@ export default function NearMeUrlFinder() {
             placeholder="Search domains..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-nearme-card border border-nearme-border rounded-lg px-3 py-1.5 text-sm text-nearme-text placeholder:text-nearme-muted focus:outline-none focus:border-nearme-gold/40 w-64"
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/40 w-64"
           />
           <select
             value={naicsFilter}
             onChange={(e) => setNaicsFilter(e.target.value)}
-            className="bg-nearme-card border border-nearme-border rounded-lg px-3 py-1.5 text-sm text-nearme-text focus:outline-none focus:border-nearme-gold/40"
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-foreground focus:outline-none focus:border-primary/40"
           >
             {naicsSectors.map(s => <option key={s} value={s}>{s === 'all' ? 'All Sectors' : s}</option>)}
           </select>
-          <label className="flex items-center gap-2 text-xs text-nearme-muted cursor-pointer">
+          <label className="flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
             <input
               type="checkbox"
               checked={availableOnly}
               onChange={(e) => setAvailableOnly(e.target.checked)}
-              className="accent-nearme-gold"
+              className="accent-primary"
             />
             Available only
           </label>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-nearme-card border border-nearme-border rounded-lg px-3 py-1.5 text-sm text-nearme-muted focus:outline-none focus:border-nearme-gold/40 ml-auto"
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-muted-foreground focus:outline-none focus:border-primary/40 ml-auto"
           >
             <option value="demand_score">Sort: Demand Score</option>
             <option value="cpc_estimate">Sort: CPC</option>
@@ -253,7 +253,7 @@ export default function NearMeUrlFinder() {
         {/* Table */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-nearme-gold" />
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : (
           <NearMeTable candidates={filtered} onConvert={handleConvert} sortBy={sortBy} onSort={setSortBy} />
@@ -262,7 +262,7 @@ export default function NearMeUrlFinder() {
         {/* Toast */}
         {toast && (
           <div className={`fixed bottom-6 right-6 px-4 py-3 rounded-lg border text-sm z-50 ${
-            toast.type === 'success' ? 'bg-nearme-green/10 border-nearme-green/20 text-nearme-green' : 'bg-red-500/10 border-red-500/20 text-red-400'
+            toast.type === 'success' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'
           }`} onClick={() => setToast(null)}>
             {toast.msg}
           </div>
@@ -277,7 +277,7 @@ function ActionButton({ onClick, icon: Icon, label, running }) {
     <button
       onClick={onClick}
       disabled={running}
-      className="text-xs px-4 py-2 rounded-lg bg-nearme-gold/10 text-nearme-gold border border-nearme-gold/20 hover:bg-nearme-gold/20 disabled:opacity-50 flex items-center gap-1.5 transition-colors font-medium"
+      className="text-xs px-4 py-2 rounded-lg bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 disabled:opacity-50 flex items-center gap-1.5 transition-colors font-medium"
     >
       {running ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Icon className="w-3.5 h-3.5" />}
       {running ? 'Running...' : label}
@@ -287,12 +287,12 @@ function ActionButton({ onClick, icon: Icon, label, running }) {
 
 function StatCard({ label, value, icon: Icon, highlight }) {
   return (
-    <div className={`bg-nearme-card border border-nearme-border rounded-lg p-4 ${highlight ? 'border-nearme-green/20' : ''}`}>
+    <div className={`bg-card border border-border rounded-lg p-4 ${highlight ? 'border-green-200' : ''}`}>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs text-nearme-muted">{label}</span>
-        <Icon className={`w-4 h-4 ${highlight ? 'text-nearme-green' : 'text-nearme-muted'}`} />
+        <span className="text-xs text-muted-foreground">{label}</span>
+        <Icon className={`w-4 h-4 ${highlight ? 'text-green-600' : 'text-muted-foreground'}`} />
       </div>
-      <p className={`text-2xl font-semibold tabular ${highlight ? 'text-nearme-green' : 'text-nearme-text'}`}>{value}</p>
+      <p className={`text-2xl font-semibold tabular ${highlight ? 'text-green-600' : 'text-foreground'}`}>{value}</p>
     </div>
   );
 }
