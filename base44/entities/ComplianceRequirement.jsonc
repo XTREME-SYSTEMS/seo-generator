@@ -1,0 +1,60 @@
+{
+  "name": "ComplianceRequirement",
+  "type": "object",
+  "properties": {
+    "target_id": {
+      "type": "string",
+      "description": "Reference to SubmissionTarget"
+    },
+    "site_name": {
+      "type": "string"
+    },
+    "requirement_type": {
+      "type": "string",
+      "enum": [
+        "business_info",
+        "verification_docs",
+        "content_guidelines",
+        "technical_specs",
+        "category_rules",
+        "image_specs",
+        "pricing_rules",
+        "review_policy",
+        "api_rate_limits",
+        "data_format",
+        "authentication",
+        "other"
+      ]
+    },
+    "requirement_text": {
+      "type": "string",
+      "description": "The actual requirement text scraped from the site"
+    },
+    "compliance_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "compliant",
+        "non_compliant",
+        "unknown"
+      ],
+      "default": "pending"
+    },
+    "action_needed": {
+      "type": "string",
+      "description": "What needs to be done to achieve compliance"
+    },
+    "scraped_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "site_name",
+    "requirement_type"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "BatchSubmissionJob",
+  "type": "object",
+  "properties": {
+    "job_name": {
+      "type": "string"
+    },
+    "target_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "SubmissionTarget IDs included in this batch"
+    },
+    "total_targets": {
+      "type": "number",
+      "default": 0
+    },
+    "submitted_count": {
+      "type": "number",
+      "default": 0
+    },
+    "verified_count": {
+      "type": "number",
+      "default": 0
+    },
+    "failed_count": {
+      "type": "number",
+      "default": 0
+    },
+    "company_data": {
+      "type": "string",
+      "description": "JSON-encoded company/website data to submit"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "running",
+        "completed",
+        "partial",
+        "failed",
+        "paused"
+      ],
+      "default": "queued"
+    },
+    "started_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "results": {
+      "type": "string",
+      "description": "JSON-encoded per-target results"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "job_name"
+  ]
+}

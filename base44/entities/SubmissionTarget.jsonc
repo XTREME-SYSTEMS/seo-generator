@@ -1,0 +1,119 @@
+{
+  "name": "SubmissionTarget",
+  "type": "object",
+  "properties": {
+    "site_name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "description": "The submission/listing URL"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "directory",
+        "api_provider",
+        "api_consumer",
+        "review_site",
+        "social_platform",
+        "business_listing",
+        "press_release",
+        "forum",
+        "blog_network",
+        "podcast_directory",
+        "app_store",
+        "saas_marketplace",
+        "industry_specific",
+        "government",
+        "other"
+      ],
+      "default": "directory"
+    },
+    "submission_type": {
+      "type": "string",
+      "enum": [
+        "api_submit",
+        "api_get",
+        "manual_form",
+        "oauth_connect",
+        "email",
+        "csv_upload",
+        "webhook"
+      ],
+      "description": "How to submit/get listed"
+    },
+    "api_endpoint": {
+      "type": "string",
+      "description": "API endpoint URL if available"
+    },
+    "api_docs_url": {
+      "type": "string"
+    },
+    "requires_api_key": {
+      "type": "boolean",
+      "default": false
+    },
+    "requires_verification": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_free": {
+      "type": "boolean",
+      "default": true
+    },
+    "domain_authority": {
+      "type": "number",
+      "default": 0
+    },
+    "estimated_seo_value": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    },
+    "submission_requirements": {
+      "type": "string",
+      "description": "Scraped requirements for listing"
+    },
+    "compliance_notes": {
+      "type": "string"
+    },
+    "submission_status": {
+      "type": "string",
+      "enum": [
+        "identified",
+        "requirements_scraped",
+        "submitted",
+        "verified",
+        "listed",
+        "rejected",
+        "failed"
+      ],
+      "default": "identified"
+    },
+    "last_scraped_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_submitted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scrape_error": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "site_name",
+    "url"
+  ]
+}

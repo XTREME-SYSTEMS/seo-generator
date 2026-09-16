@@ -1,0 +1,72 @@
+{
+  "name": "GeneratedAsset",
+  "type": "object",
+  "properties": {
+    "generator_type": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "wealth_strategy",
+        "content",
+        "reverse_engineer",
+        "document",
+        "programmatic_site",
+        "funnel_idea",
+        "problem_solution",
+        "elite_scan",
+        "ai_company_data"
+      ],
+      "description": "Which generator produced this asset"
+    },
+    "title": {
+      "type": "string"
+    },
+    "input_prompt": {
+      "type": "string",
+      "description": "The user's input prompt/dream statement"
+    },
+    "output_json": {
+      "type": "string",
+      "description": "Full structured JSON output from the AI"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short human-readable summary"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "platform": {
+      "type": "string",
+      "description": "Target platform (google, facebook, tiktok, etc.) for content generator"
+    },
+    "compliance_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "generated",
+        "reviewed",
+        "approved",
+        "deployed",
+        "archived"
+      ],
+      "default": "generated"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "generator_type",
+    "title"
+  ]
+}
