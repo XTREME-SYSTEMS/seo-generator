@@ -860,16 +860,7 @@ OUTPUT: JSON with the complete loop specification, including: analysis queries, 
   },
 ];
 
-// Flatten for easy access
-export const ALL_PROMPTS = PROMPT_PHASES.flatMap(phase =>
-  phase.prompts.map((p, i) => ({
-    number: ALL_PROMPTS.length + i + 1, // will be recalculated
-    phase: phase.phase,
-    ...p,
-  }))
-);
-
-// Properly number all prompts sequentially
+// Number all prompts sequentially across all phases
 let _counter = 0;
 export const NUMBERED_PROMPTS = PROMPT_PHASES.flatMap(phase => {
   return phase.prompts.map(p => {
