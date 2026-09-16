@@ -26,6 +26,10 @@
       "type": "boolean",
       "default": true
     },
+    "payload": {
+      "type": "string",
+      "description": "JSON-encoded job spec (url, actions, extract_schema, session_options)"
+    },
     "result": {
       "type": "string"
     },
