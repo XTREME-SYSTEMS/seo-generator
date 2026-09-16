@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Search, Globe, Star, Shield, Eye, Rocket, AlertCircle, CheckCircle2, XCircle, ExternalLink, Download, Sparkles, Layers } from 'lucide-react';
+import { Loader2, Search, Globe, Star, Shield, Rocket, AlertCircle, CheckCircle2, XCircle, ExternalLink, Download, Sparkles, Layers, ZoomIn, X, Maximize2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
 
@@ -22,6 +22,7 @@ export default function CloneGallery() {
   const [filter, setFilter] = useState('');
   const [activeNiche, setActiveNiche] = useState('all');
   const [view, setView] = useState('gallery');
+  const [lightbox, setLightbox] = useState(null);
 
   useEffect(() => {
     loadTemplates();
@@ -153,7 +154,7 @@ export default function CloneGallery() {
           <Loader2 className="w-8 h-8 animate-spin text-yellow-500" />
         </div>
       ) : view === 'niches' ? (
-        <NicheGrid niches={NICHES} templates={templates} cloning={cloning} onClone={cloneNiche} />
+        <NicheGrid niches={NICHES} templates={templates} cloning={cloning} onClone={cloneNiche} onZoom={setLightbox} />
       ) : Object.keys(grouped).length === 0 ? (
         <div className="text-center py-20">
           <Layers className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
@@ -182,33 +183,50 @@ export default function CloneGallery() {
                 </button>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                {items.map(t => <CloneCard key={t.id} template={t} />)}
+                {items.map(t => <CloneCard key={t.id} template={t} onZoom={setLightbox} />)}
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {/* Lightbox */}
+      {lightbox && (
+        <Lightbox template={lightbox} onClose={() => setLightbox(null)} />
+      )}
     </div>
   );
 }
 
-function CloneCard({ template }) {
+function CloneCard({ template, onZoom }) {
   const [showDetails, setShowDetails] = useState(false);
   const isFailed = template.status === 'failed';
   const parity = template.visual_parity_score || 0;
   const parityColor = parity >= 80 ? 'text-green-600 bg-green-100' : parity >= 50 ? 'text-yellow-700 bg-yellow-100' : 'text-red-600 bg-red-100';
+  const hasScreenshot = template.screenshot_url && !isFailed;
 
   return (
     <div className={`border rounded-lg overflow-hidden bg-card transition-all ${isFailed ? 'border-red-300' : 'border-border hover:border-yellow-400 hover:shadow-lg'}`}>
       {/* Screenshot */}
-      <div className="relative aspect-video bg-muted overflow-hidden">
-        {template.screenshot_url && !isFailed ? (
-          <Image
-            src={template.screenshot_url}
-            alt={template.site_name}
-            className="w-full h-full object-cover"
-            fittingType="fill"
-          />
+      <div
+        className={`relative aspect-video bg-muted overflow-hidden ${hasScreenshot ? 'cursor-zoom-in group' : ''}`}
+        onClick={hasScreenshot ? () => onZoom(template) : undefined}
+      >
+        {hasScreenshot ? (
+          <>
+            <Image
+              src={template.screenshot_url}
+              alt={template.site_name}
+              className="w-full h-full object-cover transition-transform group-hover:scale-105"
+              fittingType="fill"
+            />
+            {/* Zoom overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white/90 rounded-full p-2">
+                <ZoomIn className="w-5 h-5 text-gray-900" />
+              </div>
+            </div>
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             {isFailed ? <XCircle className="w-8 h-8 text-red-400" /> : <Globe className="w-8 h-8 text-muted-foreground" />}
@@ -253,7 +271,7 @@ function CloneCard({ template }) {
         <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border">
           {!isFailed && template.html_file_url && (
             <a href={template.html_file_url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-              <Eye className="w-3 h-3" /> View HTML
+              <Maximize2 className="w-3 h-3" /> Full Screen
             </a>
           )}
           {!isFailed && template.source_url && (
@@ -311,7 +329,7 @@ function CloneCard({ template }) {
   );
 }
 
-function NicheGrid({ niches, templates, cloning, onClone }) {
+function NicheGrid({ niches, templates, cloning, onClone, onZoom }) {
   const templatesByNiche = useMemo(() => {
     const m = {};
     for (const t of templates) (m[t.niche] ||= []).push(t);
@@ -335,7 +353,7 @@ function NicheGrid({ niches, templates, cloning, onClone }) {
                 {/* Mini thumbnails */}
                 <div className="flex gap-1 mt-2">
                   {items.filter(t => t.screenshot_url).slice(0, 5).map(t => (
-                    <div key={t.id} className="w-10 h-8 rounded overflow-hidden border border-border">
+                    <div key={t.id} className="w-10 h-8 rounded overflow-hidden border border-border cursor-zoom-in hover:ring-2 hover:ring-yellow-400 transition-all" onClick={() => onZoom(t)}>
                       <Image src={t.screenshot_url} alt={t.site_name} className="w-full h-full object-cover" fittingType="fill" />
                     </div>
                   ))}
@@ -367,6 +385,72 @@ function StatCard({ label, value, icon: Icon, color }) {
         <span className="text-xs text-muted-foreground">{label}</span>
       </div>
       <p className="text-xl font-bold text-foreground">{value}</p>
+    </div>
+  );
+}
+
+function Lightbox({ template, onClose }) {
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 text-white rounded-full p-2 transition-colors z-10"
+      >
+        <X className="w-6 h-6" />
+      </button>
+
+      {/* Header info */}
+      <div className="absolute top-4 left-4 right-16 flex items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2">
+          {template.rank > 0 && <span className="bg-yellow-400 text-gray-900 text-sm font-bold px-2.5 py-0.5 rounded-full">#{template.rank}</span>}
+          <h2 className="text-white font-bold text-lg">{template.site_name}</h2>
+          {template.rating && <span className="text-yellow-400 flex items-center gap-0.5 text-sm"><Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />{template.rating}</span>}
+        </div>
+        <span className="text-white/60 text-sm hidden md:block">{template.source_url}</span>
+      </div>
+
+      {/* Full screenshot */}
+      <div className="max-w-[95vw] max-h-[80vh] overflow-auto rounded-lg" onClick={(e) => e.stopPropagation()}>
+        {template.screenshot_url && (
+          <img
+            src={template.screenshot_url}
+            alt={template.site_name}
+            className="max-w-full h-auto"
+            style={{ maxHeight: '80vh' }}
+          />
+        )}
+      </div>
+
+      {/* Footer actions */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10" onClick={(e) => e.stopPropagation()}>
+        {template.html_file_url && (
+          <a href={template.html_file_url} target="_blank" rel="noopener noreferrer" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors">
+            <Maximize2 className="w-4 h-4" /> Open Cloned Site Full Screen
+          </a>
+        )}
+        {template.source_url && (
+          <a href={template.source_url} target="_blank" rel="noopener noreferrer" className="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-2 rounded-lg flex items-center gap-2 text-sm transition-colors">
+            <ExternalLink className="w-4 h-4" /> View Original
+          </a>
+        )}
+        {template.visual_parity_score > 0 && (
+          <span className="bg-white/10 text-white text-sm px-3 py-2 rounded-lg font-medium">{template.visual_parity_score}% visual parity</span>
+        )}
+      </div>
     </div>
   );
 }
