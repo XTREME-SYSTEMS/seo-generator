@@ -51,6 +51,7 @@ export const NAV_GROUPS = [
       { to: '/portfolio-gallery', label: 'Portfolio Gallery', icon: TrendingUp },
       { to: '/clone-gallery', label: 'Clone Gallery', icon: Layers },
       { to: '/digital-dominance', label: 'Digital Dominance', icon: Crown },
+      { to: '/dominance-strategy', label: 'Dominance Strategy', icon: Crown },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },

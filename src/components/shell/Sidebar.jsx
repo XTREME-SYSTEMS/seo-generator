@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FileText } from 'lucide-react';
 import { NAV_GROUPS } from './navConfig';
 import ClientSwitcher from './ClientSwitcher';
 
@@ -19,6 +20,13 @@ export default function Sidebar({ onNavigate }) {
       <div className="border-b border-sidebar-border px-4 py-3">
         <div className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Tenant</div>
         <ClientSwitcher />
+      </div>
+      <div className="px-3 pb-3">
+        <Link to="/dominance-strategy" onClick={onNavigate}
+          className="flex items-center gap-2.5 rounded-lg bg-gradient-to-r from-yellow-400 to-yellow-500 px-3 py-2.5 text-sm font-bold text-gray-900 shadow-sm transition-all hover:from-yellow-500 hover:to-yellow-600">
+          <FileText className="h-4 w-4 shrink-0" />
+          <span>Prompt Library</span>
+        </Link>
       </div>
       <div className="flex-1 overflow-y-auto px-3 py-4">
         {NAV_GROUPS.map((group) => (
