@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Search, Globe, Star, Shield, Rocket, AlertCircle, CheckCircle2, XCircle, ExternalLink, Download, Sparkles, Layers, ZoomIn, X, Maximize2 } from 'lucide-react';
+import { Loader2, Search, Globe, Star, Shield, Rocket, AlertCircle, CheckCircle2, XCircle, ExternalLink, Download, Sparkles, Layers, ZoomIn, X, Maximize2, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Image } from '@/components/ui/image';
 
@@ -24,6 +24,8 @@ export default function CloneGallery() {
   const [view, setView] = useState('gallery');
   const [lightbox, setLightbox] = useState(null);
   const [lightboxMode, setLightboxMode] = useState('screenshot');
+  const [recloning, setRecloning] = useState(null);
+  const [recloneMsg, setRecloneMsg] = useState('');
 
   useEffect(() => {
     loadTemplates();
@@ -76,6 +78,21 @@ export default function CloneGallery() {
     }
   }
 
+  async function recloneSite(template) {
+    setRecloning(template.id);
+    setRecloneMsg('');
+    try {
+      await base44.functions.invoke('RecloneSite', { template_id: template.id });
+      setRecloneMsg(`Re-cloned ${template.site_name || template.source_url} successfully`);
+      await loadTemplates();
+    } catch (e) {
+      setRecloneMsg(`Re-clone failed: ${e.message}`);
+    } finally {
+      setRecloning(null);
+      setTimeout(() => setRecloneMsg(''), 5000);
+    }
+  }
+
   async function cloneAllNiches() {
     setCloning('all');
     for (const niche of NICHES) {
@@ -124,6 +141,14 @@ export default function CloneGallery() {
         <div className="mb-4 bg-yellow-50 border border-yellow-300 rounded-lg p-3 flex items-center gap-2">
           {cloning ? <Loader2 className="w-4 h-4 animate-spin text-yellow-600" /> : <CheckCircle2 className="w-4 h-4 text-green-600" />}
           <span className="text-sm text-yellow-800">{cloneProgress}</span>
+        </div>
+      )}
+
+      {/* Reclone message */}
+      {recloneMsg && (
+        <div className="mb-4 bg-blue-50 border border-blue-300 rounded-lg p-3 flex items-center gap-2">
+          {recloning ? <Loader2 className="w-4 h-4 animate-spin text-blue-600" /> : <CheckCircle2 className="w-4 h-4 text-green-600" />}
+          <span className="text-sm text-blue-800">{recloneMsg}</span>
         </div>
       )}
 
@@ -184,7 +209,7 @@ export default function CloneGallery() {
                 </button>
               </div>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                {items.map(t => <CloneCard key={t.id} template={t} onZoom={setLightbox} onOpenLive={(tpl) => { setLightboxMode('live'); setLightbox(tpl); }} />)}
+                {items.map(t => <CloneCard key={t.id} template={t} onZoom={setLightbox} onOpenLive={(tpl) => { setLightboxMode('live'); setLightbox(tpl); }} onReclone={recloneSite} recloning={recloning === t.id} />)}
               </div>
             </div>
           ))}
@@ -204,7 +229,7 @@ export default function CloneGallery() {
   );
 }
 
-function CloneCard({ template, onZoom, onOpenLive }) {
+function CloneCard({ template, onZoom, onOpenLive, onReclone, recloning }) {
   const [showDetails, setShowDetails] = useState(false);
   const isFailed = template.status === 'failed';
   const parity = template.visual_parity_score || 0;
@@ -261,7 +286,17 @@ function CloneCard({ template, onZoom, onOpenLive }) {
         <p className="text-xs text-muted-foreground truncate mb-2">{template.source_url}</p>
 
         {isFailed ? (
-          <p className="text-xs text-red-600 line-clamp-2">{template.clone_error || 'Clone failed'}</p>
+          <div className="space-y-2">
+            <p className="text-xs text-red-600 line-clamp-2">{template.clone_error || 'Clone failed'}</p>
+            <button
+              onClick={() => onReclone(template)}
+              disabled={recloning}
+              className="text-xs bg-yellow-400 hover:bg-yellow-500 disabled:opacity-60 text-gray-900 font-bold px-3 py-1.5 rounded flex items-center gap-1.5"
+            >
+              {recloning ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+              Re-clone This Site
+            </button>
+          </div>
         ) : (
           <div className="space-y-1">
             {template.strengths && template.strengths.length > 0 && (
@@ -288,6 +323,15 @@ function CloneCard({ template, onZoom, onOpenLive }) {
               <ExternalLink className="w-3 h-3" /> Original
             </a>
           )}
+          <button
+            onClick={() => onReclone(template)}
+            disabled={recloning}
+            className="text-xs text-yellow-700 hover:text-yellow-800 disabled:opacity-50 flex items-center gap-1"
+            title="Re-clone this site"
+          >
+            {recloning ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+            Re-clone
+          </button>
           <button onClick={() => setShowDetails(!showDetails)} className="text-xs text-muted-foreground hover:text-foreground ml-auto">
             {showDetails ? 'Less' : 'Details'}
           </button>
