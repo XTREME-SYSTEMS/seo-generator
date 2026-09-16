@@ -1,7 +1,7 @@
 import {
   Home, Activity, Target, TrendingUp, Gauge, Compass,
   Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
-  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe, Crown, Sparkles, Shield, Cpu, LineChart, FileSearch, Brain, ClipboardCheck,
+  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe, Crown, Sparkles, Shield, Cpu, LineChart, FileSearch, Brain, ClipboardCheck, Layers,
 } from 'lucide-react';
 // Rocket already imported above
 
@@ -49,6 +49,7 @@ export const NAV_GROUPS = [
       { to: '/universal-registry', label: 'Universal Registry', icon: Boxes },
       { to: '/autonomous-pipeline', label: 'Autonomous Pipeline', icon: Zap },
       { to: '/portfolio-gallery', label: 'Portfolio Gallery', icon: TrendingUp },
+      { to: '/clone-gallery', label: 'Clone Gallery', icon: Layers },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },

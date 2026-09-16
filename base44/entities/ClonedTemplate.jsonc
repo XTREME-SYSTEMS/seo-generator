@@ -1,0 +1,87 @@
+{
+  "name": "ClonedTemplate",
+  "type": "object",
+  "properties": {
+    "niche": {
+      "type": "string",
+      "description": "The service niche this clone belongs to"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "Original website URL that was cloned"
+    },
+    "site_name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "string",
+      "description": "Original site rating e.g. 4.8/5"
+    },
+    "rank": {
+      "type": "number",
+      "default": 0,
+      "description": "Rank within niche (1 = highest rated)"
+    },
+    "screenshot_url": {
+      "type": "string",
+      "description": "Public URL to the full-page screenshot"
+    },
+    "html_file_url": {
+      "type": "string",
+      "description": "Public URL to the cloned HTML file"
+    },
+    "design_tokens": {
+      "type": "string",
+      "description": "JSON-encoded design tokens: colors, fonts, layout structure"
+    },
+    "visual_parity_score": {
+      "type": "number",
+      "default": 0,
+      "minimum": 0,
+      "maximum": 100,
+      "description": "How closely the clone matches the original (0-99)"
+    },
+    "strengths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "weaknesses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "superiority_strategy": {
+      "type": "string",
+      "description": "JSON-encoded strategy to build a superior site"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "cloning",
+        "cloned",
+        "validated",
+        "failed"
+      ],
+      "default": "queued"
+    },
+    "clone_error": {
+      "type": "string"
+    },
+    "cloned_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "niche",
+    "source_url"
+  ]
+}
