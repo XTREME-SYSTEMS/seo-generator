@@ -40,14 +40,14 @@ export default async function(req: Request): Promise<Response> {
     const limit = body.limit || 50;
     const singleDomain = body.domain;
 
-    // Load available candidates without demand data
+    // Load candidates without demand data (available or unchecked)
     let candidates;
     if (singleDomain) {
       candidates = await svc.entities.NearMeCandidate.filter({ domain: singleDomain }, '-created_date', 1);
     } else {
-      // Get available candidates with demand_score = 0
-      const all = await svc.entities.NearMeCandidate.filter({ availability_status: 'available' }, '-created_date', limit * 2);
-      candidates = all.filter(c => !c.demand_score || c.demand_score === 0).slice(0, limit);
+      // Get candidates with demand_score = 0, prioritizing available ones
+      const all = await svc.entities.NearMeCandidate.list('-created_date', 500);
+      candidates = all.filter(c => (!c.demand_score || c.demand_score === 0) && c.availability_status !== 'unavailable').slice(0, limit);
     }
 
     if (!candidates.length) return Response.json({ message: 'No candidates needing demand research', researched: 0 });
