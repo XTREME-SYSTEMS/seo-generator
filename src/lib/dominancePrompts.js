@@ -4,6 +4,219 @@
 
 export const PROMPT_PHASES = [
   {
+    phase: 'Phase 0 — Deep Architecture & Google Compliance',
+    description: 'Design the system from the ground up to follow 100% of Google\'s specifications, generate 1000s of unique pages per day, operate autonomously 24/7, and set + achieve ranking goals.',
+    prompts: [
+      {
+        title: 'Google Specification Compliance Architecture',
+        prompt: `You are a Google Search specification architect. Design a system architecture where EVERY component — page generation, structured data, content quality, technical SEO, internal linking, and deployment — complies with 100% of Google's published specifications.
+
+GOOGLE SPECIFICATIONS TO COMPLY WITH (cite the specific guideline for each):
+1. Search Quality Rater Guidelines (E-E-A-T: Experience, Expertise, Authoritativeness, Trustworthiness)
+2. Helpful Content Update guidelines (people-first content, not search-engine-first)
+3. Core Web Vitals (LCP < 2.5s, INP < 200ms, CLS < 0.1)
+4. Mobile-First Indexing requirements
+5. Page Experience signals
+6. Structured Data guidelines (schema.org, JSON-LD, Rich Results eligibility)
+7. Sitemap and robots.txt specifications
+8. Canonicalization and duplicate content policies
+9. URL structure guidelines (clean, descriptive, stable)
+10. Image optimization guidelines (alt text, format, lazy loading)
+11. JavaScript SEO guidelines (server-side rendering, dynamic rendering)
+12. Spam policies (no cloaking, no doorway pages, no scraped content, no auto-generated content)
+13. Link spam policies (no paid links, no link schemes)
+14. Local SEO guidelines (Google Business Profile, NAP consistency, local structured data)
+15. AI content guidelines (helpful, original, quality content regardless of how it's produced)
+
+For each specification:
+- The exact requirement (quote or paraphrase the guideline)
+- How the system enforces compliance (automated checks, generation rules, validation gates)
+- The validation mechanism (how we prove compliance before deployment)
+- The failure consequence (what happens if non-compliant content is generated)
+
+ARCHITECTURE PRINCIPLE: Compliance is not a post-generation check — it is a generation constraint. Every page is born compliant, not made compliant after the fact.
+
+OUTPUT: A JSON architecture document with: per-specification compliance rules, generation constraints, validation gates, and the system topology that enforces compliance at every layer.`,
+      },
+      {
+        title: 'Programmatic Page Generation Engine (1000s/Day)',
+        prompt: `You are a programmatic SEO architect. Design a page generation engine that produces 1,000+ unique, high-quality, strategically-targeted web pages per day — each designed to rank in Google's top 5 as fast as technologically possible.
+
+SCALE REQUIREMENTS:
+- Throughput: 1,000+ pages per day, every day, 24/7
+- Uniqueness: each page must be 80%+ unique content (not templated thin content)
+- Quality: each page must pass Google's Helpful Content guidelines
+- Strategic targeting: each page targets a specific keyword + location + intent combination
+- Indexability: each page is crawlable, has proper meta tags, schema, and internal links
+
+GENERATION PIPELINE DESIGN:
+1. Keyword-Location Matrix: generate {services} × {cities/counties/regions} combinations, each with search volume and difficulty
+2. Content Uniqueness Engine: for each combination, generate genuinely unique content using:
+   - Local data injection (city-specific facts, landmarks, regulations, demographics)
+   - Service-specific details (pricing ranges, process steps, common issues)
+   - Seasonal and temporal context (current season, weather, local events)
+   - Unique angles (FAQ, case study, comparison, guide, checklist formats)
+3. Page Template System: 10+ page templates (service page, location page, FAQ, guide, comparison, case study, checklist, directory, glossary, tool) — each with unique structure and content patterns
+4. Content Depth Rules: minimum 800 words, unique H1, 3+ H2s, FAQ section, internal links, schema markup, images with alt text
+5. Internal Linking Graph: every page links to 5-10 related pages with descriptive anchor text
+6. Schema Markup: LocalBusiness, Service, FAQPage, BreadcrumbList, Article (as appropriate)
+7. Meta Optimization: unique title (under 60 chars), meta description (under 155 chars), URL slug
+
+ANTI-THIN-CONTENT RULES:
+- No page may be generated from a template with only variable substitution
+- Each page must contain at least 3 paragraphs of genuinely unique, valuable content
+- No duplicate paragraphs across pages (even if similar topics)
+- Each page must answer a specific user question that no other page answers
+
+OUTPUT: JSON with the complete generation pipeline specification, including: keyword matrix structure, content uniqueness algorithms, template definitions, validation rules, and the deployment + indexing acceleration protocol (IndexNow, sitemap ping, GSC submission).`,
+      },
+      {
+        title: 'Autonomous Goal-Setting & Achievement System',
+        prompt: `You are an autonomous AI system architect. Design a goal-setting and achievement system that operates without human intervention — it defines ranking goals, tracks progress, adjusts strategy, and achieves them.
+
+GOAL HIERARCHY:
+1. Ultimate Goal: "Achieve top 5 Google ranking for {primary_keyword} in {location} within {timeframe}"
+2. Sub-Goals (auto-generated):
+   - "Generate 1000 pages targeting long-tail variations of {primary_keyword}"
+   - "Acquire 50 backlinks from domains with DA > 30"
+   - "Achieve 90+ Google Lighthouse score on all pages"
+   - "Get 500 pages indexed within 30 days"
+   - "Achieve 20 featured snippets for {primary_keyword} questions"
+3. Task-Level Goals (auto-generated daily):
+   - "Generate 50 new pages today targeting {untapped_keywords}"
+   - "Submit to 10 new directories today"
+   - "Fix 5 technical SEO issues found in audit"
+   - "Acquire 3 backlinks today"
+
+AUTONOMOUS DECISION ENGINE:
+1. Goal Definition: the system reads current rankings, competitor positions, and search volume, then defines goals using a scoring algorithm (keyword value × achievability × timeframe)
+2. Progress Tracking: daily measurement of ranking position, organic traffic, indexed pages, backlinks, and conversion rate
+3. Strategy Adjustment: if a goal is behind schedule, the system automatically:
+   - Increases content generation volume for underperforming keywords
+   - Shifts targeting to easier keyword variations
+   - Accelerates backlink acquisition
+   - Adjusts internal linking to boost important pages
+4. Goal Achievement Detection: when a goal is achieved, the system:
+   - Records the methods that worked (for future goal-setting)
+   - Sets a new, harder goal (e.g., top 3 → top 1)
+   - Expands to adjacent keywords
+5. Failure Recovery: if a goal is not achieved within the timeframe:
+   - Analyzes why (algorithm update, competition, technical issue)
+   - Adjusts the goal or strategy
+   - Re-attempts with modified approach
+
+FEEDBACK LOOP:
+- Every 24 hours: measure progress, adjust daily tasks
+- Every 7 days: evaluate sub-goal progress, adjust strategy
+- Every 30 days: evaluate ultimate goal, adjust or escalate
+- Every 90 days: full system retrospective, update goal-setting algorithm
+
+OUTPUT: JSON with the complete autonomous goal-setting architecture: goal hierarchy, scoring algorithms, decision rules, feedback loops, and the state machine for goal lifecycle (defined → in_progress → achieved → escalated → retired).`,
+      },
+      {
+        title: '24/7 Autonomous Operation Protocol',
+        prompt: `You are a DevOps and reliability architect. Design the 24/7 autonomous operation protocol for a programmatic SEO system that generates 1000s of pages per day without human intervention.
+
+OPERATIONAL REQUIREMENTS:
+- Uptime: 99.9% (max 8.7 hours downtime per year)
+- Throughput: 1000+ pages generated, deployed, and submitted for indexing per day
+- Self-healing: detect and recover from failures automatically
+- Self-monitoring: track system health, performance, and output quality continuously
+- Zero human intervention: the system operates, monitors, heals, and scales itself
+
+SYSTEM COMPONENTS TO DESIGN:
+1. Generation Worker Pool: 5-10 concurrent workers generating pages
+2. Deployment Pipeline: auto-deploy generated pages to the live site (Vercel/static host)
+3. Indexing Accelerator: auto-submit new pages via IndexNow, sitemap ping, and GSC API
+4. Health Monitor: check every component every 5 minutes
+5. Self-Healer: detect failures and automatically restart/replace components
+6. Quality Validator: validate every generated page against Google specs before deployment
+7. Progress Tracker: measure ranking progress daily and feed back to the goal system
+8. Alert System: only alert humans for critical failures that cannot be auto-healed
+
+AUTONOMOUS LOOP (runs every 5 minutes):
+1. Check goal progress → determine what to generate next
+2. Generate batch of pages (10-50 per cycle)
+3. Validate each page against Google specs
+4. Deploy valid pages to live site
+5. Submit for indexing (IndexNow + sitemap + GSC)
+6. Update progress tracking
+7. Check system health → self-heal if needed
+8. Repeat
+
+FAILURE HANDLING:
+- Generation failure: retry 3x, then skip and log
+- Deployment failure: retry 3x, then alert
+- Indexing failure: retry 3x, then try alternative method
+- Quality validation failure: regenerate with different parameters
+- System component crash: auto-restart, log, and continue
+- API rate limit hit: back off and retry with delay
+- Complete system failure: restart all components, resume from last checkpoint
+
+CHECKPOINT & RESUME:
+- Every batch is checkpointed to the database
+- On restart, the system resumes from the last checkpoint
+- No work is lost, no pages are duplicated
+
+OUTPUT: JSON with the complete 24/7 operation protocol: component topology, loop specification, failure handling rules, checkpoint/resume logic, and the health monitoring dashboard schema.`,
+      },
+      {
+        title: 'Deep System Architecture Blueprint',
+        prompt: `You are a chief software architect. Design the complete deep architecture for an autonomous programmatic SEO dominance system that generates 1000s of Google-compliant pages per day, operates 24/7, and achieves top 5 rankings autonomously.
+
+ARCHITECTURE LAYERS (design each in detail):
+
+1. DATA LAYER
+   - Entity model: what data is stored (keywords, pages, rankings, backlinks, goals, tasks, receipts)
+   - Storage: Base44 entities + Supabase for high-volume page content
+   - Data flow: how data moves between generation, deployment, and tracking
+
+2. INTELLIGENCE LAYER
+   - LLM gateway: which models for which tasks (generation, analysis, decision-making)
+   - Prompt library: how prompts are versioned, tested, and improved
+   - Decision engine: how the system decides what to generate, submit, and optimize next
+
+3. GENERATION LAYER
+   - Page generation pipeline: keyword → content → schema → meta → internal links
+   - Content uniqueness engine: how each page is made genuinely unique
+   - Quality validation: how each page is validated against Google specs before deployment
+   - Throughput: how 1000+ pages/day is achieved (concurrency, batching, caching)
+
+4. DEPLOYMENT LAYER
+   - Static site generation: how pages are built and deployed
+   - CDN distribution: how pages are served globally with low latency
+   - Domain management: how multiple domains/sites are managed
+   - Sitemap management: how sitemaps are generated and updated
+
+5. INDEXING LAYER
+   - IndexNow: real-time indexing submission
+   - Sitemap ping: automatic sitemap submission to Google/Bing
+   - GSC API: URL submission and monitoring
+   - Indexing verification: how we confirm pages are indexed
+
+6. RANKING LAYER
+   - Rank tracking: daily position monitoring for all target keywords
+   - Competitor monitoring: track competitor positions and strategies
+   - SERP analysis: analyze what's ranking and why
+   - Algorithm update detection: detect Google algorithm changes and adapt
+
+7. AUTONOMY LAYER
+   - Goal engine: defines, tracks, and achieves ranking goals
+   - Decision engine: decides what to do next based on goal progress
+   - Self-healing: detects and recovers from failures
+   - Feedback loop: learns from results and improves over time
+
+8. COMPLIANCE LAYER
+   - Google spec enforcement: every page is validated against Google guidelines
+   - Quality gates: no page deploys without passing all validation checks
+   - Audit trail: every action is logged with provenance
+   - Spam prevention: automated detection and prevention of spam patterns
+
+OUTPUT: A JSON architecture blueprint with all 8 layers, their components, data flows, interfaces, and the system topology diagram (as a dependency graph). This is the master document that all other prompts and implementations reference.`,
+      },
+    ],
+  },
+  {
     phase: 'Phase 1 — Foundation',
     description: 'Structure the business, define the brand, and map the competitive landscape before any submission begins.',
     prompts: [

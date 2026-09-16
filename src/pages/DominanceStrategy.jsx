@@ -41,24 +41,36 @@ export default function DominanceStrategy() {
 
       {/* Vision */}
       <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-6 mb-6 text-white">
-        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Zap className="w-5 h-5 text-yellow-400" /> The Vision</h2>
+        <h2 className="text-lg font-bold mb-3 flex items-center gap-2"><Zap className="w-5 h-5 text-yellow-400" /> The Vision — Deep Architecture</h2>
         <p className="text-sm leading-relaxed text-gray-200 max-w-4xl">
-          Enter business information <strong className="text-yellow-400">once</strong>. The system discovers every website, directory, review platform, social network, industry association, and government registry where the business should be listed. The CloudBrowser swarm then navigates to each target, analyzes the form, maps the business profile to form fields using LLM intelligence, fills the form, and submits — automatically. The result: the business's information floods every digital space, achieving complete online dominance without manual data entry on a single site.
+          A <strong className="text-yellow-400">deep architecture</strong> system programmatically created according to <strong className="text-yellow-400">100% of Google's specifications</strong>. It generates <strong className="text-yellow-400">1,000+ unique web pages per day</strong> — each strategically designed to reach Google's top 5 as fast as technologically possible. It operates <strong className="text-yellow-400">fully autonomously, 24/7</strong>, setting its own ranking goals and achieving them without human intervention. Every page is born Google-compliant (E-E-A-T, Helpful Content, Core Web Vitals, structured data) — not made compliant after the fact. The CloudBrowser swarm simultaneously floods every directory, review platform, and social network with the business's information. The result: total digital dominance, automated and permanent.
         </p>
-        <div className="grid sm:grid-cols-4 gap-3 mt-4">
-          <VisionStat icon={Target} value="100+" label="Submission Targets" />
-          <VisionStat icon={Bot} value="Swarm" label="CloudBrowser Auto-Fill" />
-          <VisionStat icon={FileText} value={`${TOTAL_PROMPTS}`} label="Engineered Prompts" />
-          <VisionStat icon={TrendingUp} value="∞" label="Digital Coverage" />
+        <div className="grid sm:grid-cols-3 lg:grid-cols-6 gap-3 mt-4">
+          <VisionStat icon={Layers} value="1,000+" label="Pages / Day" />
+          <VisionStat icon={Shield} value="100%" label="Google Compliant" />
+          <VisionStat icon={Bot} value="24/7" label="Autonomous" />
+          <VisionStat icon={Target} value="Top 5" label="Ranking Goal" />
+          <VisionStat icon={Bot} value="Swarm" label="CloudBrowser" />
+          <VisionStat icon={FileText} value={`${TOTAL_PROMPTS}`} label="Prompts" />
         </div>
       </div>
 
       {/* Strategy */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StrategyCard icon={Search} title="1. Discover" desc="Seed 80+ catalog targets + LLM discovers 20+ niche-specific directories. Every submission source on the internet, found." color="text-blue-600" />
-        <StrategyCard icon={Bot} title="2. Automate" desc="CloudBrowser swarm navigates, extracts form structure, LLM maps fields, fills, and submits. React-compatible native setters." color="text-purple-600" />
-        <StrategyCard icon={Shield} title="3. Verify" desc="Swarm revisits each target 48-72h later, confirms the listing is live, captures proof screenshots, flags errors." color="text-green-600" />
-        <StrategyCard icon={TrendingUp} title="4. Dominate" desc="Track live listings, backlinks acquired, review growth, ranking changes. Continuous improvement loop refines the system." color="text-yellow-600" />
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <StrategyCard icon={Shield} title="1. Deep Architecture" desc="8-layer system: Data, Intelligence, Generation, Deployment, Indexing, Ranking, Autonomy, Compliance. Every layer enforces Google specs as a generation constraint, not a post-check." color="text-green-600" />
+        <StrategyCard icon={Layers} title="2. Mass Generation" desc="1,000+ unique pages/day via keyword×location matrix. 10+ page templates, content uniqueness engine, anti-thin-content rules. IndexNow + sitemap + GSC for instant indexing." color="text-blue-600" />
+        <StrategyCard icon={Bot} title="3. Autonomous 24/7" desc="Self-healing worker pool, 5-minute generation loop, checkpoint/resume, zero human intervention. Sets goals, tracks progress, adjusts strategy, achieves rankings." color="text-purple-600" />
+        <StrategyCard icon={TrendingUp} title="4. Goal Achievement" desc="System defines ranking goals (top 5 for keyword X in Y days), measures daily, adjusts strategy, and achieves them. Learns from results, escalates on failure, expands on success." color="text-yellow-600" />
+      </div>
+
+      {/* Google Compliance Pillars */}
+      <div className="bg-card border border-border rounded-lg p-4 mb-8">
+        <h3 className="text-sm font-bold text-foreground mb-3 flex items-center gap-2"><Shield className="w-4 h-4 text-green-600" /> Google Specification Compliance — Enforced at Generation</h3>
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {['E-E-A-T (Experience, Expertise, Authority, Trust)', 'Helpful Content Guidelines', 'Core Web Vitals (LCP, INP, CLS)', 'Mobile-First Indexing', 'Structured Data (JSON-LD)', 'Canonicalization', 'Sitemap & Robots.txt', 'Page Experience Signals', 'Spam Policies (no doorway pages)', 'AI Content Guidelines', 'Local SEO (GBP, NAP)', 'Link Spam Policies'].map(spec => (
+            <div key={spec} className="text-xs bg-green-50 text-green-700 border border-green-200 rounded px-2 py-1.5">{spec}</div>
+          ))}
+        </div>
       </div>
 
       {/* Prompt Library Header */}
