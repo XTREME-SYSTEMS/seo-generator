@@ -89,6 +89,9 @@ import NearMeUrlFinder from '@/pages/NearMeUrlFinder';
 import NearMeStrategy from '@/pages/NearMeStrategy';
 import Base44Apps from '@/pages/Base44Apps';
 import GeneratorHub from '@/pages/GeneratorHub';
+import AssetPerformance from '@/pages/AssetPerformance';
+import AlphaPrime from '@/pages/AlphaPrime';
+import SystemAudit from '@/pages/SystemAudit';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -213,6 +216,9 @@ const AuthenticatedApp = () => {
           <Route path="/nearme-strategy" element={<NearMeStrategy />} />
           <Route path="/base44-apps" element={<Base44Apps />} />
           <Route path="/generator-hub" element={<GeneratorHub />} />
+          <Route path="/asset-performance" element={<AssetPerformance />} />
+          <Route path="/alpha-prime" element={<AlphaPrime />} />
+          <Route path="/system-audit" element={<SystemAudit />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

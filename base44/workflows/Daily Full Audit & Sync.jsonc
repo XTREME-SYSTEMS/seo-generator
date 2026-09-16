@@ -1,0 +1,101 @@
+{
+  "description": "Runs once daily \u2014 full benchmark constitution audit, system validation, security hardening scan, and Search Console sync. This is the mandatory daily autonomous audit + sync loop that keeps the system at 100%.",
+  "name": "Daily Full Audit & Sync",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "daily_full_audit_sync",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_benchmark": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "RunBenchmarkConstitution",
+            "args": {}
+          },
+          "then": "validate_system",
+          "x-base44": {
+            "title": "Run Benchmark Constitution",
+            "description": "Execute the full 143-point benchmark constitution audit"
+          }
+        }
+      },
+      {
+        "validate_system": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "ValidateSystem",
+            "args": {}
+          },
+          "then": "security_scan",
+          "x-base44": {
+            "title": "Validate System",
+            "description": "Run all validation tests across 7 categories"
+          }
+        }
+      },
+      {
+        "security_scan": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SecurityScan",
+            "args": {}
+          },
+          "then": "sync_gsc",
+          "x-base44": {
+            "title": "Security Hardening Scan",
+            "description": "Run security scan and harden the system"
+          }
+        }
+      },
+      {
+        "sync_gsc": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "SyncSearchConsole",
+            "args": {}
+          },
+          "then": "fix_engine",
+          "x-base44": {
+            "title": "Sync Search Console",
+            "description": "Sync Google Search Console data + sitemap"
+          }
+        }
+      },
+      {
+        "fix_engine": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "FixEngine",
+            "args": {}
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Auto-Fix Issues",
+            "description": "Auto-fix any issues detected during the audit"
+          }
+        }
+      }
+    ]
+  },
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "0 6 * * *",
+      "one_time_date": null,
+      "timezone": "America/New_York",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  }
+}
