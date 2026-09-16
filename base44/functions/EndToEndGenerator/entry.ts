@@ -811,12 +811,23 @@ Return as JSON object with all fields above.`,
       };
     }
 
-    // Create receipt
+    // Create receipt — store brand data (logo, colors, brand name) in detail field for the gallery
+    const brandData = (step === 'brand_system' && results.brand_system) ? {
+      niche,
+      brand_name: results.brand_system.brand_name,
+      tagline: results.brand_system.tagline,
+      primary_color: results.brand_system.primary_color,
+      accent_color: results.brand_system.accent_color,
+      logo_url: results.brand_system.logo_url,
+      brand_positioning: results.brand_system.brand_positioning
+    } : null;
+
     await base44.asServiceRole.entities.Receipt.create({
       summary: `End-to-end generator: ${step} for niche "${niche}"`,
       source: 'EndToEndGenerator',
       occurred_at: new Date().toISOString(),
-      proof_level: 1
+      detail: brandData ? JSON.stringify(brandData) : null,
+      provenance: 'MEASURED'
     });
 
     return Response.json({ step, niche, results, mode: mode || 'manual' });

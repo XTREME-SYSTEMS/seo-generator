@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Search, Target, TrendingUp, DollarSign, BarChart3, Zap, Palette, Smartphone, Filter, Rocket, CheckCircle2, AlertCircle, ChevronRight } from 'lucide-react';
+import { Loader2, Search, Target, TrendingUp, DollarSign, BarChart3, Zap, Palette, Smartphone, Filter, Rocket, CheckCircle2, AlertCircle, ChevronRight, LayoutGrid } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import AutonomousLoopStatus from '@/components/e2e/AutonomousLoopStatus';
 
 const PIPELINE_STEPS = [
@@ -101,6 +102,20 @@ export default function EndToEndGenerator() {
 
       {/* Autonomous Loop Status */}
       <AutonomousLoopStatus />
+
+      {/* Gallery Link */}
+      <Link to="/portfolio-gallery" className="block mb-6 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-xl p-4 hover:from-yellow-500 hover:to-yellow-600 transition-colors group">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <LayoutGrid className="w-8 h-8 text-gray-900" />
+            <div>
+              <h3 className="font-bold text-gray-900">Portfolio Gallery — View All Generated Websites</h3>
+              <p className="text-sm text-gray-800">Visual thumbnails of all 30 niche websites with brand previews, logos, colors, and metrics</p>
+            </div>
+          </div>
+          <ChevronRight className="w-6 h-6 text-gray-900 group-hover:translate-x-1 transition-transform" />
+        </div>
+      </Link>
 
       {/* Input Controls */}
       <div className="bg-card border border-border rounded-xl p-5 mb-6">

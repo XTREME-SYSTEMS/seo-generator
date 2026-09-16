@@ -102,7 +102,7 @@ export default function AutonomousLoopStatus() {
       </div>
 
       <div className="text-xs text-muted-foreground mb-3">
-        Loop runs every 30 minutes — one niche+step per cycle. Processes all {NICHES.length} niches x {STEPS.length} steps = {totalSteps} total steps autonomously.
+        Loop runs every 5 minutes — three steps per cycle. Processes all {NICHES.length} niches x {STEPS.length} steps = {totalSteps} total steps autonomously.
       </div>
 
       <div className="max-h-56 overflow-y-auto space-y-1 pr-1">

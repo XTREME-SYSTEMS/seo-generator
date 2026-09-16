@@ -97,6 +97,7 @@ import SelfReflection from '@/pages/SelfReflection';
 import UniversalRegistry from '@/pages/UniversalRegistry';
 import ForensicAudit from '@/pages/ForensicAudit';
 import AutonomousPipeline from '@/pages/AutonomousPipeline';
+import PortfolioGallery from '@/pages/PortfolioGallery';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -229,6 +230,7 @@ const AuthenticatedApp = () => {
           <Route path="/universal-registry" element={<UniversalRegistry />} />
           <Route path="/forensic-audit" element={<ForensicAudit />} />
           <Route path="/autonomous-pipeline" element={<AutonomousPipeline />} />
+          <Route path="/portfolio-gallery" element={<PortfolioGallery />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

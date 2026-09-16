@@ -48,6 +48,7 @@ export const NAV_GROUPS = [
       { to: '/self-reflection', label: 'Self-Reflection', icon: Brain },
       { to: '/universal-registry', label: 'Universal Registry', icon: Boxes },
       { to: '/autonomous-pipeline', label: 'Autonomous Pipeline', icon: Zap },
+      { to: '/portfolio-gallery', label: 'Portfolio Gallery', icon: TrendingUp },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
