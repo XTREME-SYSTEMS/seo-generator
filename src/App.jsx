@@ -85,6 +85,7 @@ import FallbackInfrastructure from '@/pages/FallbackInfrastructure';
 import UniversalGenerator from '@/pages/UniversalGenerator';
 import EndToEndGenerator from '@/pages/EndToEndGenerator';
 import NearMeUrlFinder from '@/pages/NearMeUrlFinder';
+import Base44Apps from '@/pages/Base44Apps';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -206,6 +207,7 @@ const AuthenticatedApp = () => {
           <Route path="/universal-generator" element={<UniversalGenerator />} />
           <Route path="/end-to-end" element={<EndToEndGenerator />} />
           <Route path="/nearme-finder" element={<NearMeUrlFinder />} />
+          <Route path="/base44-apps" element={<Base44Apps />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

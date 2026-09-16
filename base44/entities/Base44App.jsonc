@@ -1,0 +1,71 @@
+{
+  "name": "Base44App",
+  "type": "object",
+  "properties": {
+    "app_id": {
+      "type": "string",
+      "description": "Base44 app ID from the API"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL slug e.g. seo-generator"
+    },
+    "published_url": {
+      "type": "string",
+      "description": "Full published URL e.g. https://seo-generator.base44.app"
+    },
+    "status": {
+      "type": "string",
+      "description": "App status from API (published, draft, etc.)"
+    },
+    "description": {
+      "type": "string",
+      "description": "App description from API"
+    },
+    "workspace_id": {
+      "type": "string"
+    },
+    "workspace_name": {
+      "type": "string"
+    },
+    "created_at_api": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation date from Base44 API"
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All internal URLs/pages discovered by scraping the app"
+    },
+    "page_count": {
+      "type": "number",
+      "default": 0
+    },
+    "scrape_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed",
+        "not_scraped"
+      ],
+      "default": "not_scraped"
+    },
+    "last_scraped_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scrape_error": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}
