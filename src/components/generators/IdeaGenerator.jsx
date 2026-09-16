@@ -1,162 +1,271 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Sparkles, Loader2, Lightbulb } from 'lucide-react';
+import { Sparkles, Loader2, Lightbulb, Brain, TrendingUp, Layers } from 'lucide-react';
+
+const FRAMEWORK_OPTIONS = [
+  { key: 'first_principles', label: 'First Principles', desc: 'Strip assumptions, rebuild from fundamental truths' },
+  { key: 'scamper', label: 'SCAMPER', desc: 'Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse' },
+  { key: 'cross_industry', label: 'Cross-Industry', desc: 'Borrow mechanisms from unrelated industries' },
+  { key: 'trend_surfing', label: 'Trend Surfing', desc: 'Ride accelerating technology & cultural trends' },
+  { key: 'constraint_removal', label: 'Constraint Removal', desc: 'Remove assumed limits, find what becomes possible' },
+  { key: 'analogy', label: 'Analogical', desc: 'Use nature, history, or other domains as templates' },
+  { key: 'inversion', label: 'Inversion', desc: 'Invert failure modes into design principles' },
+  { key: 'edge_cases', label: 'Edge Cases', desc: 'Serve extreme, underserved users obsessively' },
+];
 
 export default function IdeaGenerator() {
   const [prompt, setPrompt] = useState('');
   const [industry, setIndustry] = useState('');
+  const [count, setCount] = useState(10);
+  const [selectedFrameworks, setSelectedFrameworks] = useState(
+    FRAMEWORK_OPTIONS.map(f => f.key)
+  );
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const [saved, setSaved] = useState([]);
+  const [error, setError] = useState(null);
+
+  const toggleFramework = (key) => {
+    setSelectedFrameworks(prev =>
+      prev.includes(key) ? prev.filter(k => k !== key) : [...prev, key]
+    );
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
+    if (selectedFrameworks.length === 0) {
+      setError('Select at least one ideation framework');
+      return;
+    }
     setLoading(true);
+    setError(null);
+    setResult(null);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `Generate 10 innovative business ideas based on this dream: "${prompt}". Industry context: ${industry || 'general'}.
-
-For each idea provide:
-- title: Short name
-- problem: The problem it solves
-- solution: How it solves it
-- target_audience: Who buys it
-- monetization: How it makes money
-- tech_stack: Technologies needed
-- difficulty: easy/medium/hard
-- market_size: Estimated TAM
-- competitive_advantage: Why this wins
-- automation_potential: 0-100
-
-Return as JSON.`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            ideas: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  title: { type: 'string' },
-                  problem: { type: 'string' },
-                  solution: { type: 'string' },
-                  target_audience: { type: 'string' },
-                  monetization: { type: 'string' },
-                  tech_stack: { type: 'string' },
-                  difficulty: { type: 'string' },
-                  market_size: { type: 'string' },
-                  competitive_advantage: { type: 'string' },
-                  automation_potential: { type: 'number' },
-                },
-              },
-            },
-          },
-        },
+      const res = await base44.functions.invoke('GenerateIdeas', {
+        seed: prompt,
+        industry,
+        count,
+        frameworks: selectedFrameworks,
       });
-
-      const record = await base44.entities.GeneratedAsset.create({
-        generator_type: 'idea',
-        title: `Ideas for: ${prompt.slice(0, 60)}`,
-        input_prompt: prompt,
-        output_json: JSON.stringify(res.ideas || []),
-        summary: `${(res.ideas || []).length} ideas generated`,
-        tags: [industry || 'general'],
-      });
-
-      setResult(res.ideas || []);
-      setSaved(prev => [record, ...prev].slice(0, 10));
+      setResult(res.data);
     } catch (e) {
-      console.error(e);
+      setError(e.message || 'Generation failed');
     }
     setLoading(false);
   };
 
   return (
-    <GeneratorShell
-      icon={Lightbulb}
-      title="Idea Generator"
-      subtitle="Turn your dream into 10 actionable business ideas with monetization, tech stack, and market analysis"
-      prompt={prompt}
-      setPrompt={setPrompt}
-      industry={industry}
-      setIndustry={setIndustry}
-      onGenerate={handleGenerate}
-      loading={loading}
-    >
-      {result && (
-        <div className="space-y-3">
-          {result.map((idea, i) => (
-            <div key={i} className="bg-card border border-border rounded-lg p-4">
-              <div className="flex items-start justify-between gap-3 mb-2">
-                <h4 className="font-heading text-sm font-semibold text-foreground">{i + 1}. {idea.title}</h4>
-                <span className={`px-2 py-0.5 rounded text-xs ${idea.difficulty === 'easy' ? 'bg-green-100 text-green-700' : idea.difficulty === 'medium' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>{idea.difficulty}</span>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2 text-xs">
-                <Field label="Problem" value={idea.problem} />
-                <Field label="Solution" value={idea.solution} />
-                <Field label="Audience" value={idea.target_audience} />
-                <Field label="Monetization" value={idea.monetization} />
-                <Field label="Tech Stack" value={idea.tech_stack} />
-                <Field label="Market Size" value={idea.market_size} />
-                <Field label="Advantage" value={idea.competitive_advantage} />
-                <Field label="Automation" value={`${idea.automation_potential || 0}%`} />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </GeneratorShell>
-  );
-}
-
-function Field({ label, value }) {
-  return (
-    <div>
-      <span className="text-muted-foreground">{label}:</span> <span className="text-foreground">{value}</span>
-    </div>
-  );
-}
-
-export function GeneratorShell({ icon: Icon, title, subtitle, prompt, setPrompt, industry, setIndustry, onGenerate, loading, children, placeholder }) {
-  return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-lg p-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Icon className="w-5 h-5 text-primary" />
-          <h2 className="font-heading text-lg font-semibold text-foreground">{title}</h2>
+        <div className="flex items-center gap-2 mb-2">
+          <Brain className="w-5 h-5 text-primary" />
+          <h2 className="font-heading text-lg font-semibold text-foreground">Idea Generation AI</h2>
+          <span className="ml-auto px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-medium border border-primary/20">
+            claude-sonnet-5
+          </span>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">{subtitle}</p>
+        <p className="text-xs text-muted-foreground mb-4">
+          A dedicated AI that generates ideas through {FRAMEWORK_OPTIONS.length} distinct ideation frameworks.
+          Each idea includes a reasoning chain, viability score, and validation next-step.
+        </p>
+
         <textarea
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
-          placeholder={placeholder || "Describe what you want to generate..."}
-          rows={4}
+          placeholder="Describe your seed — a problem, a dream, a domain, a 'what if'..."
+          rows={3}
           className="w-full bg-background border border-border rounded-md px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/40 resize-none"
         />
+
         <div className="flex flex-wrap items-end gap-3 mt-4">
-          {setIndustry && (
-            <div className="flex-1 min-w-[200px]">
-              <label className="block text-xs text-muted-foreground mb-1.5">Industry / Context (optional)</label>
-              <input
-                type="text"
-                value={industry}
-                onChange={(e) => setIndustry(e.target.value)}
-                placeholder="e.g. plumbing, SaaS, real estate"
-                className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/40"
-              />
-            </div>
-          )}
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs text-muted-foreground mb-1.5">Industry / Context (optional)</label>
+            <input
+              type="text"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              placeholder="e.g. plumbing, SaaS, real estate"
+              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/40"
+            />
+          </div>
+          <div className="w-28">
+            <label className="block text-xs text-muted-foreground mb-1.5">Number of ideas</label>
+            <input
+              type="number"
+              min={1}
+              max={20}
+              value={count}
+              onChange={(e) => setCount(parseInt(e.target.value) || 10)}
+              className="w-full bg-background border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary/40"
+            />
+          </div>
           <button
-            onClick={onGenerate}
+            onClick={handleGenerate}
             disabled={loading || !prompt.trim()}
             className="px-5 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 disabled:opacity-50 flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {loading ? 'Generating...' : 'Generate'}
+            {loading ? 'Thinking...' : 'Generate Ideas'}
           </button>
         </div>
       </div>
-      {children}
+
+      {/* Framework Selection */}
+      <div className="bg-card border border-border rounded-lg p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Layers className="w-4 h-4 text-primary" />
+          <h3 className="font-heading text-sm font-semibold text-foreground">Ideation Frameworks</h3>
+          <span className="text-xs text-muted-foreground">({selectedFrameworks.length} selected)</span>
+          <button
+            onClick={() => setSelectedFrameworks(selectedFrameworks.length === FRAMEWORK_OPTIONS.length ? [] : FRAMEWORK_OPTIONS.map(f => f.key))}
+            className="ml-auto text-xs text-primary hover:underline"
+          >
+            {selectedFrameworks.length === FRAMEWORK_OPTIONS.length ? 'Clear all' : 'Select all'}
+          </button>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          {FRAMEWORK_OPTIONS.map(f => {
+            const active = selectedFrameworks.includes(f.key);
+            return (
+              <button
+                key={f.key}
+                onClick={() => toggleFramework(f.key)}
+                className={`text-left rounded-md border p-3 transition-colors ${
+                  active ? 'border-primary/40 bg-primary/5' : 'border-border bg-background hover:border-primary/20'
+                }`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <div className={`w-3 h-3 rounded-sm border ${active ? 'bg-primary border-primary' : 'border-muted-foreground/40'}`} />
+                  <span className="font-heading text-xs font-semibold text-foreground">{f.label}</span>
+                </div>
+                <p className="text-[11px] leading-snug text-muted-foreground">{f.desc}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
+      {/* Loading State */}
+      {loading && (
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Applying {selectedFrameworks.length} ideation frameworks...</p>
+        </div>
+      )}
+
+      {/* Results */}
+      {result && !loading && (
+        <div className="space-y-5">
+          {/* Meta */}
+          {result.meta && (
+            <div className="bg-gradient-to-br from-primary/5 to-transparent border border-primary/20 rounded-lg p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <h3 className="font-heading text-sm font-semibold text-foreground">AI Assessment</h3>
+              </div>
+              {result.meta.overall_assessment && (
+                <p className="text-xs leading-relaxed text-muted-foreground mb-3">{result.meta.overall_assessment}</p>
+              )}
+              {result.meta.top_themes && result.meta.top_themes.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {result.meta.top_themes.map((t, i) => (
+                    <span key={i} className="px-2 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-medium border border-primary/20">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Ideas */}
+          <div className="space-y-3">
+            {(result.ideas || []).map((idea, i) => (
+              <IdeaCard key={i} idea={idea} rank={i + 1} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!result && !loading && !error && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Lightbulb className="w-10 h-10 text-muted-foreground/30 mb-3" />
+          <p className="text-sm text-muted-foreground">Enter a seed prompt and select frameworks to generate ideas</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IdeaCard({ idea, rank }) {
+  const score = idea.viability_score || 0;
+  const scoreColor = score >= 75 ? 'text-emerald-600 bg-emerald-50 border-emerald-200' : score >= 50 ? 'text-amber-600 bg-amber-50 border-amber-200' : 'text-rose-600 bg-rose-50 border-rose-200';
+
+  return (
+    <div className="bg-card border border-border rounded-lg p-5 hover:border-primary/20 transition-colors">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-start gap-3 min-w-0">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-mono text-xs font-bold">
+            {rank}
+          </span>
+          <div className="min-w-0">
+            <h4 className="font-heading text-sm font-semibold text-foreground">{idea.title}</h4>
+            {idea.one_liner && <p className="text-xs text-muted-foreground mt-0.5 italic">"{idea.one_liner}"</p>}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          {idea.framework && (
+            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-muted text-muted-foreground border border-border">
+              {idea.framework}
+            </span>
+          )}
+          <span className={`px-2.5 py-1 rounded-md text-xs font-bold border ${scoreColor}`}>
+            {score}
+          </span>
+        </div>
+      </div>
+
+      {idea.reasoning_chain && (
+        <div className="mb-3 pl-10 border-l-2 border-primary/20">
+          <p className="text-[11px] leading-relaxed text-muted-foreground italic">{idea.reasoning_chain}</p>
+        </div>
+      )}
+
+      <div className="grid gap-2 sm:grid-cols-2 text-xs pl-10">
+        <Field label="Problem" value={idea.problem} />
+        <Field label="Solution" value={idea.solution} />
+        <Field label="Audience" value={idea.target_audience} />
+        <Field label="Monetization" value={idea.monetization} />
+        <Field label="Tech Stack" value={idea.tech_stack} />
+        <Field label="Market Size" value={idea.market_size} />
+        <Field label="Advantage" value={idea.competitive_advantage} />
+        <Field label="Difficulty" value={idea.difficulty} />
+      </div>
+
+      {idea.next_step && (
+        <div className="mt-3 pl-10">
+          <div className="inline-flex items-center gap-2 rounded-md bg-primary/5 border border-primary/20 px-3 py-1.5">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span className="text-[11px] text-foreground"><span className="font-medium text-primary">Next step:</span> {idea.next_step}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Field({ label, value }) {
+  if (!value) return null;
+  return (
+    <div>
+      <span className="text-muted-foreground">{label}:</span> <span className="text-foreground">{value}</span>
     </div>
   );
 }
