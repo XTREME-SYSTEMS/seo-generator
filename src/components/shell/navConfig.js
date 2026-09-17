@@ -53,6 +53,7 @@ export const NAV_GROUPS = [
       { to: '/digital-dominance', label: 'Digital Dominance', icon: Crown },
       { to: '/dominance-strategy', label: 'Dominance Strategy', icon: Crown },
       { to: '/deep-architecture', label: 'Deep Architecture', icon: Rocket },
+      { to: '/architecture', label: 'Architecture Page', icon: Building2 },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },
