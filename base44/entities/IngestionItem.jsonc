@@ -1,0 +1,191 @@
+{
+  "name": "IngestionItem",
+  "type": "object",
+  "properties": {
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "prompt",
+        "voice",
+        "video",
+        "url",
+        "folder",
+        "file",
+        "document",
+        "code",
+        "data",
+        "config",
+        "archive"
+      ],
+      "description": "The type of ingested source"
+    },
+    "source_name": {
+      "type": "string",
+      "description": "Original filename or URL label"
+    },
+    "source_url": {
+      "type": "string",
+      "description": "Original URL if ingested from web"
+    },
+    "file_uri": {
+      "type": "string",
+      "description": "Private storage URI for uploaded files (no size restriction)"
+    },
+    "signed_url": {
+      "type": "string",
+      "description": "Time-limited signed URL for previewing private files"
+    },
+    "mime_type": {
+      "type": "string"
+    },
+    "size_bytes": {
+      "type": "number",
+      "default": 0,
+      "description": "File size in bytes (no restriction)"
+    },
+    "content_text": {
+      "type": "string",
+      "description": "Extracted text content for prompts, code, documents, transcripts"
+    },
+    "content_summary": {
+      "type": "string",
+      "description": "AI-generated summary of the content"
+    },
+    "raw_metadata": {
+      "type": "string",
+      "description": "JSON-encoded extraction metadata"
+    },
+    "filter_accuracy": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Filter 1: Is the content factually accurate and verifiable?"
+    },
+    "filter_accuracy_reason": {
+      "type": "string",
+      "description": "Why accuracy filter passed or failed"
+    },
+    "filter_honesty": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Filter 2: Is the content truthful, not deceptive or misleading?"
+    },
+    "filter_honesty_reason": {
+      "type": "string",
+      "description": "Why honesty filter passed or failed"
+    },
+    "filter_utility": {
+      "type": "string",
+      "enum": [
+        "pass",
+        "fail",
+        "pending"
+      ],
+      "default": "pending",
+      "description": "Filter 3: Does this verifiably fix, connect, heal, harden, optimize, or evolve the system?"
+    },
+    "filter_utility_reason": {
+      "type": "string",
+      "description": "Why utility filter passed or failed"
+    },
+    "utility_action": {
+      "type": "string",
+      "enum": [
+        "fix",
+        "connect",
+        "heal",
+        "harden",
+        "optimize",
+        "evolve",
+        "none"
+      ],
+      "default": "none",
+      "description": "What system action this item performs"
+    },
+    "utility_target": {
+      "type": "string",
+      "description": "Which system component this item targets (entity, function, page, workflow, etc.)"
+    },
+    "utility_verification": {
+      "type": "string",
+      "description": "How the utility claim was verified"
+    },
+    "protocol_compliance": {
+      "type": "boolean",
+      "default": false,
+      "description": "Does this item follow system protocols?"
+    },
+    "protocol_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of protocol violations found"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ingested",
+        "filtering",
+        "approved",
+        "questionable",
+        "trashed",
+        "applied"
+      ],
+      "default": "ingested",
+      "description": "approved = passed all 3 filters; questionable = failed a filter, held for audit; trashed = failed audit; applied = utility action executed"
+    },
+    "questionable_reason": {
+      "type": "string",
+      "description": "Why this item was moved to the questionable folder"
+    },
+    "audit_count": {
+      "type": "number",
+      "default": 0,
+      "description": "How many times this item has been audited"
+    },
+    "last_audited_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_audit_verdict": {
+      "type": "string",
+      "enum": [
+        "uphold",
+        "promote",
+        "trash",
+        "pending"
+      ],
+      "default": "pending"
+    },
+    "trashed_reason": {
+      "type": "string"
+    },
+    "trashed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "ingested_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "source_type",
+    "source_name"
+  ]
+}

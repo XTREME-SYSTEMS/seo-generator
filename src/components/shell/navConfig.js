@@ -1,7 +1,7 @@
 import {
   Home, Activity, Target, TrendingUp, Gauge, Compass,
   Building2, Plug, Settings, CalendarDays, DollarSign, Briefcase,
-  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe, Crown, Sparkles, Shield, Cpu, LineChart, FileSearch, Brain, ClipboardCheck, Layers,
+  BarChart3, Rocket, Bot, Zap, Boxes, Search, Globe, Crown, Sparkles, Shield, Cpu, LineChart, FileSearch, Brain, ClipboardCheck, Layers, HardDrive,
 } from 'lucide-react';
 // Rocket already imported above
 
@@ -54,6 +54,7 @@ export const NAV_GROUPS = [
       { to: '/dominance-strategy', label: 'Dominance Strategy', icon: Crown },
       { to: '/deep-architecture', label: 'Deep Architecture', icon: Rocket },
       { to: '/architecture', label: 'Architecture Page', icon: Building2 },
+      { to: '/deep-ingestion', label: 'Deep Ingestion', icon: HardDrive },
       { to: '/nearme-finder', label: 'NearMe Intelligence', icon: Search },
       { to: '/base44-apps', label: 'Base44 App Inventory', icon: Globe },
       { to: '/ecosystem', label: 'Ecosystem API', icon: Plug },

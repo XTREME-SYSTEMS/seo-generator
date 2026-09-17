@@ -103,6 +103,7 @@ import DigitalDominance from '@/pages/DigitalDominance';
 import DominanceStrategy from '@/pages/DominanceStrategy';
 import DeepArchitecture from '@/pages/DeepArchitecture';
 import ArchitecturePage from '@/pages/ArchitecturePage';
+import DeepIngestionSystem from '@/pages/DeepIngestionSystem';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -241,6 +242,7 @@ const AuthenticatedApp = () => {
           <Route path="/dominance-strategy" element={<DominanceStrategy />} />
           <Route path="/deep-architecture" element={<DeepArchitecture />} />
           <Route path="/architecture" element={<ArchitecturePage />} />
+          <Route path="/deep-ingestion" element={<DeepIngestionSystem />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
