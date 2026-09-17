@@ -101,6 +101,7 @@ import PortfolioGallery from '@/pages/PortfolioGallery';
 import CloneGallery from '@/pages/CloneGallery';
 import DigitalDominance from '@/pages/DigitalDominance';
 import DominanceStrategy from '@/pages/DominanceStrategy';
+import DeepArchitecture from '@/pages/DeepArchitecture';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -237,6 +238,7 @@ const AuthenticatedApp = () => {
           <Route path="/clone-gallery" element={<CloneGallery />} />
           <Route path="/digital-dominance" element={<DigitalDominance />} />
           <Route path="/dominance-strategy" element={<DominanceStrategy />} />
+          <Route path="/deep-architecture" element={<DeepArchitecture />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
