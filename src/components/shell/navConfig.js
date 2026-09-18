@@ -11,6 +11,7 @@ export const NAV_GROUPS = [
   {
     label: 'Overview',
     items: [
+      { to: '/god-mode', label: 'God Mode', icon: Zap },
       { to: '/end-to-end', label: 'End-to-End Generator', icon: Rocket },
       { to: '/universal-generator', label: 'Universal Generator', icon: Boxes },
       { to: '/mission-control', label: 'Mission Control', icon: Zap },

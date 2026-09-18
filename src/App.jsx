@@ -107,6 +107,7 @@ import DeepIngestionSystem from '@/pages/DeepIngestionSystem';
 import StrategySimulator from '@/pages/StrategySimulator';
 import LiveSimulator from '@/pages/LiveSimulator';
 import VisionRoadmap from '@/pages/VisionRoadmap';
+import GodModeDashboard from '@/pages/GodModeDashboard';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -249,6 +250,7 @@ const AuthenticatedApp = () => {
           <Route path="/strategy-simulator" element={<StrategySimulator />} />
           <Route path="/live-simulator" element={<LiveSimulator />} />
           <Route path="/vision-roadmap" element={<VisionRoadmap />} />
+          <Route path="/god-mode" element={<GodModeDashboard />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
