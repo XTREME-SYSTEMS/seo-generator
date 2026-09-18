@@ -104,6 +104,9 @@ import DominanceStrategy from '@/pages/DominanceStrategy';
 import DeepArchitecture from '@/pages/DeepArchitecture';
 import ArchitecturePage from '@/pages/ArchitecturePage';
 import DeepIngestionSystem from '@/pages/DeepIngestionSystem';
+import StrategySimulator from '@/pages/StrategySimulator';
+import LiveSimulator from '@/pages/LiveSimulator';
+import VisionRoadmap from '@/pages/VisionRoadmap';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -243,6 +246,9 @@ const AuthenticatedApp = () => {
           <Route path="/deep-architecture" element={<DeepArchitecture />} />
           <Route path="/architecture" element={<ArchitecturePage />} />
           <Route path="/deep-ingestion" element={<DeepIngestionSystem />} />
+          <Route path="/strategy-simulator" element={<StrategySimulator />} />
+          <Route path="/live-simulator" element={<LiveSimulator />} />
+          <Route path="/vision-roadmap" element={<VisionRoadmap />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}
