@@ -45,6 +45,7 @@ export const NAV_GROUPS = [
       { to: '/alpha-prime', label: 'Alpha Prime Ops', icon: Cpu },
       { to: '/system-audit', label: 'System Audit', icon: Shield },
       { to: '/dominance-compliance', label: 'Dominance Compliance', icon: ClipboardCheck },
+      { to: '/x1-readiness', label: 'X1 Browser Readiness', icon: Cpu },
       { to: '/forensic-audit', label: 'Forensic Audit', icon: FileSearch },
       { to: '/test-score', label: 'Test & Score', icon: ClipboardCheck },
       { to: '/self-reflection', label: 'Self-Reflection', icon: Brain },

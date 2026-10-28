@@ -1,0 +1,58 @@
+{
+  "name": "X1Check",
+  "type": "object",
+  "properties": {
+    "check_id": {
+      "type": "string",
+      "description": "Check identifier, e.g. Q01"
+    },
+    "check": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "evidence": {
+      "type": "string"
+    },
+    "next_action": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "check_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

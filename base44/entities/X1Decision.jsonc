@@ -1,0 +1,58 @@
+{
+  "name": "X1Decision",
+  "type": "object",
+  "properties": {
+    "decision_id": {
+      "type": "string",
+      "description": "Decision identifier, e.g. D01"
+    },
+    "decision": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "ADOPTED",
+        "PROPOSED",
+        "REJECTED",
+        "SUPERSEDED"
+      ],
+      "default": "PROPOSED"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "decision_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

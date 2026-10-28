@@ -109,6 +109,7 @@ import LiveSimulator from '@/pages/LiveSimulator';
 import VisionRoadmap from '@/pages/VisionRoadmap';
 import GodModeDashboard from '@/pages/GodModeDashboard';
 import DominanceCompliance from '@/pages/DominanceCompliance';
+import X1Readiness from '@/pages/X1Readiness';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
@@ -253,6 +254,7 @@ const AuthenticatedApp = () => {
           <Route path="/vision-roadmap" element={<VisionRoadmap />} />
           <Route path="/god-mode" element={<GodModeDashboard />} />
           <Route path="/dominance-compliance" element={<DominanceCompliance />} />
+          <Route path="/x1-readiness" element={<X1Readiness />} />
         </Route>
       </Route>
       {/* LeadGenNearYou.com — Programmatic City Pages */}

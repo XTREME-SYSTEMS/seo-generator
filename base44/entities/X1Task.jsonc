@@ -1,0 +1,67 @@
+{
+  "name": "X1Task",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier, e.g. T01"
+    },
+    "stage": {
+      "type": "string",
+      "description": "Rehydrate, Inventory, Environment, Tests, Security, Reliability, Preview, QA, Release"
+    },
+    "task": {
+      "type": "string"
+    },
+    "acceptance_evidence": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "IN_PROGRESS",
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Actual proof captured for this task"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "task_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

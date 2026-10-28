@@ -1,0 +1,68 @@
+{
+  "name": "X1Risk",
+  "type": "object",
+  "properties": {
+    "risk_id": {
+      "type": "string",
+      "description": "Risk identifier, e.g. R01"
+    },
+    "risk": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ],
+      "default": "HIGH"
+    },
+    "mitigation": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "OPEN",
+        "MITIGATING",
+        "MITIGATED",
+        "CLOSED"
+      ],
+      "default": "OPEN"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "risk_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
