@@ -1,0 +1,100 @@
+{
+  "name": "EngineAttestation",
+  "type": "object",
+  "properties": {
+    "engine_label": {
+      "type": "string",
+      "description": "Which configured engine host was probed"
+    },
+    "host": {
+      "type": "string"
+    },
+    "reachable": {
+      "type": "boolean",
+      "default": false
+    },
+    "http_status": {
+      "type": "number"
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "HEALTHY",
+        "DEGRADED",
+        "UNREACHABLE",
+        "MISCONFIGURED"
+      ],
+      "default": "UNREACHABLE"
+    },
+    "liveness_ok": {
+      "type": "boolean",
+      "default": false
+    },
+    "readiness_ok": {
+      "type": "boolean",
+      "default": false
+    },
+    "git_sha": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "pool_capacity": {
+      "type": "number"
+    },
+    "pool_size": {
+      "type": "number"
+    },
+    "stt_available": {
+      "type": "boolean"
+    },
+    "latency_ms": {
+      "type": "number"
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "receipt_hash": {
+      "type": "string",
+      "description": "SHA-256 over the attested payload \u2014 proof this run happened"
+    },
+    "checked_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "engine_label",
+    "state"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

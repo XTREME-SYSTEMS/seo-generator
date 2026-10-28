@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Loader2, LayoutDashboard, ListChecks, FlaskConical, AlertTriangle, Gavel, FolderTree } from 'lucide-react';
+import { Loader2, LayoutDashboard, ListChecks, FlaskConical, AlertTriangle, Gavel, FolderTree, Server } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import ReadinessOverview from '@/components/x1/ReadinessOverview';
 import TaskPanel from '@/components/x1/TaskPanel';
@@ -8,11 +8,13 @@ import CheckPanel from '@/components/x1/CheckPanel';
 import RiskPanel from '@/components/x1/RiskPanel';
 import DecisionPanel from '@/components/x1/DecisionPanel';
 import WorkbookPanel from '@/components/compliance/WorkbookPanel';
+import AttestationPanel from '@/components/x1/AttestationPanel';
 
 const asArray = (res) => (Array.isArray(res) ? res : res?.items || []);
 
 const TABS = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { key: 'engine', label: 'Engine Live', icon: Server },
   { key: 'tasks', label: 'Tasks', icon: ListChecks },
   { key: 'checks', label: 'Test Ledger', icon: FlaskConical },
   { key: 'risks', label: 'Risks', icon: AlertTriangle },
@@ -28,17 +30,19 @@ export default function X1Readiness() {
   const [risks, setRisks] = useState([]);
   const [decisions, setDecisions] = useState([]);
   const [reference, setReference] = useState([]);
+  const [attestations, setAttestations] = useState([]);
 
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const [t, c, r, d, ref] = await Promise.all([
+        const [t, c, r, d, ref, att] = await Promise.all([
           base44.entities.X1Task.list('task_id', 100),
           base44.entities.X1Check.list('check_id', 100),
           base44.entities.X1Risk.list('risk_id', 100),
           base44.entities.X1Decision.list('decision_id', 100),
           base44.entities.DominanceReference.filter({ sheet_group: 'X1 Cloud Browser' }, { sort: 'sheet_name', limit: 200 }),
+          base44.entities.EngineAttestation.list('-checked_at', 40),
         ]);
         if (!alive) return;
         setTasks(asArray(t));
@@ -46,12 +50,18 @@ export default function X1Readiness() {
         setRisks(asArray(r));
         setDecisions(asArray(d));
         setReference(asArray(ref));
+        setAttestations(asArray(att));
       } finally {
         if (alive) setLoading(false);
       }
     })();
     return () => { alive = false; };
   }, []);
+
+  const refreshAttestations = async () => {
+    const att = await base44.entities.EngineAttestation.list('-checked_at', 40);
+    setAttestations(asArray(att));
+  };
 
   const setStatus = async (key, setter, id, status) => {
     await base44.entities[key].update(id, { status });
@@ -128,6 +138,7 @@ export default function X1Readiness() {
 
       <div className="border border-border rounded-lg bg-card p-4">
         {tab === 'overview' && <ReadinessOverview counts={counts} verdict={verdict} blockers={verdict.blockers} />}
+        {tab === 'engine' && <AttestationPanel records={attestations} onRefreshed={refreshAttestations} />}
         {tab === 'tasks' && <TaskPanel items={tasks} onUpdate={(id, s) => setStatus('X1Task', setTasks, id, s)} />}
         {tab === 'checks' && <CheckPanel items={checks} onUpdate={(id, s) => setStatus('X1Check', setChecks, id, s)} />}
         {tab === 'risks' && <RiskPanel items={risks} onUpdate={(id, s) => setStatus('X1Risk', setRisks, id, s)} />}
