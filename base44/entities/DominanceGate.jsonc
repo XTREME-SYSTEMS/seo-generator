@@ -1,0 +1,96 @@
+{
+  "name": "DominanceGate",
+  "type": "object",
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "description": "Gate identifier, e.g. G-001"
+    },
+    "validation_area": {
+      "type": "string"
+    },
+    "release_requirement": {
+      "type": "string"
+    },
+    "acceptance_evidence": {
+      "type": "string",
+      "description": "Programmatic evidence that proves the gate"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "BLOCK",
+        "REVIEW",
+        "ALLOW"
+      ],
+      "default": "BLOCK"
+    },
+    "criticality": {
+      "type": "string",
+      "enum": [
+        "BLOCK",
+        "REVIEW"
+      ],
+      "default": "BLOCK"
+    },
+    "prohibited_shortcut": {
+      "type": "string"
+    },
+    "policy_reference": {
+      "type": "string"
+    },
+    "owner": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "PASS",
+        "FAIL",
+        "BLOCKED",
+        "N/A"
+      ],
+      "default": "NOT_RUN"
+    },
+    "evidence_url": {
+      "type": "string",
+      "description": "Link or hash of real proof"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source_sheet": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "gate_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

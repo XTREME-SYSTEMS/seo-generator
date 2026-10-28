@@ -1,0 +1,83 @@
+{
+  "name": "DominanceRepair",
+  "type": "object",
+  "properties": {
+    "repair_id": {
+      "type": "string",
+      "description": "Register identifier, e.g. P0-01"
+    },
+    "area": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "description": "Observed file or module"
+    },
+    "observation": {
+      "type": "string",
+      "description": "Prior audit observation that must be re-verified"
+    },
+    "required_repair": {
+      "type": "string"
+    },
+    "acceptance_test": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "CRITICAL",
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ],
+      "default": "HIGH"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "IN_PROGRESS",
+        "FIXED",
+        "VERIFIED",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "evidence": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "repair_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

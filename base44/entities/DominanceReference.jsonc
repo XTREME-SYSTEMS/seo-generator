@@ -1,0 +1,57 @@
+{
+  "name": "DominanceReference",
+  "type": "object",
+  "properties": {
+    "sheet_name": {
+      "type": "string",
+      "description": "Source worksheet name"
+    },
+    "sheet_group": {
+      "type": "string",
+      "description": "Handoff or Vercel Compliance"
+    },
+    "row_index": {
+      "type": "number",
+      "default": 0
+    },
+    "row_data": {
+      "type": "string",
+      "description": "JSON-encoded row values keyed by column header"
+    },
+    "columns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "sheet_name"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

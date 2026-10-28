@@ -1,0 +1,79 @@
+{
+  "name": "DominanceQaTest",
+  "type": "object",
+  "properties": {
+    "test_id": {
+      "type": "string",
+      "description": "Test identifier, e.g. A01"
+    },
+    "suite": {
+      "type": "string"
+    },
+    "test": {
+      "type": "string",
+      "description": "The test to execute"
+    },
+    "expected_result": {
+      "type": "string"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2"
+      ],
+      "default": "P1"
+    },
+    "runner": {
+      "type": "string",
+      "description": "Execution runner"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Tester / evidence reference"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "test_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

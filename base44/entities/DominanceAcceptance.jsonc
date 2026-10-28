@@ -1,0 +1,65 @@
+{
+  "name": "DominanceAcceptance",
+  "type": "object",
+  "properties": {
+    "item_id": {
+      "type": "string",
+      "description": "Checklist identifier, e.g. C001"
+    },
+    "requirement": {
+      "type": "string"
+    },
+    "evidence_definition": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_RUN",
+        "PASS",
+        "FAIL",
+        "BLOCKED"
+      ],
+      "default": "NOT_RUN"
+    },
+    "receipt": {
+      "type": "string",
+      "description": "Receipt URL or signer"
+    },
+    "release_consequence": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description, up to 1000 characters"
+    }
+  },
+  "required": [
+    "item_id"
+  ],
+  "rls": {
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
