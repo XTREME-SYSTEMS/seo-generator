@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, RefreshCw } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
@@ -15,7 +16,7 @@ export default function ReverseEngineer() {
     setLoading(true);
     try {
       const context = url ? `Reverse engineer this website/competitor: ${url}. ` : '';
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `${context}Analyze and reverse engineer: "${prompt}".
 
 Provide a complete reverse engineering analysis:

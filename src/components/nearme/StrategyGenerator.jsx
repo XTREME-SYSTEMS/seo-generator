@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Sparkles, Loader2, Target, Globe, MapPin, TrendingUp, DollarSign, FileText, Shield, CheckCircle2 } from 'lucide-react';
 
 export default function StrategyGenerator({ onNavigate }) {
@@ -23,7 +24,7 @@ export default function StrategyGenerator({ onNavigate }) {
     if (!dream.trim() && !niche.trim()) return;
     setGenerating(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are a digital dominance strategist. A user has provided their dream statement and niche. Generate a comprehensive NearMe.com digital dominance plan.
 
 Dream Statement: "${dream}"

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, Filter } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
@@ -13,7 +14,7 @@ export default function FunnelIdeaGenerator() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `Generate 5 high-converting funnel ideas for: "${prompt}".
 
 For each funnel:

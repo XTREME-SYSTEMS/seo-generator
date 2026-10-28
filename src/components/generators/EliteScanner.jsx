@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, Shield, Eye } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
@@ -13,7 +14,7 @@ export default function EliteScanner() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are an elite intelligence scanner with political awareness. Scan and analyze: "${prompt}".
 
 Provide a comprehensive elite & political scan:

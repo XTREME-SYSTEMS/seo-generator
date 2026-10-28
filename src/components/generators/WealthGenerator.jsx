@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, DollarSign } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 
@@ -12,7 +13,7 @@ export default function WealthGenerator() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are a digital wealth strategist. The user's dream: "${prompt}".
 
 Create a comprehensive digital wealth generation plan:

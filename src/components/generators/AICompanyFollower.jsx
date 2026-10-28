@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, Bot, Zap, TrendingUp, Eye } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
@@ -23,7 +24,7 @@ export default function AICompanyFollower() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are an AI company intelligence follower. Track and analyze AI companies related to: "${prompt}".
 
 Provide comprehensive intelligence on AI companies in this space:

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, LayoutTemplate, Code, Copy, Check } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 
@@ -13,7 +14,7 @@ export default function ProgrammaticSiteGenerator() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `Generate a complete programmatic Google Sites template for: "${prompt}".
 
 Create a full HTML template for a programmatic SEO site that generates city-level landing pages. Include:

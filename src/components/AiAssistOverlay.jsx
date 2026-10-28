@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { Sparkles, Loader2, X, Wand2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 
 /**
  * Global AI Assist overlay.
@@ -141,7 +142,7 @@ export default function AiAssistOverlay() {
         const prompt = mode === 'improve'
           ? `Improve and polish the following text. Return ONLY the improved text, no explanation.\n\nField context: ${ctx}\n\nText to improve:\n${cur}`
           : `Write content for a form field. Return ONLY the content text, no quotes, no explanation, no markdown.\n\nField context: ${ctx}\n\nUser request: ${desc}`;
-        const res = await base44.integrations.Core.InvokeLLM({ prompt, model: 'gpt_5_mini' });
+        const res = await invokeLLM({ prompt, model: 'gpt_5_mini' });
         const out = (typeof res === 'string' ? res : (res.output || res.text || JSON.stringify(res))).trim().replace(/^["']|["']$/g, '');
         setNativeValue(input, out);
         statusEl.textContent = '✓ Filled';

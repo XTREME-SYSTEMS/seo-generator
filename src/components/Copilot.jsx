@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bot, Send, X, Globe, Search, Zap, Loader2, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 
 const LOGO_URL = 'https://media.base44.com/images/public/6a8aaecf2642e595c591a5dc/f3a5caad5_LOGO.png';
 
@@ -24,7 +25,7 @@ export default function Copilot() {
     setInput('');
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are the Xtreme SEO Optimizer AI Copilot. The user asks: "${text}". 
         Provide a helpful, concise response about their SEO system. If they ask to perform an action, 
         describe what you would do and suggest next steps. Be friendly and professional.`,

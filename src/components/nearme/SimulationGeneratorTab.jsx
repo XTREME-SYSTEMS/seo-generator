@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, Play, TrendingUp, DollarSign, FileText, BarChart3 } from 'lucide-react';
 
 const TIMEFRAMES = [
@@ -40,7 +41,7 @@ export default function SimulationGeneratorTab() {
     setGenerating(true);
     try {
       const pattern = urlPattern.trim() || `${niche.trim().replace(/\s+/g, '')}nearme.com`;
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `Generate a comprehensive market simulation for a programmatic SEO business.
 Niche: ${niche}
 URL Pattern: ${pattern}

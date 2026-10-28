@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.48';
+import { invokeLLM } from '../../shared/aiGateway.js';
 
 // DeepIngestion — Deterministic deep architecture ingestion pipeline.
 // Accepts ANY file type (image, prompt, voice, video, url, folder, file, document, code, data, config, archive)
@@ -178,7 +179,7 @@ Return JSON with this exact schema:
 
     let filterResults: any = null;
     try {
-      const llmRes = await svc.integrations.Core.InvokeLLM({
+      const llmRes = await invokeLLM(svc, {
         prompt: filterPrompt,
         model: 'gpt_5_6_luna',
         response_json_schema: {

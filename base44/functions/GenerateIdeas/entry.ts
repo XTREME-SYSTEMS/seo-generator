@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { invokeLLM } from '../../shared/aiGateway.js';
 
 const FRAMEWORKS = {
   first_principles: { name: 'First Principles', directive: `Break the problem down to its most fundamental truths that cannot be deduced any further. Strip away all assumptions, conventions, and analogies. Rebuild the solution from these foundational truths alone. What becomes possible when you ignore how it's always been done?` },
@@ -54,7 +55,7 @@ For each idea produce: title, framework, reasoning_chain, problem, solution, tar
 Rank ideas by viability_score descending. Be bold — prefer non-obvious ideas over incremental ones.`;
 
     // Deep research mode uses Gemini with live web context; fast mode uses gpt_5_mini
-    const llmRes = await base44.integrations.Core.InvokeLLM({
+    const llmRes = await invokeLLM(base44, {
       prompt: masterPrompt,
       model: research ? 'gemini_3_flash' : 'gpt_5_mini',
       add_context_from_internet: research,

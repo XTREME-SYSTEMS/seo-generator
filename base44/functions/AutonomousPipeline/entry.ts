@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { invokeLLM } from '../../shared/aiGateway.js';
 
 // ── Autonomous Pipeline ──
 // A deterministic end-to-end pipeline: Research → Generate → Persist → Validate → Score.
@@ -22,7 +23,7 @@ export default async function(req: Request): Promise<Response> {
     const startTime = Date.now();
 
     // ── Step 1: Research (deterministic structured market data via web search) ──
-    const researchRes = await base44.integrations.Core.InvokeLLM({
+    const researchRes = await invokeLLM(base44, {
       prompt: `Research the "${niche}" industry for SEO and lead-generation purposes. Return structured data only.
 Niche: ${niche}
 ${url ? `Target URL: ${url}` : ''}
@@ -47,7 +48,7 @@ Return: top_keywords (10), search_volume_estimate, avg_cpc, top_competitors (3),
 
     // ── Step 2: Generate (deterministic structured content via fixed schema) ──
     const genStart = Date.now();
-    const genRes = await base44.integrations.Core.InvokeLLM({
+    const genRes = await invokeLLM(base44, {
       prompt: `Generate SEO-optimized content for the "${niche}" niche following Google's helpful content guidelines.
 Return: page_title (under 60 chars), meta_description (under 160 chars), h1, intro_paragraph (2-3 sentences), faqs (5 Q&A pairs), local_business_schema (JSON-LD), target_keyword, word_count_estimate.
 Adhere to E-E-A-T: demonstrate experience, expertise, authoritativeness, trustworthiness.`,

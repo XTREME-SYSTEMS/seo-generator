@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.48';
+import { invokeLLM } from '../../shared/aiGateway.js';
 
 // AuditQuestionable — Triggered during every system audit.
 // Loads all items in the "questionable" folder, re-validates each with stricter criteria,
@@ -79,7 +80,7 @@ Return JSON:
 
       let auditResult: any = null;
       try {
-        auditResult = await svc.integrations.Core.InvokeLLM({
+        auditResult = await invokeLLM(svc, {
           prompt: auditPrompt,
           model: 'gpt_5_6_luna',
           response_json_schema: {

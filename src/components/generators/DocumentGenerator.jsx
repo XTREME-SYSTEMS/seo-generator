@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, FileText } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 import { TextBlock, TagList } from './WealthGenerator';
@@ -16,7 +17,7 @@ export default function DocumentGenerator() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `Generate a professional ${docType.replace(/_/g, ' ')} document for: "${prompt}".
 
 Create a complete, ready-to-use document with:

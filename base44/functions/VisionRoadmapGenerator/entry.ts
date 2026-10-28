@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.44';
+import { invokeLLM } from '../../shared/aiGateway.js';
 
 export default async function(req) {
   try {
@@ -10,7 +11,7 @@ export default async function(req) {
     const { vision, strategyName, simulationResults, persona, timeHorizonYears, platform } = body || {};
 
     // Generate a comprehensive hour-by-hour, day-by-day, month-by-month, year-by-year roadmap
-    const llmResponse = await base44.integrations.Core.InvokeLLM({
+    const llmResponse = await invokeLLM(base44, {
       prompt: `You are an elite autonomous system architect. Create a comprehensive execution roadmap.
 
 USER'S VISION: ${vision || 'Build a dominant autonomous SEO and digital business platform'}

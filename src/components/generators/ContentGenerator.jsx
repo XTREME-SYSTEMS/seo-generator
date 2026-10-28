@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
+import { invokeLLM } from '@/lib/ai';
 import { Loader2, FileText, Sparkles } from 'lucide-react';
 import GeneratorShell from './GeneratorShell';
 
@@ -15,7 +16,7 @@ export default function ContentGenerator() {
     if (!prompt.trim()) return;
     setLoading(true);
     try {
-      const res = await base44.integrations.Core.InvokeLLM({
+      const res = await invokeLLM({
         prompt: `You are a multi-platform content generator that follows EXACT guidelines of every platform. Create content for: "${prompt}".
 
 Target platform(s): ${platform === 'all' ? 'Google SEO, Facebook, Instagram, TikTok, YouTube, Twitter/X, LinkedIn, Pinterest, Reddit' : platform}

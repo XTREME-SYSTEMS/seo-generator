@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.48';
+import { invokeLLM } from '../../shared/aiGateway.js';
 import { runMonteCarlo, STRATEGY_ARCHETYPES } from '../../shared/simulationEngine.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -69,7 +70,7 @@ export default async function (req: Request): Promise<Response> {
     let goldenEggs = [];
     let techAccelerators = [];
     try {
-      const eggResponse = await svc.integrations.Core.InvokeLLM({
+      const eggResponse = await invokeLLM(svc, {
         prompt: `You are a technology scout for an autonomous SEO and digital dominance platform. Search the web for the TOP 10 "golden egg" technologies, methods, and tools available in 2026 that can:
 
 1. DOUBLE the speed of programmatic SEO page generation
@@ -138,7 +139,7 @@ Return JSON with this exact schema:
     // ── STAGE 4: COMPETITIVE BENCHMARK ──
     let competitiveComparison = [];
     try {
-      const compResponse = await svc.integrations.Core.InvokeLLM({
+      const compResponse = await invokeLLM(svc, {
         prompt: `Search the web for the TOP 10 autonomous SEO platforms, AI SEO tools, and programmatic SEO services available in 2026. For each competitor, compare against our platform "SEO Generator" which has:
 
 - 100% autonomous AI agents running 24/7
